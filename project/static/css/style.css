@@ -1,0 +1,195 @@
+/*importing google font Roboto*/
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+/*importing bootstrap icons*/
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css");
+
+html {
+    scroll-behavior: smooth;
+}
+
+:root {
+    --bg-dark-color: #758BFD;
+    --contrast-color: #FF8600;
+    --bg-light-color: #D3D8FF;
+    --background-color: #F1F2F6;
+    --brand-color: #27187E;
+    --white-color: #ffffff;
+    --black-color: #121212;
+    --brand-font: 'Roboto', sans-serif;
+}
+
+body {
+    font-family: var(--brand-font);
+    background-color: var(--background-color);
+    line-height: 2;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+    font-family: var(--brand-font);
+}
+
+a {
+    color: var(--black-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+a:hover {
+    color: var(--contrast-color);
+    text-decoration: none;
+
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* navbar */
+#navbarNav > ul> li> a:hover {
+    color: var(--contrast-color);
+    
+}
+
+/* hero */
+
+.hero {
+    width: 100%;
+    position: relative;
+    padding: 120px 0 60px 0;
+    display: flex;
+    align-items: center;
+    background-color: var(--white-color);
+}
+
+/* all buttons */
+
+.btn-common {
+    border-radius: 5px;
+    padding: 5px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-style: solid;
+}
+
+.btn-medicine {
+    background-color: var(--contrast-color);
+    color: var(--white-color);
+    border-color: var(--contrast-color)
+}
+
+.btn-medicine:hover {
+    background-color: var(--white-color);
+    color: var(--contrast-color);
+    border-color: var(--contrast-color);
+}
+
+.btn-jumbotron {
+    background-color: var(--bg-dark-color);
+    color: var(--white-color);
+    border: var(--bg-dark-color);
+    padding: 10px;
+}
+
+.btn-jumbotron:hover {
+    background-color: var(--contrast-color);
+    color: var(--white-color);
+    border: var(--contrast-color);
+}
+
+/* services */
+
+.services {
+    background-color: var(--bg-dark-color);
+    padding: 100px 0;
+}
+
+/* custom span */
+
+#custom-span {
+    font-size: 25px;
+    font-weight: 600;
+}
+
+/* custom justify */
+
+.custom-justify {
+    text-align: justify;
+}
+
+/* cards */
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    padding: 25px;
+}
+
+.custom-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+}
+
+.custom-divider {
+    width: 5%;
+    height: 3px;
+    background-color: var(--brand-color);
+    margin: 5px 0;
+    border-radius: 5px;
+    justify-self: center;
+}
+
+/* newsletter */
+
+#newsletter {
+    background-color: var(--contrast-color);
+    padding: 100px 0;
+}
+
+.btn-newsletter {
+    background-color: var(--white-color);
+    color: var(--contrast-color);
+    padding: 10px 20px;
+}
+
+.btn-newsletter:hover {
+    background-color: var(--brand-color);
+    color: var(--white-color);
+}
+
+#products .nav-pills .nav-link {
+    background-color: var(--white-color);
+    color: var(--black-color);
+    margin-left: 7px;
+    margin-right: 7px;
+    margin-bottom: 3px;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+}
+
+#products .nav-pills .nav-link.active {
+    background-color: var(--contrast-color);
+    color: var(--white-color);
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+}
+
