@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Medilife">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Medicine Delivery</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <header>
+        <!--navbar-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow" id="home">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    <strong>Medlife.</strong>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ url_for('index') }}#hero">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('index') }}#features">Features</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('index') }}#about">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('index') }}#products">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('cart') }}">Cart</a>
+                        </li>
+                    </ul>
+                    <form class="form-inline">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Eg. Aspirin" aria-label="Search">
+                        <button class="btn btn-medicine my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        
+        {% block head %}
+        {% endblock %}
+    </header>
+
+    <!-- Main content -->
+    <div class="container-fluid">
+        <main>
+            {% block main %}
+            {% endblock %}
+        </main>
+    </div>
+
+    <!--footer-->
+    <footer id="footer" class="footer bg-light mt-2">
+        <section class="container">
+            <div class="d-flex flex-lg-row align-items-center justify-content-center">
+                <a href="#!" class="p-4 text-reset">
+                    <i class="bi bi-envelope"></i>
+                </a>
+                <a href="#!" class="p-4 text-reset">
+                    <i class="bi bi-twitter"></i>
+                </a>
+                <a href="#!" class="p-4 text-reset">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="#!" class="p-4 text-reset">
+                    <i class="bi bi-facebook"></i>
+                </a>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <div class="container">
+                <div class="row custom-justify text-center text-lg-left align-items-start">
+                    <div class="col-lg-5 me-4 my-4 custom-justify">
+                        <h5>MEDLIFE</h5>
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eum a suscipit corporis enim
+                        perspiciatis at ea asperiores ipsa quae blanditiis molestias, saepe distinctio accusantium
+                        velit
+                        quibusdam tempora unde provident ullam culpa quisquam dolorem. Consectetur quis expedita
+                        soluta
+                        eveniet tempore, blanditiis doloremque repudiandae accusantium corrupti quod similique
+                        rerum,
+                        delectus earum porro!
+                    </div>
+                    <div class="col-lg-3">
+                        <h5>USEFUL LINKS</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html#features">Features</a></li>
+                            <li><a href="index.html#about">About</a></li>
+                            <li><a href="index.html#products">Products</a></li>
+                            <li><a href="delivery_request.html">Cart</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4">
+                        <h5>CONTACT US</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-house-fill"></i> Brisbane, QLD 4001, AUS </li>
+                            <li><i class="bi bi-envelope-fill"></i> example@domain.com </li>
+                            <li><i class="bi bi-phone-fill"></i> + 61 123 456 789 </li>
+                            <li><i class="bi bi-printer-fill"></i> + 61 234 567 890 </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <div class="text-center p-3">
+                © 2025 Copyright
+                <a class="text-reset fw-bold" href="#"> Medlife.com </a>
+                <a class="text-reset" href="#!">| Privacy Policy</a>
+                <a class="text-reset" href="#!">| Terms and Conditions</a>
+            </div>
+        </section>
+    </footer>
+
+
+    <!--Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    
+</body>
+
+</html>
