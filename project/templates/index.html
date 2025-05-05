@@ -1,50 +1,47 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<!-- add a big banner to welcome user -->
-<div class="p-5 text-white bg-image" style="background-image: url({{url_for('static', filename='img/header.jpg')}}); background-size: cover;">
-    <div class="text-white text-center py-5 px-4">
-        <div>
-            <h1 class="display-2">Welcome to Milton Tours</h1>
-            <p class="display-4 text-dark">You need a vacation!</p>
+<!--hero-->
+<section id="hero" class="section hero d-flex align-items-center">
+    <div class="container">
+        <div class="row my-4">
+            <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+                <h1>Medicine delivered to your doorstep!</h1>
+                <p>With the largest range of OTC and Prescription medicine, never struggle with your medication
+                    again with Medlife.</p>
+                <div class="d-flex">
+                    <a href="#about" class="btn btn-common btn-medicine">Get Started</a>
+                </div>
+            </div>
+            <div class="col-lg-6 order-1 order-lg-2 hero-img">
+                <img src="{{ url_for('static', filename='images/medicine sample.jpg') }}" alt="Medicine sample image">
+            </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
-
 {% block main %}
-<!-- marketing information -->
-<section>
-    <div class="container">
-        <div class="text-white text-center">
-            <div>
-                <p class="h1 text-dark mb-4">Why us?</p>
-            </div>
-        </div>
-        <!-- CSS Grid -->
-        <div class="row">
-            <div class="col-md-6">
-                <article>
-                    <h2>Beautiful locations</h2>
-                    <p>We have tours in some of the best locations all around Australia:</p>
-                    <ul>
-                        <li>Close to city center</li>
-                        <li>Free shuttle service to Airport</li>
-                        <li>Helpful staff</li>
-                    </ul>
-                </article>
 
+<!--about-->
+<section id="about" class="section about">
+    <div class="container text-center p-5 bg-white">
+        <h2>About Us</h2>
+        <hr class="custom-divider">
+        </hr>
+        <div class="row my-4">
+            <div class="col-lg-6">
+                <img src="images/people-about us.png" alt="" class="img-fluid">
             </div>
-            <div class="col-md-6">
-                <article>
-                    <h2>Affordable selections</h2>
-                    <p>We have <span> great prices and offers </span> all year round!</p>
-                    <p>Click <a href="discounts.html">here</a> for more information.</p>
-                </article>
+            <div class="col-lg-6 d-flex flex-column justify-content-center text-justify">
+                    <p>At Medlife, we are revolutionizing the way people access healthcare by bringing
+                        essential medicines right to your doorstep. Our mission is to provide a seamless, reliable, and
+                        affordable medicine delivery service that prioritizes your health and convenience. With a team
+                        of dedicated professionals and an extensive network of licensed pharmacies, we ensure that every
+                        order is handled with care and delivered promptly. Whether it’s regular prescriptions or
+                        over-the-counter essentials, we are here to make healthcare more accessible for everyone, every
+                        day.</p>
             </div>
         </div>
-        <!-- Horizontal Rule -->
-        <hr>
     </div>
 </section>
 

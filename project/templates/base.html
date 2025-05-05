@@ -14,54 +14,44 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-info">
-            <a class="navbar-brand text-light" href="{{ url_for('main.index') }}">
-                <img src="{{ url_for('static', filename='img/miltonlogo.png') }}" width="30" height="30"
-                    class="d-inline-block align-top" alt="Milton Tours Logo">
-                Milton Tours
-            </a>
-
-            <!-- Toggle button for collapsed navbar -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Navbar links and search form -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-light active" href="#">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light"
-                            href="{{ url_for('main.index', _anchor='cities_anchor') }}">Cities</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{{ url_for('main.order') }}">Basket</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="/discounts.html">Offers</a>
-                    </li>
-                </ul>
-
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <span class="navbar-text text-light"><a href="tel:+123456789">1-800-MILTON</a></span>
-                    </li>
-                    <li class="nav-item">
-                        <form class="d-flex my-2 my-lg-0 ms-5">
-                            <input class="form-control" type="search" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-dark btn btn-secondary my-0 ms-1"
-                                type="submit">Search</button>
-                        </form>
-                    </li>
-                </ul>
+        <!--navbar-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow" id="home">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    <strong>Medlife.</strong>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ url_for('index') }}#hero">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('index') }}#features">Features</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('index') }}#about">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('index') }}#products">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('cart') }}">Cart</a>
+                        </li>
+                    </ul>
+                    <form class="form-inline">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Eg. Aspirin" aria-label="Search">
+                        <button class="btn btn-medicine my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
             </div>
         </nav>
-
+        
         {% block head %}
         {% endblock %}
     </header>
