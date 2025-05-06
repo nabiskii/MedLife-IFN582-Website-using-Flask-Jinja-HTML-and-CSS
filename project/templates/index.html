@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<!--hero-->
+<section id="hero" class="section hero d-flex align-items-center">
+    <div class="container">
+        <div class="row my-4">
+            <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+                <h1>Medicine delivered to your doorstep!</h1>
+                <p>With the largest range of OTC and Prescription medicine, never struggle with your medication
+                    again with Medlife.</p>
+                <div class="d-flex">
+                    <a href="#about" class="btn btn-common btn-medicine">Get Started</a>
+                </div>
+            </div>
+            <div class="col-lg-6 order-1 order-lg-2 hero-img">
+                <img src="{{ url_for('static', filename='images/medicine sample.jpg') }}" alt="Medicine sample image">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block main %}
+
+<!--about-->
+<section id="about" class="section about">
+    <div class="container text-center p-5 bg-white">
+        <h2>About Us</h2>
+        <hr class="custom-divider">
+        </hr>
+        <div class="row my-4">
+            <div class="col-lg-6">
+                <img src="images/people-about us.png" alt="" class="img-fluid">
+            </div>
+            <div class="col-lg-6 d-flex flex-column justify-content-center text-justify">
+                    <p>At Medlife, we are revolutionizing the way people access healthcare by bringing
+                        essential medicines right to your doorstep. Our mission is to provide a seamless, reliable, and
+                        affordable medicine delivery service that prioritizes your health and convenience. With a team
+                        of dedicated professionals and an extensive network of licensed pharmacies, we ensure that every
+                        order is handled with care and delivered promptly. Whether it’s regular prescriptions or
+                        over-the-counter essentials, we are here to make healthcare more accessible for everyone, every
+                        day.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- display the cities to the user -->
+<section>
+    <div class="text-dark text-center">
+        <div>
+            <p class="h3 text-dark mb-4" id="cities_anchor">Pick a city to see what we have to offer!</p>
+        </div>
+    </div>
+    <div class="row">
+        {% for city in cities %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img class="card-img-top" src="{{ url_for('static', filename='img/' + city.image) }}" alt="Card image">
+                <div class="card-body">
+                    <h4 class="card-title">{{ city.name }}</h4>
+                    <p class="card-text">{{ city.description }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('main.citytours', cityid=city.id) }}" class="btn btn-primary">Tours</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>    
+</section>
+{% endblock %}
+
