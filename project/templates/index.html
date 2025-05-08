@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block head %}
+{% block main %}
 <!--hero-->
 <section id="hero" class="section hero d-flex align-items-center">
     <div class="container">
@@ -19,8 +19,7 @@
         </div>
     </div>
 </section>
-{% endblock %}
-{% block main %}
+
 
 <!--about-->
 <section id="about" class="section about">
@@ -30,7 +29,8 @@
         </hr>
         <div class="row my-4">
             <div class="col-lg-6">
-                <img src="images/people-about us.png" alt="" class="img-fluid">
+                <img src="{{ url_for('static', filename='images/people-about us.png') }}" 
+                alt="" class="img-fluid">
             </div>
             <div class="col-lg-6 d-flex flex-column justify-content-center text-justify">
                     <p>At Medlife, we are revolutionizing the way people access healthcare by bringing
@@ -45,29 +45,52 @@
     </div>
 </section>
 
-<!-- display the cities to the user -->
-<section>
-    <div class="text-dark text-center">
-        <div>
-            <p class="h3 text-dark mb-4" id="cities_anchor">Pick a city to see what we have to offer!</p>
-        </div>
+<!-- Services Section -->
+<section id="features" class="section services">
+    <div class="container section-title text-center text-white">
+        <h2>Services</h2>
+        <hr class="custom-divider">
+        </hr>
+        <p>Explore why you should choose us!</p>
     </div>
-    <div class="row">
-        {% for city in cities %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <img class="card-img-top" src="{{ url_for('static', filename='img/' + city.image) }}" alt="Card image">
-                <div class="card-body">
-                    <h4 class="card-title">{{ city.name }}</h4>
-                    <p class="card-text">{{ city.description }}</p>
-                </div>
-                <div class="card-footer">
-                    <a href="{{ url_for('main.citytours', cityid=city.id) }}" class="btn btn-primary">Tours</a>
+    <div class="container">
+        <div class="row">
+            {% for service in services %}
+            <div class="col-lg-3">
+                <div class="card custom-hover mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ service.title }}</h5>
+                        <p class="card-text">{{ service.description }}</p>
+                    </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>    
+    </div>
 </section>
-{% endblock %}
 
+<!-- Products Section -->
+<section id="products" class="section products">
+    <div class="container my-5">
+        <h1 class="heading text-center">Our Products</h1>
+
+        <div class="row mb-5">
+            {% for product in products %}
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-4">
+                <div class="product-item card custom-hover">
+                    <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="">
+                    <div class="card-body">
+                        <div class="row justify-content-between py-3">
+                            <a href="product_details.html" class="btn btn-primary">View Details</a>
+                            <span><strong>${{ product.price }}</strong></span>
+                        </div>
+                        <h5 class="card-title">{{ product.name }}</h5>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}
