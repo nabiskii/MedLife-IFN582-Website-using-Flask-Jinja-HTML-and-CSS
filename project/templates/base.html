@@ -19,7 +19,7 @@
         <!--navbar-->
         <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow" id="home">
             <div class="container">
-                <a class="navbar-brand" href="{{ url_for('index') }}">
+                <a class="navbar-brand" href="{{ url_for('main.index') }}">
                     <strong>Medlife.</strong>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -29,19 +29,19 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item active">
-                            <a class="nav-link" href="{{ url_for('index') }}#hero">Home</a>
+                            <a class="nav-link" href="{{ url_for('main.index') }}#hero">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('index') }}#features">Features</a>
+                            <a class="nav-link" href="{{ url_for('main.index') }}#features">Features</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('index') }}#about">About</a>
+                            <a class="nav-link" href="{{ url_for('main.index') }}#about">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('index') }}#products">Products</a>
+                            <a class="nav-link" href="{{ url_for('main.index') }}#products">Products</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('cart') }}">Cart</a>
+                            <a class="nav-link" href="{{ url_for('main.checkout') }}">Cart</a>
                         </li>
                     </ul>
                     <form class="form-inline">
