@@ -3,7 +3,8 @@ from flask_bootstrap import Bootstrap
 from flask import Flask
 from flask_mysqldb import MySQL
 from flask_login import LoginManager
-from config import Config
+
+from project.config import Config
 
 mysql = MySQL()
 login_manager = LoginManager()
