@@ -3,7 +3,8 @@ from flask_bootstrap import Bootstrap
 from flask import Flask
 from flask_mysqldb import MySQL
 from flask_login import LoginManager
-from config import Config
+
+from project.config import Config
 
 mysql = MySQL()
 login_manager = LoginManager()
@@ -33,15 +34,17 @@ def create_app():
     app.register_blueprint(views.bp, url_prefix='/')
     from . import session
 
-    with app.app_context():
-        try:
-            cur = mysql.connection.cursor()
-            cur.execute("SELECT 1")
-            cur.close()
-            print("[DB CHECK] Database is connected.")
-        except Exception as e:
-            print(f"[DB CHECK] Error connecting to database: {e}")
-            raise SystemExit("Exiting due to DB error.")
+    # --- comment database health check ---
+    # with app.app_context():
+    #     try:
+    #         cur = mysql.connection.cursor()
+    #         cur.execute("SELECT 1")
+    #         cur.close()
+    #         print("[DB CHECK] Database is connected.")
+    #     except Exception as e:
+    #         print(f"[DB CHECK] Error connecting to database: {e}")
+    #         raise SystemExit("Exiting due to DB error.")
+    #  -------------------------------------
 
     # add error handler
     @app.errorhandler(404)
