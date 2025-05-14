@@ -177,7 +177,7 @@ def index():
         }
     ]
 
-    return render_template("base.html", services=services, products=products)
+    return render_template("index.html", services=services, products=products)
 
 @bp.route("/checkout/", methods=["GET", "POST"] )
 def checkout():
