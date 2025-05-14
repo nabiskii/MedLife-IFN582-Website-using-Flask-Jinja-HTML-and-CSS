@@ -14,32 +14,7 @@
                 </div>
             </div>
             <div class="col-lg-6 order-1 order-lg-2 hero-img">
-                <img src="{{ url_for('static', filename='images/medicine sample.jpg') }}" alt="Medicine sample image">
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<!--about-->
-<section id="about" class="section about">
-    <div class="container text-center p-5 bg-white">
-        <h2>About Us</h2>
-        <hr class="custom-divider">
-        </hr>
-        <div class="row my-4">
-            <div class="col-lg-6">
-                <img src="{{ url_for('static', filename='images/people-about us.png') }}" 
-                alt="" class="img-fluid">
-            </div>
-            <div class="col-lg-6 d-flex flex-column justify-content-center text-justify">
-                    <p>At Medlife, we are revolutionizing the way people access healthcare by bringing
-                        essential medicines right to your doorstep. Our mission is to provide a seamless, reliable, and
-                        affordable medicine delivery service that prioritizes your health and convenience. With a team
-                        of dedicated professionals and an extensive network of licensed pharmacies, we ensure that every
-                        order is handled with care and delivered promptly. Whether it’s regular prescriptions or
-                        over-the-counter essentials, we are here to make healthcare more accessible for everyone, every
-                        day.</p>
+                <img src="{{ url_for('static', filename='img/medicine sample.jpg') }}" alt="Medicine sample image">
             </div>
         </div>
     </div>
@@ -69,6 +44,30 @@
     </div>
 </section>
 
+<!--about-->
+<section id="about" class="section about">
+    <div class="container text-center p-5 bg-white">
+        <h2>About Us</h2>
+        <hr class="custom-divider">
+        </hr>
+        <div class="row my-4">
+            <div class="col-lg-6">
+                <img src="{{ url_for('static', filename='img/people-about us.png') }}"
+                alt="" class="img-fluid">
+            </div>
+            <div class="col-lg-6 d-flex flex-column justify-content-center text-justify">
+                    <p>At Medlife, we are revolutionizing the way people access healthcare by bringing
+                        essential medicines right to your doorstep. Our mission is to provide a seamless, reliable, and
+                        affordable medicine delivery service that prioritizes your health and convenience. With a team
+                        of dedicated professionals and an extensive network of licensed pharmacies, we ensure that every
+                        order is handled with care and delivered promptly. Whether it’s regular prescriptions or
+                        over-the-counter essentials, we are here to make healthcare more accessible for everyone, every
+                        day.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Products Section -->
 <section id="products" class="section products">
     <div class="container my-5">
@@ -78,7 +77,7 @@
             {% for product in products %}
             <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-4">
                 <div class="product-item card custom-hover">
-                    <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="">
+                    <img src="{{ url_for('static', filename='img/' + product.image) }}" alt="">
                     <div class="card-body">
                         <div class="row justify-content-between py-3">
                             <a href="product_details.html" class="btn btn-primary">View Details</a>
@@ -90,6 +89,20 @@
             </div>
             {% endfor %}
         </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section id="newsletter" class="section newsletter">
+    <div class="container text-center text-white">
+        <h2>Claim FREE* Delivery</h2>
+        <p>Join our Newsletter to receive latest updates about products and services and a promo code for FREE
+            delivery!</p>
+        <p>*For first-time users</p>
+        <form class="form-inline justify-content-center d-inline-flex">
+            <input class="form-control mr-sm-2 px-5" type="email" placeholder="" aria-label="Email">
+            <button class="btn btn-common btn-newsletter my-2 my-sm-0" href="#!">Subscribe</button>
+        </form>
     </div>
 </section>
 
