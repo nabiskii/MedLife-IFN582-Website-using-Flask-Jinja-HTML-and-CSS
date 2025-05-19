@@ -58,7 +58,7 @@ def admin_required(f):
     return decorated_function
 
 @app.route('/')
-def home():
+def index():
     services = [
         {
             "title": "Prescription Medicine Delivery",
@@ -121,7 +121,7 @@ def home():
         }
     ]
 
-    return render_template("home.html", services=services, products=products)
+    return render_template("index.html", services=services, products=products)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
