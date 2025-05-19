@@ -79,7 +79,7 @@ def login():
             login_user(user_obj)
             return redirect(url_for('main.dashboard'))
         flash('Invalid username or password')
-    return render_template('login.html', form=form)
+    return render_template('login.html', title='Log In', form=form)
 
 # User logout route
 @bp.route('/logout')
