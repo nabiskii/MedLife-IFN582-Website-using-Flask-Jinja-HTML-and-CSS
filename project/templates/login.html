@@ -1,18 +1,42 @@
-<h2>Login</h2>
-<form action="" method="POST">
-    
-    {{ form.hidden_tag() }}
-    {{ form.username.label }} {{ form.username() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+{% extends 'base.html' %}
 
-    {{ form.password.label }} {{ form.password() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+{% block main %}
 
-    {{ form.submit() }}
+<section class="shadow-sm mb-5 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>Thank you for shopping at MedLife.</h2>
+                <p>
+                    Please provide your login details to access your private account.
+                    If you have not joined Medlife yet, please
+                    <a href="{{ url_for('main.register') }}"> register first
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="row mt-4 justify-content-center p-3">
+            <div class="col-md-6">
 
-</form>
-<a href="{{ url_for('register') }}">Register</a>
+                <h2>Login</h2>
+                <form action="" method="POST">
+
+                    {{ form.hidden_tag() }}
+                    {{ form.username.label }} {{ form.username() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+
+                    {{ form.password.label }} {{ form.password() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+
+                    {{ form.submit() }}
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

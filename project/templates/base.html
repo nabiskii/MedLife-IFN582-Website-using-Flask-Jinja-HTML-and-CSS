@@ -43,6 +43,20 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('main.checkout') }}">Cart</a>
                         </li>
+                        {% if session['user'] and session['user']['is_admin'] %}
+                        <li class="nav-item ms-2">
+                            <a class="nav-link" href="{{ url_for('main.manage') }}">Manage</a>
+                        </li>
+                        {% endif %}
+                        {% if session['user'] %}
+                        <li class="nav-item ms-2 me-2">
+                            <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item ms-2 me-2">
+                            <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
+                        </li>
+                        {% endif %}
                     </ul>
                     <form class="form-inline d-inline-flex">
                         <input class="form-control mr-sm-2" type="search" placeholder="Eg. Aspirin" aria-label="Search">

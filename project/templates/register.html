@@ -1,68 +1,92 @@
-<h2>Register</h2>
-<form method="POST">
+{% extends 'base.html' %}
 
-    {{ form.hidden_tag() }}
+{% block main %}
+<section class="shadow-sm mb-5 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>User Registry</h1>
+                <p>
+                    Welcome to Medlife! Thank you for choosing us.
+                    Please provide your details to create your account.
+                    If you already have an account, please
+                    <a href="{{ url_for('main.login') }}">login here
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="row mt-4 justify-content-center p-3">
+            <div class="col-md-6">
 
-    {{ form.username.label }} {{ form.username() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+                <h2>Register</h2>
+                <form method="POST">
 
-    {{ form.password.label }} {{ form.password() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+                    {{ form.hidden_tag() }}
 
-    {{ form.confirm_password.label }} {{ form.conform_password() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+                    {{ form.username.label }} {{ form.username() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
 
-    {{ form.first_name.label }} {{ form.first_name() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+                    {{ form.password.label }} {{ form.password() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
 
-    {{ form.surname.label }} {{ form.surname() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+                    {{ form.confirm_password.label }} {{ form.confirm_password() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
 
-    {{ form.email.label }} {{ form.email() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+                    {{ form.firstname.label }} {{ form.firstname() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
 
-    {{ form.phone.label }} {{ form.phone() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+                    {{ form.surname.label }} {{ form.surname() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
 
-    {{ form.address.label }} {{ form.address() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+                    {{ form.email.label }} {{ form.email() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
 
-    {{ form.city.label }} {{ form.city() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+                    {{ form.phone.label }} {{ form.phone() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
 
-    {{ form.state.label }} {{ form.state() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+                    {{ form.address.label }} {{ form.address() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
 
-    {{ form.country.label }} {{ form.country() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
+                    {{ form.city.label }} {{ form.city() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
 
-    {{ form.zip_code.label }} {{ form.zip_code() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
-    
-    {{ form.submit() }}
-</form>
-<a href="{{ url_for('login') }}">Login</a>
+                    {{ form.state.label }} {{ form.state() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+
+                    {{ form.country.label }} {{ form.country() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+
+                    {{ form.zip_code.label }} {{ form.zip_code() }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+
+                    {{ form.submit() }}
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,6 +1,7 @@
 
 from datetime import datetime
 
+from project import mysql
 from project.models import *
 
 DummyProduct = Product('1', 'Claratyne Allergy & Hayfever Relief',
@@ -33,6 +34,16 @@ Orders = [
 # User Info
 def get_user():
     return DummyUserInfo
+
+def get_all_user():
+    return DummyUserInfo
+
+def is_admin(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE userType = 'Admin' AND userID = %i", (user_id,))
+    row = cur.fetchone()
+    cur.close()
+    return True if row else False
 
 # Product CRUD
 def get_products():
