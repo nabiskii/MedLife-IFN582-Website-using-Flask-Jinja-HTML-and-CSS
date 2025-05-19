@@ -1,0 +1,18 @@
+<h2>Login</h2>
+<form action="" method="POST">
+    
+    {{ form.hidden_tag() }}
+    {{ form.username.label }} {{ form.username() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.password.label }} {{ form.password() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.submit() }}
+
+</form>
+<a href="{{ url_for('register') }}">Register</a>

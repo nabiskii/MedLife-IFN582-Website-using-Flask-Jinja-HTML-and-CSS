@@ -1,0 +1,68 @@
+<h2>Register</h2>
+<form method="POST">
+
+    {{ form.hidden_tag() }}
+
+    {{ form.username.label }} {{ form.username() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.password.label }} {{ form.password() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.confirm_password.label }} {{ form.conform_password() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.first_name.label }} {{ form.first_name() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.surname.label }} {{ form.surname() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.email.label }} {{ form.email() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.phone.label }} {{ form.phone() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.address.label }} {{ form.address() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.city.label }} {{ form.city() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.state.label }} {{ form.state() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.country.label }} {{ form.country() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+
+    {{ form.zip_code.label }} {{ form.zip_code() }}<br>
+    {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+    {% endfor %}
+    
+    {{ form.submit() }}
+</form>
+<a href="{{ url_for('login') }}">Login</a>
