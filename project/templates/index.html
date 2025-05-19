@@ -49,7 +49,6 @@
     <div class="container text-center p-5 bg-white">
         <h2>About Us</h2>
         <hr class="custom-divider">
-        </hr>
         <div class="row my-4">
             <div class="col-lg-6">
                 <img src="{{ url_for('static', filename='img/people-about us.png') }}"
@@ -80,7 +79,7 @@
                     <img src="{{ url_for('static', filename='img/' + product.image) }}" alt="">
                     <div class="card-body">
                         <div class="row justify-content-between py-3">
-                            <a href="product_details.html" class="btn btn-primary">View Details</a>
+                            <a href="main.index.html" class="btn btn-primary">View Details</a>
                             <span><strong>${{ product.price }}</strong></span>
                         </div>
                         <h5 class="card-title">{{ product.name }}</h5>
@@ -101,7 +100,7 @@
         <p>*For first-time users</p>
         <form class="form-inline justify-content-center d-inline-flex">
             <input class="form-control mr-sm-2 px-5" type="email" placeholder="" aria-label="Email">
-            <button class="btn btn-common btn-newsletter my-2 my-sm-0" href="#!">Subscribe</button>
+            <button type="submit" class="btn btn-common btn-newsletter my-2 my-sm-0">Subscribe</button>
         </form>
     </div>
 </section>

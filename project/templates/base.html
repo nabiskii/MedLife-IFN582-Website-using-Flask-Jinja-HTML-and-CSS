@@ -11,7 +11,7 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <title>Medicine Delivery</title>
-    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -46,7 +46,7 @@
                     </ul>
                     <form class="form-inline d-inline-flex">
                         <input class="form-control mr-sm-2" type="search" placeholder="Eg. Aspirin" aria-label="Search">
-                        <button class="btn btn-medicine my-2 my-sm-0" style=".px-2" type="submit">Search</button>
+                        <button class="btn btn-medicine my-2 my-sm-0 px-2" type="submit">Search</button>
                     </form>
                 </div>
             </div>
@@ -102,10 +102,10 @@
                     <div class="col-lg-3 me-4 my-4 custom-justify">
                         <h5>USEFUL LINKS</h5>
                         <ul class="list-unstyled">
-                            <li><a href="index.html#features">Features</a></li>
-                            <li><a href="index.html#about">About</a></li>
-                            <li><a href="index.html#products">Products</a></li>
-                            <li><a href="delivery_request.html">Cart</a></li>
+                            <li><a href="{{ url_for('main.index') }}#features">Features</a></li>
+                            <li><a href="{{ url_for('main.index') }}#about">About</a></li>
+                            <li><a href="{{ url_for('main.index') }}#products">Products</a></li>
+                            <li><a href="{{ url_for('main.checkout') }}">Cart</a></li> 
                         </ul>
                     </div>
                     <div class="col-lg-3 me-4 my-4 custom-justify">

@@ -2,31 +2,30 @@
 
 {% import 'bootstrap/form.html' as wtf %}
 
-{% block head %}
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <div class="alert alert-primary" role="alert">
-        {% for message in messages %}
-            {{ message }}
-        {% endfor %}
-        </div>
-    {% endif %}
-    {% endwith %} 
-{% endblock %}
-
 {% block main %}
-<section>  
+<section class="py-5">
     <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-primary" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                 {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %} 
+
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 text-center">
                 <h1>Checkout</h1>
                 <p>
-                    Thank you for your interest. Please provide your details so that one of our awesome tour agents can contact you to finalise details and take payment. Thank you! 
+                    We're excited to help you complete your order! <br>
+                    Please fill in your details, and one of our team members will contact you shortly to finalise everything.
                 </p>
             </div>
         </div>
-        <div class="row mt-4">
-            <div class="col-md-6">
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8 col-lg-6">
                 {{ wtf.render_form(form) }}
             </div>
         </div>
