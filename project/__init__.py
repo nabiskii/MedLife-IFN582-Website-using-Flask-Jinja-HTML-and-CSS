@@ -4,6 +4,7 @@ from flask import Flask
 from flask_mysqldb import MySQL
 from flask_login import LoginManager
 from config import Config
+import os
 
 mysql = MySQL()
 login_manager = LoginManager()
@@ -14,7 +15,7 @@ login_manager.login_view = 'main.login'
 def create_app():
     app = Flask(__name__)
     # session secret key (to be changed before submission)
-    app.secret_key = 'your_secret_key'
+    app.secret_key = os.environ.get('SECRET_KEY') or 'your_secret_key'
     # apply config
     app.config.from_object(Config)
     # debug mode is enabled (to be disabled before submission)

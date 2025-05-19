@@ -1,4 +1,3 @@
-
 class Config:
     SECRET_KEY = 'your_secret_key'
     MYSQL_HOST = '127.0.0.1'
