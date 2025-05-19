@@ -1,12 +1,105 @@
-CREATE DATABASE medlife;
+DROP DATABASE IF EXISTS IFN582_GROUP84;
 
-USE medlife;
+CREATE DATABASE IFN582_GROUP84;
 
-CREATE TABLE users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(150) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('user', 'admin') NOT NULL DEFAULT 'user'
+USE IFN582_GROUP84;
+
+CREATE TABLE customers (
+customerID INT AUTO_INCREMENT PRIMARY KEY,
+firstName VARCHAR(50) NOT NULL,
+surname VARCHAR(20) NOT NULL,
+phoneNumber VARCHAR(15),
+emailAddress VARCHAR(50) UNIQUE,
+addressLine1 VARCHAR(50) NOT NULL,
+addressLine2 VARCHAR(50) NOT NULL,
+city VARCHAR(50) NOT NULL,
+state VARCHAR(50) NOT NULL,
+postCode VARCHAR(4) NOT NULL
 );
 
-INSERT INTO users (username, password, role) VALUES ('owner', 'scrypt:32768:8:1$eJ4xPDgOsfFx7RmU$4ae65df32371b5dc37945e2068961f65287b495dc7714cc2efc9876df7787b57e3c2647ef3febbe82feeb1cbf7d248b93d54a1a2820aaf4fe3dc64a445664200', 'admin')
+CREATE TABLE suppliers (
+supplierID INT AUTO_INCREMENT PRIMARY KEY,
+supplierName VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE category (
+categoryCode VARCHAR(2) NOT NULL PRIMARY KEY,
+categoryName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE users (
+userID INT AUTO_INCREMENT PRIMARY KEY,
+userName VARCHAR(20) UNIQUE NOT NULL,
+customerID INT,
+password VARCHAR(50) NOT NULL,
+userType ENUM('Admin', 'User') NOT NULL,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+FOREIGN KEY (customerID) REFERENCES customers (customerID)
+);
+
+CREATE TABLE items (
+itemCode VARCHAR(10) PRIMARY KEY,
+itemName VARCHAR(100) NOT NULL,
+itemDescription VARCHAR(250) NOT NULL,
+itemLongDescription1 TEXT,
+itemLongDescription2 TEXT,
+unitPrice DECIMAL(10,2) NOT NULL,
+discountPrice DECIMAL(10,2),
+CHECK (discountPrice IS NULL OR discountPrice <= unitPrice),
+supplierID INT NOT NULL,
+categoryCode VARCHAR(2) NOT NULL,
+onhandQuantity INT NOT NULL,
+FOREIGN KEY (categoryCode) REFERENCES category (categoryCode),
+FOREIGN KEY (supplierID) REFERENCES suppliers (supplierID)
+);
+
+CREATE TABLE baskets (
+basketID INT AUTO_INCREMENT PRIMARY KEY,
+customerID INT NOT NULL,
+FOREIGN KEY (customerID) REFERENCES customers (customerID) ON DELETE CASCADE
+);
+
+CREATE TABLE basket_items (
+basketItemID INT AUTO_INCREMENT PRIMARY KEY,
+basketID INT NOT NULL,
+itemCode VARCHAR(10) NOT NULL,
+quantity INT DEFAULT 1,
+CHECK (quantity > 0),
+FOREIGN KEY (basketID) REFERENCES baskets (basketID) ON DELETE CASCADE,
+FOREIGN KEY (itemCode) REFERENCES items (itemCode)
+);
+
+CREATE TABLE delivery_methods (
+deliveryMethodID INT AUTO_INCREMENT PRIMARY KEY,
+deliveryMethodName VARCHAR (50) NOT NULL,
+surchargePrice DECIMAL(10,2) NOT NULL
+);
+
+CREATE TABLE orders (
+orderID INT AUTO_INCREMENT PRIMARY KEY,
+orderNumber INT NOT NULL,
+basketID INT NOT NULL,
+customerID INT NOT NULL,
+orderDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+order_status ENUM('Pending', 'Confirmed', 'Cancelled') DEFAULT 'Pending',
+deliveryMethodID INT NOT NULL,
+updatedDate DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+FOREIGN KEY (basketID) REFERENCES baskets (basketID) ON DELETE CASCADE,
+FOREIGN KEY (customerID) REFERENCES customers (customerID) ON DELETE CASCADE,
+FOREIGN KEY (deliveryMethodID) REFERENCES delivery_methods (deliveryMethodID)
+);
+
+CREATE TABLE payments (
+paymentID INT AUTO_INCREMENT PRIMARY KEY,
+paymentNumber INT NOT NULL,
+paymentMethod ENUM('Credit Card','Debit Card','After Pay'),
+payeeName VARCHAR(50) NOT NULL,
+paymentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+orderID INT NOT NULL,
+customerID INT NOT NULL,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+FOREIGN KEY (orderID) REFERENCES orders (orderID) ON DELETE CASCADE,
+FOREIGN KEY (customerID) REFERENCES customers (customerID) ON DELETE CASCADE
+);
