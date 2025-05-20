@@ -5,7 +5,7 @@ CREATE DATABASE IFN582_GROUP84;
 
 USE IFN582_GROUP84;
 
-------------------------------------------------------------------------------------------------------------------------------------------
+--CREATE-----------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE customers (
 customerID INT AUTO_INCREMENT PRIMARY KEY,
 firstName VARCHAR(50) NOT NULL,
@@ -111,14 +111,13 @@ FOREIGN KEY (orderID) REFERENCES orders (orderID) ON DELETE CASCADE,
 FOREIGN KEY (customerID) REFERENCES customers (customerID) ON DELETE CASCADE
 );
 
-------------------------------------------------------------------------------------------------------------------------------------------
--- Customers
+-- customers
 INSERT INTO customers VALUES (NULL, 'Hannah', 'Law', '0432274880', 'N12229628@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
 INSERT INTO customers VALUES (NULL, 'Luke', 'Benjapattranon', NULL, 'N12258164@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
 INSERT INTO customers VALUES (NULL, 'Elsie', 'Shim', NULL, 'N12219151@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
 INSERT INTO customers VALUES (NULL, 'Monica', 'Nunes', NULL, 'N12240672@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
 
--- Users
+-- users
 INSERT INTO users VALUES (NULL, 'SYSADMIN', NULL, '0000000000', 'Admin', DEFAULT, DEFAULT);
 INSERT INTO users VALUES (NULL, 'NABILA', NULL, '0000000000', 'Admin', DEFAULT, DEFAULT);
 INSERT INTO users VALUES (NULL, 'HANNAH', '1', '0000000000', 'User', DEFAULT, DEFAULT);
@@ -188,7 +187,7 @@ INSERT INTO payments VALUES (NULL, '91002', 'Debit Card', 'Luke Benjapattranon',
 INSERT INTO payments VALUES (NULL, '91003', 'After Pay', 'Elsie Shim', DEFAULT, '3', '3', DEFAULT, DEFAULT, DEFAULT);
 INSERT INTO payments VALUES (NULL, '91004', 'After Pay', 'Monica Nunes', DEFAULT, '4', '4', DEFAULT, DEFAULT, DEFAULT);
 
-------------------------------------------------------------------------------------------------------------------------------------------
+--READ------------------------------------------------------------------------------------------------------------------------------------
 -- customers read table
 SELECT
 	customerID AS 'Customer ID',
@@ -348,3 +347,19 @@ GROUP BY
     payments.updatedAt
 ORDER BY
 	payments.paymentNumber;
+
+--UPDATE------------------------------------------------------------------------------------------------------------------------------------------
+-- add item into baskets
+INSERT INTO basket_items VALUES (%s, %s, %s, %s)
+
+-- adjust item quantity in baskets
+UPDATE basket_items
+SET quantity = %s
+WHERE basketID = %s
+AND itemCode = %s;
+
+--DELETE------------------------------------------------------------------------------------------------------------------------------------------
+-- remove item from baskets
+DELETE FROM basket_items
+WHERE basketID = %s
+AND itemCode = %s;
