@@ -6,6 +6,16 @@ CREATE DATABASE IFN582_GROUP84;
 USE IFN582_GROUP84;
 
 --CREATE-----------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE users (
+userID INT AUTO_INCREMENT PRIMARY KEY,
+userName VARCHAR(20) UNIQUE NOT NULL,
+customerID INT,
+password VARCHAR(50) NOT NULL,
+userType ENUM('Admin', 'User') NOT NULL,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+);
+
 CREATE TABLE customers (
 customerID INT AUTO_INCREMENT PRIMARY KEY,
 userID INT NOT NULL,
@@ -18,7 +28,7 @@ addressLine2 VARCHAR(50) NOT NULL,
 city VARCHAR(50) NOT NULL,
 state VARCHAR(50) NOT NULL,
 postCode VARCHAR(4) NOT NULL
-FOREIGN KEY (userID) REFERENCES users(userID)
+FOREIGN KEY (userID) REFERENCES customers(userID)
 );
 
 CREATE TABLE suppliers (
@@ -29,17 +39,6 @@ supplierName VARCHAR(100) NOT NULL
 CREATE TABLE category (
 categoryCode VARCHAR(2) NOT NULL PRIMARY KEY,
 categoryName VARCHAR(50) NOT NULL
-);
-
-CREATE TABLE users (
-userID INT AUTO_INCREMENT PRIMARY KEY,
-userName VARCHAR(20) UNIQUE NOT NULL,
-customerID INT,
-password VARCHAR(50) NOT NULL,
-userType ENUM('Admin', 'User') NOT NULL,
-createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-FOREIGN KEY (customerID) REFERENCES customers(customerID)
 );
 
 CREATE TABLE items (
