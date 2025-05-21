@@ -31,19 +31,62 @@ Orders = [
           [])
 ]
 
-# User Info
-def get_user():
-    return DummyUserInfo
 
-def get_all_user():
-    return DummyUserInfo
+
+#  ----------- user query -------------
+def check_for_user(username):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userName = %s", (username,))
+    row = cur.fetchone()
+    cur.close()
+    if row:
+        return UserLogin(row ['userID'], row['userName'], row['password'], row['userType'])
+    return None
 
 def is_admin(user_id):
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM users WHERE userType = 'Admin' AND userID = %i", (user_id,))
+    cur.execute("SELECT * FROM users WHERE userType = 'Admin' AND userID = %s", (user_id,))
     row = cur.fetchone()
     cur.close()
     return True if row else False
+
+def get_user_by_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT userID, userName, userType FROM users WHERE userID = %s", (user_id,))
+    user = cur.fetchone()
+    cur.close()
+    return user
+
+def get_all_users():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT userID, userName, userType FROM users")
+    users = cur.fetchall()
+    cur.close()
+    return users
+
+def insert_user(username, password, user_type):
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO users (userName, password, userType) VALUES (%s, %s, %s)",
+                (username, password, user_type))
+    mysql.connection.commit()
+    cur.close()
+
+def update_user(user_id, username, user_type):
+    user_type = user_type.strip()  # Clean whitespace
+    if user_type not in ('Admin', 'User'):
+        raise ValueError(f"Invalid userType: {user_type}")
+
+    cur = mysql.connection.cursor()
+    cur.execute("UPDATE users SET userName = %s, userType = %s WHERE userID = %s",
+                (username, user_type, user_id))
+    mysql.connection.commit()
+    cur.close()
+
+def delete_from_user(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM users WHERE userID = %s", (user_id,))
+    mysql.connection.commit()
+    cur.close()
 
 # Product CRUD
 def get_products():

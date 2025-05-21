@@ -7,7 +7,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from project import mysql
 from project.forms import CheckoutForm, LoginForm, RegisterForm
-from .db import add_order, get_orders, is_admin
+from .db import *
+from .models import UserLogin
 from .session import get_basket, convert_basket_to_order, empty_basket
 from .wrapper import admin_required
 
@@ -39,12 +40,14 @@ def load_user(user_id):
 #     return render_template('index.html')
 
 # User registration route
-@bp.route('/register', methods=['GET', 'POST'])
+@bp.route('/register/', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
         username = form.username.data
         password = generate_password_hash(form.password.data)
+        # Check if the user already exists
+        user = check_for_user(form.username.data, form.password.data)
         cur = mysql.connection.cursor()
         cur.execute("SELECT id FROM users WHERE username = %s", [username])
         if cur.fetchone():
@@ -59,26 +62,22 @@ def register():
     return render_template('register.html', form=form)
 
 # User login route
-@bp.route('/login', methods=['GET', 'POST'])
+@bp.route('/login/', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT userID, password, userType FROM users WHERE userName = %s", [form.username.data])
-        user = cur.fetchone()
-        cur.close()
-        if user and check_password_hash(user[1], form.password.data):
-            user_obj = User(id=user[0], username=form.username.data, role=user[2])
-            login_user(user_obj)
+        user = check_for_user(form.username.data)
+        if user != None and check_password_hash(user.password, form.password.data):
+            # login_user(user)
 
             # Store full user info in session
+            if user.userType == 'Admin':is_admin = True;
+            else:is_admin = False;
             session['user'] = {
-                'user_id': user.info.id,
-                'firstname': user.info.firstname,
-                'surname': user.info.surname,
-                'email': user.info.email,
-                'phone': user.info.phone,
-                'is_admin': "Admin",
+                'user_id': str(user.userID),
+                'username': user.userName,
+                'user_type': user.userType,
+                'is_admin': is_admin,
                 # TODO: After write sql query change it
                 # 'is_admin': is_admin(user.info.id),
             }
@@ -91,17 +90,68 @@ def login():
 
 # User logout route
 @bp.route('/logout')
-@login_required
 def logout():
-    logout_user()
+    # logout_user()
+    session.pop('user', None)
+    session.pop('logged_in', None)
+    flash('You have been logged out.')
     return redirect(url_for('main.login'))
 
 # Dashboard for authenticated users
-@bp.route('/manage')
-@login_required
-@admin_required
+@bp.route('/manage/')
 def manage():
-    return render_template('manage.html', user=current_user)
+    # check if the user is logged in and is an admin
+    if 'user' not in session or session['user']['user_id'] == 0:
+        flash('Please log in before managing orders.', 'error')
+        return redirect(url_for('main.login'))
+    if not session['user']['is_admin']:
+        flash('You do not have permission to manage orders.', 'error')
+        return redirect(url_for('main.index'))
+    # now we know the user is logged in and is an admin
+    # we can show the manage panel
+    accounts = get_all_users()
+
+    userAccount = UserLogin(int(session['user']['user_id']), session['user']['username'], None, session['user']['user_type'])
+
+    return render_template('manage.html',  accounts=accounts, user=userAccount)
+
+
+@bp.route('/add_user', methods=['GET', 'POST'])
+@admin_required
+def add_user():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user_type = request.form['user_type']
+
+        # encrypt password
+        encrypted_password = generate_password_hash(password)
+        insert_user(username, encrypted_password, user_type)
+        flash('User added successfully.', 'success')
+        return redirect(url_for('main.manage'))
+    return render_template('manage_add_user.html')
+
+@bp.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
+@admin_required
+def edit_user(user_id):
+    user = get_user_by_id(user_id)
+    if not user:
+        flash('User not found.', 'error')
+        return redirect(url_for('main.manage'))
+    if request.method == 'POST':
+        username = request.form['username']
+        user_type = request.form['user_type']
+        update_user(user_id, username, user_type)
+        flash('User updated successfully.', 'success')
+        return redirect(url_for('main.manage'))
+    return render_template('manage_edit_user.html', user=user)
+
+@bp.route('/delete_user/<int:user_id>')
+@admin_required
+def delete_user(user_id):
+    delete_from_user(user_id)
+    flash('User deleted.', 'success')
+    return redirect(url_for('main.manage'))
 
 # Admin-only product management page
 @bp.route('/admin/products')

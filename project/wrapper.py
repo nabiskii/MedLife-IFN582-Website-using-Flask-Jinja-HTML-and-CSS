@@ -1,9 +1,7 @@
 from functools import wraps
 
-from flask import flash, redirect, url_for
+from flask import session, flash, redirect, url_for
 from flask_login import current_user
-
-from project import session
 
 
 # # Decorator for admin-only routes

@@ -24,6 +24,13 @@ class OrderStatus(Enum):
     CANCELLED = 'Cancelled'
 
 @dataclass
+class UserLogin:
+    userID: int
+    userName: str
+    password: str
+    userType: str
+
+@dataclass
 class UserInfo:
     id: str
     firstname: str
