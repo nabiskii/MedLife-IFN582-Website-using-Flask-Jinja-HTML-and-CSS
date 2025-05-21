@@ -1,17 +1,16 @@
 {% extends 'base.html' %}
 
 {% block main %}
-<div class="col-lg-6">
+<div class="container">
 
     <h1>Error 404</h1>
     <h2>
         Oooops!
     </h2>
-    <img src="{{ url_for('static', filename='img/error.png') }}"
-         alt="" class="img-fluid">
-    <p>
+            <img src="{{ url_for('static', filename='img/error404.png') }}" alt="" class="img">
+    <h5>
         Sorry, but we cannot find what you are looking for.
-    </p>
+    </h5>
 </div>
 
 {% endblock %}
