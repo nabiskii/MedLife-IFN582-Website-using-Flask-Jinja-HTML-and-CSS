@@ -8,6 +8,7 @@ USE IFN582_GROUP84;
 --CREATE-----------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE customers (
 customerID INT AUTO_INCREMENT PRIMARY KEY,
+userID INT NOT NULL,
 firstName VARCHAR(50) NOT NULL,
 surname VARCHAR(20) NOT NULL,
 phoneNumber VARCHAR(15),
@@ -17,6 +18,7 @@ addressLine2 VARCHAR(50) NOT NULL,
 city VARCHAR(50) NOT NULL,
 state VARCHAR(50) NOT NULL,
 postCode VARCHAR(4) NOT NULL
+FOREIGN KEY (userID) REFERENCES users(userID)
 );
 
 CREATE TABLE suppliers (
@@ -37,7 +39,7 @@ password VARCHAR(50) NOT NULL,
 userType ENUM('Admin', 'User') NOT NULL,
 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
 updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-FOREIGN KEY (customerID) REFERENCES customers (customerID)
+FOREIGN KEY (customerID) REFERENCES customers(customerID)
 );
 
 CREATE TABLE items (
@@ -190,18 +192,21 @@ INSERT INTO payments VALUES (NULL, '91004', 'After Pay', 'Monica Nunes', DEFAULT
 --READ------------------------------------------------------------------------------------------------------------------------------------
 -- customers read table
 SELECT
-	customerID AS 'Customer ID',
-	CONCAT(firstName, ' ', surname) AS 'Customer Name',
-    phoneNumber AS 'Phone Number',
-	emailAddress AS 'Email Address',
-	addressLine1 AS 'Address Line 1',
-	addressLine2 AS 'Address Line 2',
-	city AS 'City',
-	state AS 'State',
-	postCode AS 'Post Code'
+	customers.customerID AS 'Customer ID',
+    users.userID AS 'User ID',
+	users.userName AS 'User Name',
+	CONCAT(customers.firstName, ' ', customers.surname) AS 'Customer Name',
+    customers.phoneNumber AS 'Phone Number',
+	customers.emailAddress AS 'Email Address',
+	customers.addressLine1 AS 'Address Line 1',
+	customers.addressLine2 AS 'Address Line 2',
+	customers.city AS 'City',
+	customers.state AS 'State',
+	customers.postCode AS 'Post Code'
 FROM customers
+LEFT JOIN users ON customers.customerID = users.customerID
 ORDER BY
-	customerID;
+	customers.customerID;
 
 -- suppliers read table
 SELECT
