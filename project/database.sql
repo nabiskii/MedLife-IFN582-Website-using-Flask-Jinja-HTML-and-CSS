@@ -173,15 +173,15 @@ INSERT INTO basket_items VALUES (NULL, 3, '49217683', DEFAULT);
 INSERT INTO basket_items VALUES (NULL, 4, '72145608', DEFAULT);
 
 -- orders
-INSERT INTO orders VALUES (1, '1001', '3', '1', DEFAULT, DEFAULT, 'STANDARD', DEFAULT);
-INSERT INTO orders VALUES (2, '1002', '1', '2', DEFAULT, DEFAULT, 'ECO', DEFAULT);
-INSERT INTO orders VALUES (3, '1003', '4', '3', DEFAULT, DEFAULT, 'EXPRESS', DEFAULT);
+INSERT INTO orders VALUES (1, '1001', '3', '1', DEFAULT, 'Confirmed', 'STANDARD', DEFAULT);
+INSERT INTO orders VALUES (2, '1002', '1', '2', DEFAULT, 'Confirmed', 'ECO', DEFAULT);
+INSERT INTO orders VALUES (3, '1003', '4', '3', DEFAULT, 'Confirmed', 'EXPRESS', DEFAULT);
 INSERT INTO orders VALUES (4, '1004', '2', '4', DEFAULT, DEFAULT, 'TEMP', DEFAULT);
 
 -- payments
-INSERT INTO payments VALUES (NULL, '91001', 'Credit Card', 'Hannah Law', DEFAULT, '1', '1', DEFAULT, DEFAULT, DEFAULT);
-INSERT INTO payments VALUES (NULL, '91002', 'Debit Card', 'Luke Benjapattranon', DEFAULT, '2', '2', DEFAULT, DEFAULT, DEFAULT);
-INSERT INTO payments VALUES (NULL, '91003', 'After Pay', 'Elsie Shim', DEFAULT, '3', '3', DEFAULT, DEFAULT, DEFAULT);
+INSERT INTO payments VALUES (NULL, '91001', 'Credit Card', 'Hannah Law', DEFAULT, '1', '1', 'Confirmed', DEFAULT, DEFAULT);
+INSERT INTO payments VALUES (NULL, '91002', 'Debit Card', 'Luke Benjapattranon', DEFAULT, '2', '2', 'Confirmed', DEFAULT, DEFAULT);
+INSERT INTO payments VALUES (NULL, '91003', 'After Pay', 'Elsie Shim', DEFAULT, '3', '3', 'Confirmed', DEFAULT, DEFAULT);
 INSERT INTO payments VALUES (NULL, '91004', 'After Pay', 'Monica Nunes', DEFAULT, '4', '4', DEFAULT, DEFAULT, DEFAULT);
 
 -- READ------------------------------------------------------------------------------------------------------------------------------------
