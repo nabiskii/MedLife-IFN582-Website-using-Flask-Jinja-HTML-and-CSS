@@ -5,15 +5,14 @@ CREATE DATABASE IFN582_GROUP84;
 
 USE IFN582_GROUP84;
 
---CREATE-----------------------------------------------------------------------------------------------------------------------------------
+-- CREATE-----------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE users (
 userID INT AUTO_INCREMENT PRIMARY KEY,
 userName VARCHAR(20) UNIQUE NOT NULL,
-customerID INT,
 password VARCHAR(50) NOT NULL,
 userType ENUM('Admin', 'User') NOT NULL,
 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE customers (
@@ -27,8 +26,8 @@ addressLine1 VARCHAR(50) NOT NULL,
 addressLine2 VARCHAR(50) NOT NULL,
 city VARCHAR(50) NOT NULL,
 state VARCHAR(50) NOT NULL,
-postCode VARCHAR(4) NOT NULL
-FOREIGN KEY (userID) REFERENCES customers(userID)
+postCode VARCHAR(4) NOT NULL,
+FOREIGN KEY (userID) REFERENCES users(userID)
 );
 
 CREATE TABLE suppliers (
@@ -53,7 +52,7 @@ CHECK (discountPrice IS NULL OR discountPrice <= unitPrice),
 supplierID INT NOT NULL,
 categoryCode VARCHAR(2) NOT NULL,
 onhandQuantity INT NOT NULL,
-imagePath VARCHAR(255),
+imageURL VARCHAR(255),
 FOREIGN KEY (categoryCode) REFERENCES category (categoryCode),
 FOREIGN KEY (supplierID) REFERENCES suppliers (supplierID)
 );
@@ -61,9 +60,6 @@ FOREIGN KEY (supplierID) REFERENCES suppliers (supplierID)
 CREATE TABLE baskets (
 basketID INT AUTO_INCREMENT PRIMARY KEY,
 customerID INT NOT NULL,
-promotionCode VARCHAR(15),
-discountAmount DECIMAL(10,2),
-CHECK (promotionCode IS NULL OR discountAmount IS NOT NULL),
 FOREIGN KEY (customerID) REFERENCES customers (customerID) ON DELETE CASCADE
 );
 
@@ -85,7 +81,7 @@ surchargePrice DECIMAL(10,2) NOT NULL
 
 CREATE TABLE orders (
 orderID INT AUTO_INCREMENT PRIMARY KEY,
-orderNumber INT NOT NULL,
+orderNumber INT NOT NULL UNIQUE,
 basketID INT NOT NULL,
 customerID INT NOT NULL,
 orderDate DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -99,7 +95,7 @@ FOREIGN KEY (deliveryMethodCode) REFERENCES delivery_methods (deliveryMethodCode
 
 CREATE TABLE payments (
 paymentID INT AUTO_INCREMENT PRIMARY KEY,
-paymentNumber INT NOT NULL,
+paymentNumber INT NOT NULL UNIQUE,
 paymentMethod ENUM('Credit Card','Debit Card','After Pay'),
 payeeName VARCHAR(50) NOT NULL,
 paymentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -112,19 +108,19 @@ FOREIGN KEY (orderID) REFERENCES orders (orderID) ON DELETE CASCADE,
 FOREIGN KEY (customerID) REFERENCES customers (customerID) ON DELETE CASCADE
 );
 
--- customers
-INSERT INTO customers VALUES (NULL, 'Hannah', 'Law', '0432274880', 'N12229628@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
-INSERT INTO customers VALUES (NULL, 'Luke', 'Benjapattranon', NULL, 'N12258164@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
-INSERT INTO customers VALUES (NULL, 'Elsie', 'Shim', NULL, 'N12219151@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
-INSERT INTO customers VALUES (NULL, 'Monica', 'Nunes', NULL, 'N12240672@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
-
 -- users
-INSERT INTO users VALUES (NULL, 'SYSADMIN', NULL, '0000000000', 'Admin', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'NABILA', NULL, '0000000000', 'Admin', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'HANNAH', '1', '0000000000', 'User', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'LUKE', '2', '0000000000', 'User', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'ELSIE','3', '0000000000', 'User', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'MONICA', '4', '0000000000', 'User', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'SYSADMIN', '0000000000', 'Admin', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'NABILA', '0000000000', 'Admin', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'HANNAH', '0000000000', 'User', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'LUKE', '0000000000', 'User', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'ELSIE', '0000000000', 'User', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'MONICA', '0000000000', 'User', DEFAULT, DEFAULT);
+
+-- customers
+INSERT INTO customers VALUES (NULL, '3', 'Hannah', 'Law', '0432274880', 'N12229628@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
+INSERT INTO customers VALUES (NULL, '4', 'Luke', 'Benjapattranon', NULL, 'N12258164@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
+INSERT INTO customers VALUES (NULL, '5', 'Elsie', 'Shim', NULL, 'N12219151@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
+INSERT INTO customers VALUES (NULL, '6', 'Monica', 'Nunes', NULL, 'N12240672@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
 
 -- suppliers
 INSERT INTO suppliers VALUES (NULL, 'Gardens Point Medical Inc.');
@@ -160,10 +156,10 @@ INSERT INTO delivery_methods VALUES ('EXPRESS', 'Express Delivery', '15.00');
 INSERT INTO delivery_methods VALUES ('TEMP', 'Temperature-Controlled Delivery', '25.00');
 
 -- baskets
-INSERT INTO baskets VALUES (NULL, '2', NULL, NULL);
-INSERT INTO baskets VALUES (NULL, '4', 'SAVE5NOWMAY', '5.00');
-INSERT INTO baskets VALUES (NULL, '1', 'SAVE5NOWMAY', '5.00');
-INSERT INTO baskets VALUES (NULL, '3', NULL, NULL);
+INSERT INTO baskets VALUES (NULL, '2');
+INSERT INTO baskets VALUES (NULL, '4');
+INSERT INTO baskets VALUES (NULL, '1');
+INSERT INTO baskets VALUES (NULL, '3');
 
 -- basket_items
 INSERT INTO basket_items VALUES (NULL, 1, '13982406', DEFAULT);
@@ -188,7 +184,7 @@ INSERT INTO payments VALUES (NULL, '91002', 'Debit Card', 'Luke Benjapattranon',
 INSERT INTO payments VALUES (NULL, '91003', 'After Pay', 'Elsie Shim', DEFAULT, '3', '3', DEFAULT, DEFAULT, DEFAULT);
 INSERT INTO payments VALUES (NULL, '91004', 'After Pay', 'Monica Nunes', DEFAULT, '4', '4', DEFAULT, DEFAULT, DEFAULT);
 
---READ------------------------------------------------------------------------------------------------------------------------------------
+-- READ------------------------------------------------------------------------------------------------------------------------------------
 -- customers read table
 SELECT
 	customers.customerID AS 'Customer ID',
@@ -203,7 +199,7 @@ SELECT
 	customers.state AS 'State',
 	customers.postCode AS 'Post Code'
 FROM customers
-LEFT JOIN users ON customers.customerID = users.customerID
+LEFT JOIN users ON customers.userID = users.userID
 ORDER BY
 	customers.customerID;
 
@@ -226,13 +222,13 @@ ORDER BY
 SELECT
 	users.userID AS 'User ID',
 	users.userName AS 'User Name',
-	users.customerID AS 'Customer ID',
+	customers.customerID AS 'Customer ID',
     CONCAT(customers.firstName, ' ', customers.surname) AS 'Customer Name',
 	users.userType AS 'User Type',
 	users.createdAt AS 'Creation Date & Time',
 	users.updatedAt AS 'Updated Date & Time'
 FROM users
-LEFT JOIN customers ON customers.customerID = users.customerID
+LEFT JOIN customers ON customers.userID = users.userID
 ORDER BY
 	users.userID;
 
@@ -248,7 +244,7 @@ SELECT
     category.categoryName AS 'Category Name',
     suppliers.supplierName AS 'Supplier Name',
 	items.onhandQuantity AS 'Onhand Quantity',
-	items.imagePath AS 'Image'
+	items.imageURL AS 'Image'
 FROM items
 LEFT JOIN 
 	(category, suppliers) ON (category.categoryCode = items.categoryCode
@@ -290,16 +286,13 @@ SELECT
     COUNT(DISTINCT basket_items.itemCode) AS 'Item Count',
     SUM(basket_items.quantity) AS 'Order Quantity',
     SUM(basket_items.quantity * IFNULL(items.discountPrice, items.unitPrice)) AS 'Order Amount',
-	baskets.promotionCode AS 'Promotion Code',
-	baskets.discountAmount AS 'Discount Amount',
     delivery_methods.deliveryMethodName AS 'Delivery Method',
     delivery_methods.surchargePrice AS 'Delivery Fee',
-	SUM(basket_items.quantity * IFNULL(items.discountPrice, items.unitPrice)) + delivery_methods.surchargePrice - IFNULL(baskets.discountAmount, 0) AS 'Order Total Amount',
+	SUM(basket_items.quantity * IFNULL(items.discountPrice, items.unitPrice)) + delivery_methods.surchargePrice AS 'Order Total Amount',
 	orders.updatedDate AS 'Updated Date & Time'
 FROM orders
 LEFT JOIN 
-	(baskets, basket_items, customers, delivery_methods, items) ON (baskets.basketID = orders.basketID
-    AND basket_items.basketID = orders.basketID
+	(basket_items, customers, delivery_methods, items) ON (basket_items.basketID = orders.basketID
 	AND customers.customerID = orders.customerID
 	AND delivery_methods.deliveryMethodCode = orders.deliveryMethodCode
     AND items.itemCode = basket_items.itemCode)
@@ -323,16 +316,15 @@ SELECT
 	payments.payeeName AS 'Payee Name',
 	payments.paymentDate AS 'Payment Date & Time',
 	orders.orderNumber AS 'Order Number',
-	SUM(basket_items.quantity * IFNULL(items.discountPrice, items.unitPrice)) + delivery_methods.surchargePrice - IFNULL(baskets.discountAmount, 0) AS 'Payment Amount',
+	SUM(basket_items.quantity * IFNULL(items.discountPrice, items.unitPrice)) + delivery_methods.surchargePrice AS 'Payment Amount',
     CONCAT(customers.firstName, ' ', customers.surname) AS 'Customer Name',
 	payments.paymentStatus AS 'Payment Status',
 	payments.createdAt AS 'Creation Date & Time',
 	payments.updatedAt AS 'Updated Date & Time'
 FROM payments
 JOIN 
-	(orders, customers, baskets, basket_items, items, delivery_methods) ON (orders.orderID = payments.orderID
+	(orders, customers, basket_items, items, delivery_methods) ON (orders.orderID = payments.orderID
 	AND customers.customerID = payments.customerID
-	AND baskets.customerID = payments.customerID
     AND basket_items.basketID = orders.basketID
     AND items.itemCode = basket_items.itemCode
     AND delivery_methods.deliveryMethodCode = orders.deliveryMethodCode)
@@ -343,7 +335,6 @@ GROUP BY
     payments.paymentDate,
     orders.orderNumber,
     delivery_methods.surchargePrice,
-    baskets.discountAmount,
     customers.firstName,
     customers.surname,
     payments.paymentStatus,
@@ -352,18 +343,32 @@ GROUP BY
 ORDER BY
 	payments.paymentNumber;
 
---UPDATE------------------------------------------------------------------------------------------------------------------------------------------
--- add item into baskets
-INSERT INTO basket_items VALUES (%s, %s, %s, %s)
+-- UPDATE & DELETE-----------------------------------------------------------------------------------------------------------------------------------
+-- (customers) add item into baskets
+INSERT INTO basket_items (itemCode, quantity) VALUES (%s, %s);
 
--- adjust item quantity in baskets
+-- (customers) adjust item quantity in baskets
 UPDATE basket_items
 SET quantity = %s
 WHERE basketID = %s
 AND itemCode = %s;
 
---DELETE------------------------------------------------------------------------------------------------------------------------------------------
--- remove item from baskets
+-- (customers) remove item from baskets
 DELETE FROM basket_items
 WHERE basketID = %s
 AND itemCode = %s;
+
+-- admin (items)
+INSERT INTO items (itemCode, itemName, itemDescription, itemLongDescription1, itemLongDescription2, unitPrice, discountPrice, supplierID, categoryCode, onhandQuantity, imageURL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+UPDATE items SET unitPirce = %s, discountPrice = %s WHERE itemCode = %s;
+DELETE FROM items WHERE itemCode = %s;
+
+-- admin (category)
+INSERT INTO category (categoryCode, categoryName) VALUES (%s, %s);
+UPDATE category SET categoryCode = %s, categoryName = %s WHERE categoryCode = %s;
+DELETE FROM category WHERE categoryCode = %s;
+
+-- admin (orders)
+INSERT INTO orders -- what should admin add into the order
+UPDATE orders SET (orderStatus) VALUES (%s);
+DELETE FROM orders WHERE orderNumber = %s;
