@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime
+from email.policy import default
 from enum import Enum
 from typing import List
 
@@ -22,6 +23,19 @@ class OrderStatus(Enum):
     PENDING = 'Pending'
     CONFIRMED = 'Confirmed'
     CANCELLED = 'Cancelled'
+
+class DeliveryMethod(Enum):
+    STANDARD = 'STANDARD'
+    ECO = 'ECO'
+    EXPRESS = 'EXPRESS'
+    TEMP = 'TEMP'
+
+@dataclass
+class UserLogin:
+    userID: int
+    userName: str
+    password: str
+    userType: str
 
 @dataclass
 class UserInfo:
@@ -80,7 +94,7 @@ class Basket:
 
 
 @dataclass
-class Order:
+class DummyOrder:
     id: str
     status: OrderStatus
     user: UserInfo
@@ -89,5 +103,38 @@ class Order:
         default_factory=list,
         init=True)
     date: datetime = field(
+        default_factory=lambda: datetime.now(),
+        init=True)
+
+
+# --- Dataclasses (Models) ---
+@dataclass
+class Item:
+    itemCode: str
+    itemName: str
+    itemDescription: str
+    itemLongDescription1: str
+    itemLongDescription2: str
+    unitPrice: float
+    discountPrice : float
+    supplierID : int
+    categoryCode : str
+    onhandQuantity: int
+    imageURL: str = field(default = 'no-img.jpg')
+
+@dataclass
+class Category:
+    categoryCode: str
+    categoryName: str
+
+@dataclass
+class Order:
+    orderID: int
+    orderNumber: int
+    basketID: int
+    customerID: int
+    orderStatus: OrderStatus
+    deliveryMethodCode : DeliveryMethod
+    orderDate: datetime = field(
         default_factory=lambda: datetime.now(),
         init=True)

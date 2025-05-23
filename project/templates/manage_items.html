@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h3>Manage Items</h3>
+<a href="{{ url_for('main.add_item') }}" class="btn btn-success mb-2">Add Item</a>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Item Code</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.itemCode }}</td>
+        <td>{{ item.itemName }}</td>
+        <td>{{ item.unitPrice }}</td>
+        <td>{{ item.onhandQuantity }}</td>
+        <td>
+            <a href="{{ url_for('main.edit_item', code=item.itemCode) }}" class="btn btn-primary btn-sm">Edit</a>
+            <a href="{{ url_for('main.delete_item', code=item.itemCode) }}" class="btn btn-danger btn-sm">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<p><a href="{{ url_for('main.manage') }}">Back to manage page</a></p>
+<p><a href="{{ url_for('main.logout') }}">Logout</a></p>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h3>Manage Orders</h3>
+<a href="{{ url_for('main.add_order') }}" class="btn btn-success mb-2">Add Order</a>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Order Number</th>
+        <th>Status</th>
+        <th>Customer ID</th>
+        <th>Delivery Method</th>
+        <th>Total Amount</th>
+        <th>Date</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.orderID }}</td>
+        <td>{{ order.orderStatus }}</td>
+        <td>{{ order.customerID }}</td>
+        <td>{{ order.deliveryMethodCode }}</td>
+        <td>{{ order.orderTotalAmount }}</td>
+        <td>{{ order.orderDate }}</td>
+        <td>
+            <a href="{{ url_for('main.edit_order', order_id=order.orderID) }}" class="btn btn-primary btn-sm">Edit</a>
+            <a href="{{ url_for('main.delete_order', order_id=order.orderID) }}" class="btn btn-danger btn-sm">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<p><a href="{{ url_for('main.manage') }}">Back to manage page</a></p>
+<p><a href="{{ url_for('main.logout') }}">Logout</a></p>
+{% endblock %}

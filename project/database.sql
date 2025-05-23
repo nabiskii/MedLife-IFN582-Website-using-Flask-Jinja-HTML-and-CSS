@@ -10,7 +10,7 @@ USE IFN582_GROUP84;
 CREATE TABLE users (
 userID INT AUTO_INCREMENT PRIMARY KEY,
 userName VARCHAR(20) UNIQUE NOT NULL,
-password VARCHAR(50) NOT NULL,
+password VARCHAR(80) NOT NULL,
 userType ENUM('Admin', 'User') NOT NULL,
 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
 updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -78,17 +78,17 @@ FOREIGN KEY (deliveryMethodCode) REFERENCES delivery_methods (deliveryMethodCode
 
 CREATE TABLE subscription (
 subscriptionID INT AUTO_INCREMENT PRIMARY KEY,
-emailAddress VARCHAR NOT NULL,
-createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+emailAddress VARCHAR(50) NOT NULL,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- users
-INSERT INTO users VALUES (NULL, 'SYSADMIN', '0000000000', 'Admin', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'NABILA', '0000000000', 'Admin', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'HANNAH', '0000000000', 'User', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'LUKE', '0000000000', 'User', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'ELSIE', '0000000000', 'User', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'MONICA', '0000000000', 'User', DEFAULT, DEFAULT);
+-- users (Default password = test1234)
+INSERT INTO users VALUES (NULL, 'SYSADMIN', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'Admin', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'NABILA', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'Admin', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'HANNAH', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'LUKE', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'ELSIE', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'MONICA', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
 
 -- customers
 INSERT INTO customers VALUES (NULL, '3', 'Hannah', 'Law', '0432274880', 'N12229628@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
@@ -106,22 +106,22 @@ INSERT INTO category VALUES ('MU', 'Makeup');
 INSERT INTO category VALUES ('SC', 'Skincare');
 
 -- items
-INSERT INTO items VALUES ('38762059', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 10 pack', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 10 pack', NULL, NULL, '13.99', '9.50', '1', 'MD', '100', NULL);
-INSERT INTO items VALUES ('13982406', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 80 pack', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 80 pack', NULL, NULL, '33.99', NULL, '1', 'MD', '100', NULL);
-INSERT INTO items VALUES ('72145608', 'CeraVe Skin Renewing Night Cream 48g', 'CeraVe Skin Renewing Night Cream 48g', NULL, NULL, '41.50', '28.69', '2', 'SC', '100', NULL);
-INSERT INTO items VALUES ('21458930', 'CeraVe Skin Renewing Night Cream 100g', 'CeraVe Skin Renewing Night Cream 100g', NULL, NULL, '79.99', NULL, '2', 'SC', '100', NULL);
-INSERT INTO items VALUES ('26873194', 'CeraVe Moisturising Cream 170g', 'CeraVe Moisturising Cream 170g', NULL, NULL, '16.00', '11.19', '2', 'SC', '100', NULL);
-INSERT INTO items VALUES ('36790128', 'CeraVe Moisturising Cream 454g', 'CeraVe Moisturising Cream 454g', NULL, NULL, '25.99', NULL, '2', 'SC', '100', NULL);
-INSERT INTO items VALUES ('94018536', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Mint', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Mint', NULL, NULL, '11.99', '10.99', '1', 'MD', '100', NULL);
-INSERT INTO items VALUES ('90871245', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Watermelon', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Watermelon', NULL, NULL, '11.99', '10.99', '1', 'MD', '100', NULL);
-INSERT INTO items VALUES ('62846620', 'Maybelline Fit Me True-to-tone Blush - Rose', 'Maybelline Fit Me True-to-tone Blush - Rose', NULL, NULL, '9.49', '8.99', '2', 'MU', '100', NULL);
-INSERT INTO items VALUES ('85623014', 'Maybelline Fit Me True-to-tone Blush - Coral', 'Maybelline Fit Me True-to-tone Blush - Coral', NULL, NULL, '9.49', '8.99', '2', 'MU', '100', NULL);
-INSERT INTO items VALUES ('80439217', 'Maybelline Lasting Fix Setting Loose Powder', 'Maybelline Lasting Fix Setting Loose Powder', NULL, NULL, '9.99', '9.49', '2', 'MU', '100', NULL);
-INSERT INTO items VALUES ('60381297', 'Maybelline Lasting Fix Loose Translucent Setting Powder', 'Maybelline Lasting Fix Loose Translucent Setting Powder', NULL, NULL, '9.99', NULL, '2', 'MU', '100', NULL);
-INSERT INTO items VALUES ('17530942', 'Nurofen Zavance 96 Tablets', 'Nurofen Zavance 96 Tablets', NULL, NULL, '28.99', '20.99', '1', 'MD', '100', NULL);
-INSERT INTO items VALUES ('74023185', 'Nurofen Zavance 96 Caplets', 'Nurofen Zavance 96 Caplets', NULL, NULL, '28.99', '20.99', '1', 'MD', '100', NULL);
-INSERT INTO items VALUES ('58219437', 'Panadol Rapid 48 Caplets', 'Panadol Rapid 48 Caplets', NULL, NULL, '11.99', NULL, '1', 'MD', '100', NULL);
-INSERT INTO items VALUES ('49217683', 'Panadol Rapid 48 Tablets', 'Panadol Rapid 48 Tablets', NULL, NULL, '8.99', NULL, '1', 'MD', '100', NULL);
+INSERT INTO items VALUES ('38762059', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 10 pack', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 10 pack', NULL, NULL, '13.99', '9.50', '1', 'MD', '100', 'antihistamine.jpg');
+INSERT INTO items VALUES ('13982406', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 80 pack', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 80 pack', NULL, NULL, '33.99', NULL, '1', 'MD', '100', 'antihistamine.jpg');
+INSERT INTO items VALUES ('72145608', 'CeraVe Skin Renewing Night Cream 48g', 'CeraVe Skin Renewing Night Cream 48g', NULL, NULL, '41.50', '28.69', '2', 'SC', '100', 'cerave night cream.jpg');
+INSERT INTO items VALUES ('21458930', 'CeraVe Skin Renewing Night Cream 100g', 'CeraVe Skin Renewing Night Cream 100g', NULL, NULL, '79.99', NULL, '2', 'SC', '100', 'cerave night cream.jpg');
+INSERT INTO items VALUES ('26873194', 'CeraVe Moisturising Cream 170g', 'CeraVe Moisturising Cream 170g', NULL, NULL, '16.00', '11.19', '2', 'SC', '100', 'cerave cream.jpg');
+INSERT INTO items VALUES ('36790128', 'CeraVe Moisturising Cream 454g', 'CeraVe Moisturising Cream 454g', NULL, NULL, '25.99', NULL, '2', 'SC', '100', 'cerave cream.jpg');
+INSERT INTO items VALUES ('94018536', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Mint', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Mint', NULL, NULL, '11.99', '10.99', '1', 'MD', '100', 'sore throat.jpg');
+INSERT INTO items VALUES ('90871245', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Watermelon', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Watermelon', NULL, NULL, '11.99', '10.99', '1', 'MD', '100', 'sore throat.jpg');
+INSERT INTO items VALUES ('62846620', 'Maybelline Fit Me True-to-tone Blush - Rose', 'Maybelline Fit Me True-to-tone Blush - Rose', NULL, NULL, '9.49', '8.99', '2', 'MU', '100', 'maybelline blush.jpg');
+INSERT INTO items VALUES ('85623014', 'Maybelline Fit Me True-to-tone Blush - Coral', 'Maybelline Fit Me True-to-tone Blush - Coral', NULL, NULL, '9.49', '8.99', '2', 'MU', '100', 'maybelline blush.jpg');
+INSERT INTO items VALUES ('80439217', 'Maybelline Lasting Fix Setting Loose Powder', 'Maybelline Lasting Fix Setting Loose Powder', NULL, NULL, '9.99', '9.49', '2', 'MU', '100', 'maybelline powder.jpg');
+INSERT INTO items VALUES ('60381297', 'Maybelline Lasting Fix Loose Translucent Setting Powder', 'Maybelline Lasting Fix Loose Translucent Setting Powder', NULL, NULL, '9.99', NULL, '2', 'MU', '100', 'maybelline powder.jpg');
+INSERT INTO items VALUES ('17530942', 'Nurofen Zavance 96 Tablets', 'Nurofen Zavance 96 Tablets', NULL, NULL, '28.99', '20.99', '1', 'MD', '100', 'ibuprofen.jpg');
+INSERT INTO items VALUES ('74023185', 'Nurofen Zavance 96 Caplets', 'Nurofen Zavance 96 Caplets', NULL, NULL, '28.99', '20.99', '1', 'MD', '100', 'ibuprofen.jpg');
+INSERT INTO items VALUES ('58219437', 'Panadol Rapid 48 Caplets', 'Panadol Rapid 48 Caplets', NULL, NULL, '11.99', NULL, '1', 'MD', '100', 'panadol.jpg');
+INSERT INTO items VALUES ('49217683', 'Panadol Rapid 48 Tablets', 'Panadol Rapid 48 Tablets', NULL, NULL, '8.99', NULL, '1', 'MD', '100', 'panadol.jpg');
 
 -- delivery_methods
 INSERT INTO delivery_methods VALUES ('STANDARD', 'Standard Delivery', '5.00');
