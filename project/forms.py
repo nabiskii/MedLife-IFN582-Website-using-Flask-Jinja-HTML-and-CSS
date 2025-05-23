@@ -4,13 +4,13 @@ from wtforms.validators import DataRequired, Length, InputRequired, email, Equal
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=150)])
-    password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm', message='Passwords must match')])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), Length(min=8)])
+    password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm_password', message='Passwords must match')])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), Length(min=5)])
     submit = SubmitField('Register')
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=150)])
-    password = PasswordField('Password', validators=[DataRequired(),Length(min=8)])
+    password = PasswordField('Password', validators=[DataRequired(),Length(min=5)])
     submit = SubmitField('Login')
 
 # form used in basket

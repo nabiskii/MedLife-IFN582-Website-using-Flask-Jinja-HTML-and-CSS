@@ -13,6 +13,8 @@ login_manager.login_view = 'main.login'
 
 # define a function to create a Flask app
 def create_app():
+    # create a Flask app instance
+    app = Flask(__name__)
 
     # MySQL configurations
     app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER')
@@ -21,8 +23,6 @@ def create_app():
     app.config['MYSQL_HOST'] = os.environ.get('MYSQL_HOST')
     app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
-    # create a Flask app instance
-    app = Flask(__name__)
     # session secret key (to be changed before submission)
     app.secret_key = os.environ.get('SECRET_KEY') or 'your_secret_key'
     # apply config
@@ -39,7 +39,7 @@ def create_app():
 
     from . import views
     # app.register_blueprint(views.bp)
-    app.register_blueprint(views.bp, url_prefix='/')
+    app.register_blueprint(views.bp)
 
     from . import session
 

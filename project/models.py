@@ -35,14 +35,15 @@ class Category:
 
 @dataclass
 class Item:
-    code: str
+    id: str
     name: str
+    description: str
     description1: str
     description2: int
-    image: str
     unitprice: float
     category: Category
     quantity: int
+    supplier: str
     imagepath: str
 
 @dataclass
@@ -73,7 +74,7 @@ class BasketItem:
 
     def total_price(self):
         """Calculate the total price for this basket item."""
-        return self.product.price * self.quantity
+        return self.item.unitprice * self.quantity
 
     def increment_quantity(self):
         """Increment the quantity of this basket item."""
@@ -86,8 +87,11 @@ class BasketItem:
 
 @dataclass
 class Basket:
-    items: List[BasketItem] = field(
-        default_factory=lambda: [])
+    items: List[BasketItem] = field(default_factory=lambda: [])
+
+    def __len__(self):
+        """Get the number of items in the basket."""
+        return len(self.items)
 
     def add_item(self, item: BasketItem):
         """Add a tour to the basket."""
@@ -115,13 +119,9 @@ class Basket:
 
 @dataclass
 class Order:
-    number: int
-    status: OrderStatus
-    customer: CustomerInfo
+    id: int
+    deliverycode: DeliveryMethod
     total_cost: float = 0.0
     items: List[BasketItem] = field(
         default_factory=list,
-        init=True)
-    date: datetime = field(
-        default_factory=lambda: datetime.now(),
         init=True)

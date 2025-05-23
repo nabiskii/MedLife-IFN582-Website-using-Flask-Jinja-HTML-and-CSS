@@ -19,7 +19,7 @@
             <div class="col-md-6">
 
                 <h2>Register</h2>
-                <form method="POST">
+                <form action="" method="POST">
 
                     {{ form.hidden_tag() }}
 
@@ -33,11 +33,15 @@
                     <span style="color: red;">{{ error }}</span>
                     {% endfor %}
 
-                    {{ form.confirm_password.label }} {{ form.conform_password() }}<br>
+                    {{ form.confirm_password.label }} {{ form.confirm_password() }}<br>
                     {% for error in form.username.errors %}
-                        <span style="color: red;">{{ error }}</span>
+                    <span style="color: red;">{{ error }}</span>
                     {% endfor %}
-                    
+
                     {{ form.submit() }}
-</form>
-<a href="{{ url_for('login') }}">Login</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

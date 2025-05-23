@@ -11,7 +11,7 @@ def is_admin(username):
     cur.execute("SELECT * FROM users WHERE userName = %s", (username,))
     user = cur.fetchone()
     cur.close()
-    if user and user[3] == 'admin':
+    if user and user['userType'] == 'admin':
         return True
     return False
 
@@ -35,10 +35,10 @@ def get_user_by_login(username, password):
     cur.close()
     if user:
         return UserAccount(
-            id = user[0],
-            username=user[1],
-            password=user[2],
-            role=user[3]
+            id=user['userID'],
+            username=user['userName'],
+            password=user['password'],
+            role=user['userType']
         )
     return None
 
@@ -50,10 +50,10 @@ def get_user_by_id(user_id):
     cur.close()
     if user:
         return UserAccount(
-            id=user[0],
-            username=user[1],
-            password=user[2],
-            role=user[3]
+            id=user['userID'],
+            username=user['userName'],
+            password=user['password'],
+            role=user['userType']
         )
     return None
 
@@ -73,7 +73,7 @@ def check_customer_exists(userID):
     cur.close()
     return customer is not None
 
-def add_cutomer(form):
+def add_customer(form):
     """Add a new customer."""
     cur = mysql.connection.cursor()
     cur.execute("""
@@ -88,8 +88,21 @@ def add_cutomer(form):
                       form.city.data,
                       form.state.data,
                       form.postcode.data))
+    
+    cust_id = cur.lastrowid
     mysql.connection.commit()
     cur.close()
+    return cust_id
+
+def get_customer_id(userID):
+    """Get a customer ID by userID."""
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT customerID FROM customers WHERE userID = %s", (userID,))
+    customer = cur.fetchone()
+    cur.close()
+    if customer:
+        return customer['customerID']
+    return None
 
 
 # item CRUD
@@ -106,11 +119,12 @@ def get_items():
                 category.categoryName AS 'Category Name',
                 suppliers.supplierName AS 'Supplier Name',
                 items.onhandQuantity AS 'Onhand Quantity',
-                items.imagePath AS 'Image'
+                items.imageURL AS 'Image'
             FROM items
             LEFT JOIN 
-                (category, suppliers) ON (category.categoryCode = items.categoryCode
-                AND suppliers.supplierID = items.supplierID)
+                category ON category.categoryCode = items.categoryCode
+            LEFT JOIN 
+                suppliers ON suppliers.supplierID = items.supplierID
             ORDER BY
                 items.itemName;
                 """)
@@ -133,6 +147,44 @@ def get_item(item_id):
     cur = mysql.connection.cursor()
     cur.execute("""
                 SELECT items.itemCode AS 'Item Code',
+                    items.itemName AS 'Item Name',
+                    items.itemDescription AS 'Item Description',
+                    items.itemLongDescription1 AS 'Instruction',
+                    items.itemLongDescription2 AS 'Ingredients',
+                    items.unitPrice AS 'Unit Price',
+                    category.categoryName AS 'Category Name',
+                    suppliers.supplierName AS 'Supplier Name',
+                    items.onhandQuantity AS 'Onhand Quantity',
+                    items.imageURL AS 'Image'
+                FROM 
+                    items
+                LEFT JOIN 
+                    category ON category.categoryCode = items.categoryCode
+                LEFT JOIN 
+                    suppliers ON suppliers.supplierID = items.supplierID
+                WHERE 
+                    items.itemCode = %s
+                ORDER BY 
+                    items.itemName;
+                """, (item_id,))
+    item = cur.fetchone()
+    cur.close()
+    return Item(str(item['Item Code']),
+                item['Item Name'],
+                item['Item Description'],
+                item['Instruction'],
+                item['Ingredients'],
+                item['Unit Price'],
+                item['Category Name'],
+                item['Supplier Name'],
+                item['Onhand Quantity'],
+                item['Image'])
+
+def get_items_by_category(category):
+    """Get items by category."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                SELECT items.itemCode AS 'Item Code',
                 items.itemName AS 'Item Name',
                 items.itemDescription AS 'Item Description',
                 items.itemLongDescription1 AS 'Instruction',
@@ -141,18 +193,19 @@ def get_item(item_id):
                 category.categoryName AS 'Category Name',
                 suppliers.supplierName AS 'Supplier Name',
                 items.onhandQuantity AS 'Onhand Quantity',
-                items.imagePath AS 'Image'
+                items.imageURL AS 'Image'
             FROM items
-            WHERE items.itemCode = %s
             LEFT JOIN 
-                (category, suppliers) ON (category.categoryCode = items.categoryCode
-                AND suppliers.supplierID = items.supplierID)
+                category ON category.categoryCode = items.categoryCode
+            LEFT JOIN 
+                suppliers ON suppliers.supplierID = items.supplierID
+            WHERE category.categoryCode = %s
             ORDER BY
                 items.itemName;
-                """, (item_id,))
-    item = cur.fetchone()
+                """, (category,))
+    items = cur.fetchall()
     cur.close()
-    return Item(str(item['Item Code']),
+    return [Item(str(item['Item Code']),
                  item['Item Name'],
                  item['Item Description'],
                  item['Instruction'],
@@ -161,7 +214,44 @@ def get_item(item_id):
                  item['Category Name'],
                  item['Supplier Name'],
                  item['Onhand Quantity'],
-                 item['Image'])
+                 item['Image']) for item in items]
+
+def search_items(search):
+    """Search for items by name."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                SELECT items.itemCode AS 'Item Code',
+                items.itemName AS 'Item Name',
+                items.itemDescription AS 'Item Description',
+                items.itemLongDescription1 AS 'Instruction',
+                items.itemLongDescription2 AS 'Ingredients',
+                items.unitPrice AS 'Unit Price',
+                category.categoryName AS 'Category Name',
+                suppliers.supplierName AS 'Supplier Name',
+                items.onhandQuantity AS 'Onhand Quantity',
+                items.imageURL AS 'Image'
+            FROM items
+            LEFT JOIN 
+                category ON category.categoryCode = items.categoryCode
+            LEFT JOIN 
+                suppliers ON suppliers.supplierID = items.supplierID
+            WHERE items.itemName LIKE %s OR items.itemDescription LIKE %s
+            OR items.itemLongDescription1 LIKE %s OR items.itemLongDescription2 LIKE %s
+            ORDER BY
+                items.itemName;
+                """, ('%' + search + '%', '%' + search + '%', '%' + search + '%', '%' + search + '%'))
+    items = cur.fetchall()
+    cur.close()
+    return [Item(str(item['Item Code']),
+                 item['Item Name'],
+                 item['Item Description'],
+                 item['Instruction'],
+                 item['Ingredients'],
+                 item['Unit Price'],
+                 item['Category Name'],
+                 item['Supplier Name'],
+                 item['Onhand Quantity'],
+                 item['Image']) for item in items]
 
 def add_item(item):
     """Add a new item."""
@@ -169,18 +259,18 @@ def add_item(item):
     cur.execute("""
                 INSERT INTO items (itemCode, itemName, itemDescription,
                 itemLongDescription1, itemLongDescription2, unitPrice,
-                categoryCode, supplierID, onhandQuantity, imagePath)
+                categoryCode, supplierID, onhandQuantity, imageURL)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """, (item.id,
-                      item.name,
-                      item.description,
-                      item.instruction,
-                      item.ingredients,
-                      item.price,
-                      item.category,
-                      item.supplier,
-                      item.onhand_quantity,
-                      item.image))
+                """,(item.id,
+                    item.name,
+                    item.description,
+                    item.instruction,
+                    item.ingredients,
+                    item.price,
+                    item.category,
+                    item.supplier,
+                    item.onhand_quantity,
+                    item.image))
     mysql.connection.commit()
     cur.close()
 
@@ -198,33 +288,61 @@ def remove_item(item_id):
             if Item[id].code == item_id:
                 Item.pop(id)
 
+#  ----------- category query -------------
+def get_all_categories():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT DISTINCT * FROM category")
+    categories = cur.fetchall()
+    cur.close()
+    return [Category(
+        code=categories['categoryCode'],
+        name=categories['categoryName']) for categories in categories]
+
+
 #  Orders CRUD
 def get_orders():
-    """Get all orders."""
+    """Get all orders.
     return Orders
+    """
 
 def get_order(order_id):
-    """Get an order by its ID."""
+    """Get an order by its ID.
     order_id = str(order_id)
     for order in Orders:
         if order.id == order_id:
             return order
     return None  # or raise an exception if preferred
+"""
 
-def add_order(order):
+def add_order(order, customer_id):
     """Add a new order."""
-    Orders.append(order)
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                INSERT INTO orders (orderID, customerID, deliveryCode, totalCost, orderDate)
+                VALUES (%s, %s, %s, %s)
+                """, (order.id,
+                      customer_id,
+                      order.deliverycode,
+                      order.total_cost,
+                      datetime.now()))
+    
+    order_id = cur.lastrowid
+    mysql.connection.commit()
+    cur.close()
+    return order_id
 
 def update_order(order_id, udt_order):
-    """Update a order by its ID."""
+    """Update a order by its ID.
     order_id = str(order_id)
     for id in range(0, len(Orders)):
         if Orders[id].id == order_id:
             Orders[id] = udt_order
+            """
 
 def remove_order(order_id):
-        """Remove a order by its ID."""
+        """Remove a order by its ID.
         for id in range(0, len(Orders)):
             if Orders[id].id == order_id:
                 Orders.pop(id)
+                """
 

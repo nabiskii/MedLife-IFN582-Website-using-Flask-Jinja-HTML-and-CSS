@@ -41,7 +41,7 @@
                             <a class="nav-link" href="{{ url_for('main.index') }}#products">Products</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('main.checkout') }}">Cart</a>
+                            <a class="nav-link" href="{{ url_for('main.order') }}">Cart</a>
                         </li>
                         {% if session['user'] and session['user']['is_admin'] %}
                         <li class="nav-item ms-2">
@@ -58,14 +58,25 @@
                         </li>
                         {% endif %}
                     </ul>
-                    <form class="form-inline d-inline-flex">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Eg. Aspirin" aria-label="Search">
+                    <form class="form-inline d-inline-flex" method="get">
+                        <input class="form-control mr-sm-2" name="search" type="search" placeholder="Eg. Aspirin" aria-label="Search">
                         <button class="btn btn-medicine my-2 my-sm-0 px-2" type="submit">Search</button>
                     </form>
                 </div>
             </div>
         </nav>
-        
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash-message alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
         {% block head %}
         {% endblock %}
     </header>
@@ -119,7 +130,7 @@
                             <li><a href="{{ url_for('main.index') }}#features">Features</a></li>
                             <li><a href="{{ url_for('main.index') }}#about">About</a></li>
                             <li><a href="{{ url_for('main.index') }}#products">Products</a></li>
-                            <li><a href="{{ url_for('main.checkout') }}">Cart</a></li> 
+                            <li><a href="{{ url_for('main.checkout') }}">Cart</a></li>
                         </ul>
                     </div>
                     <div class="col-lg-3 me-4 my-4 custom-justify">
@@ -151,7 +162,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-    
+
 </body>
 
 </html>
