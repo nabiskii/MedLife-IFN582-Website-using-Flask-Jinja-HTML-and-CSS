@@ -6,7 +6,7 @@ CREATE DATABASE IFN582_GROUP84;
 USE IFN582_GROUP84;
 
 -- CREATE-----------------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE users (
+/*CREATE TABLE users (
 userID INT AUTO_INCREMENT PRIMARY KEY,
 userName VARCHAR(20) UNIQUE NOT NULL,
 password VARCHAR(50) NOT NULL,
@@ -107,6 +107,77 @@ updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 FOREIGN KEY (orderID) REFERENCES orders (orderID) ON DELETE CASCADE,
 FOREIGN KEY (customerID) REFERENCES customers (customerID) ON DELETE CASCADE
 );
+*/
+
+-- updated on 23 May 2025
+CREATE TABLE users (
+userID INT AUTO_INCREMENT PRIMARY KEY,
+userName VARCHAR(20) UNIQUE NOT NULL,
+password VARCHAR(50) NOT NULL,
+userType ENUM('Admin', 'User') NOT NULL,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE customers (
+customerID INT AUTO_INCREMENT PRIMARY KEY,
+userID INT NOT NULL,
+firstName VARCHAR(50) NOT NULL,
+surname VARCHAR(20) NOT NULL,
+phoneNumber VARCHAR(15),
+emailAddress VARCHAR(50) UNIQUE,
+addressLine1 VARCHAR(50) NOT NULL,
+addressLine2 VARCHAR(50) NOT NULL,
+city VARCHAR(50) NOT NULL,
+state VARCHAR(50) NOT NULL,
+zipCode VARCHAR(4) NOT NULL,
+FOREIGN KEY (userID) REFERENCES users(userID)
+);
+
+CREATE TABLE suppliers (
+supplierID INT AUTO_INCREMENT PRIMARY KEY,
+supplierName VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE category (
+categoryCode VARCHAR(2) NOT NULL PRIMARY KEY,
+categoryName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE items (
+itemCode VARCHAR(10) PRIMARY KEY,
+itemName VARCHAR(100) NOT NULL,
+itemDescription VARCHAR(250) NOT NULL,
+itemLongDescription1 TEXT,
+itemLongDescription2 TEXT,
+unitPrice DECIMAL(10,2) NOT NULL,
+discountPrice DECIMAL(10,2),
+CHECK (discountPrice IS NULL OR discountPrice <= unitPrice),
+supplierID INT NOT NULL,
+categoryCode VARCHAR(2) NOT NULL,
+onhandQuantity INT NOT NULL,
+imageURL VARCHAR(255),
+FOREIGN KEY (categoryCode) REFERENCES category (categoryCode),
+FOREIGN KEY (supplierID) REFERENCES suppliers (supplierID)
+);
+
+CREATE TABLE delivery_methods (
+deliveryMethodCode ENUM('STANDARD', 'ECO', 'EXPRESS', 'TEMP') PRIMARY KEY,
+deliveryMethodName VARCHAR (50) NOT NULL,
+surchargePrice DECIMAL(10,2) NOT NULL
+);
+
+CREATE TABLE orders (
+orderID INT AUTO_INCREMENT PRIMARY KEY,
+customerID INT NOT NULL,
+orderDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+orderStatus ENUM('Pending', 'Confirmed', 'Cancelled') DEFAULT 'Pending',
+deliveryMethodCode ENUM('STANDARD', 'ECO', 'EXPRESS', 'TEMP') NOT NULL,
+orderTotalAmount DECIMAL(10,2) NOT NULL,
+updatedDate DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+FOREIGN KEY (customerID) REFERENCES customers (customerID) ON DELETE CASCADE,
+FOREIGN KEY (deliveryMethodCode) REFERENCES delivery_methods (deliveryMethodCode)
+);
 
 -- users
 INSERT INTO users VALUES (NULL, 'SYSADMIN', '0000000000', 'Admin', DEFAULT, DEFAULT);
@@ -154,29 +225,6 @@ INSERT INTO delivery_methods VALUES ('STANDARD', 'Standard Delivery', '5.00');
 INSERT INTO delivery_methods VALUES ('ECO', 'Eco-Friendly Delivery', '8.00');
 INSERT INTO delivery_methods VALUES ('EXPRESS', 'Express Delivery', '15.00');
 INSERT INTO delivery_methods VALUES ('TEMP', 'Temperature-Controlled Delivery', '25.00');
-
--- baskets
-INSERT INTO baskets VALUES (NULL, '2');
-INSERT INTO baskets VALUES (NULL, '4');
-INSERT INTO baskets VALUES (NULL, '1');
-INSERT INTO baskets VALUES (NULL, '3');
-
--- basket_items
-INSERT INTO basket_items VALUES (NULL, 1, '13982406', DEFAULT);
-INSERT INTO basket_items VALUES (NULL, 1, '94018536', 2);
-INSERT INTO basket_items VALUES (NULL, 2, '80439217', DEFAULT);
-INSERT INTO basket_items VALUES (NULL, 2, '17530942', DEFAULT);
-INSERT INTO basket_items VALUES (NULL, 2, '58219437', 3);
-INSERT INTO basket_items VALUES (NULL, 3, '74023185', DEFAULT);
-INSERT INTO basket_items VALUES (NULL, 3, '60381297', DEFAULT);
-INSERT INTO basket_items VALUES (NULL, 3, '49217683', DEFAULT);
-INSERT INTO basket_items VALUES (NULL, 4, '72145608', DEFAULT);
-
--- orders
-INSERT INTO orders VALUES (1, '1001', '3', '1', DEFAULT, 'Confirmed', 'STANDARD', DEFAULT);
-INSERT INTO orders VALUES (2, '1002', '1', '2', DEFAULT, 'Confirmed', 'ECO', DEFAULT);
-INSERT INTO orders VALUES (3, '1003', '4', '3', DEFAULT, 'Confirmed', 'EXPRESS', DEFAULT);
-INSERT INTO orders VALUES (4, '1004', '2', '4', DEFAULT, DEFAULT, 'TEMP', DEFAULT);
 
 -- payments
 INSERT INTO payments VALUES (NULL, '91001', 'Credit Card', 'Hannah Law', DEFAULT, '1', '1', 'Confirmed', DEFAULT, DEFAULT);
