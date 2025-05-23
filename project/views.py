@@ -244,6 +244,32 @@ def manage_orders():
     orders = db.get_all_orders()
     return render_template('manage_orders.html', orders=orders)
 
+@bp.route('/add_order', methods=['GET', 'POST'])
+@admin_required
+def add_order():
+    form = AddOrderForm()
+
+    # Populate dropdowns
+    customers = db.get_all_customers()
+    baskets = db.get_all_baskets()
+    methods = db.get_all_delivery_methods()
+
+    form.customerID.choices = [(c['customerID'], f"{c['firstName']} {c['surname']}") for c in customers]
+    form.basketID.choices = [(b['basketID'], f"Basket #{b['basketID']} (Customer {b['customerID']})") for b in baskets]
+    form.deliveryMethodCode.choices = [(m['deliveryMethodCode'], m['deliveryMethodName']) for m in methods]
+
+    if form.validate_on_submit():
+        db.add_order_admin(
+            form.orderNo.data,
+            form.customerID.data,
+            form.basketID.data,
+            form.deliveryMethodCode.data
+        )
+        flash("Order successfully added!", "success")
+        return redirect(url_for('main.manage_orders'))
+
+    return render_template("manage_add_order.html", add_order_form=form)
+
 @bp.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 @admin_required
 def edit_order(order_id):

@@ -172,6 +172,13 @@ def get_order_by_id(order_id):
     cur.close()
     return order
 
+def add_order_admin(orderNo, customerID, basketID, deliveryMethodCode):
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO orders (orderNumber, customerID, basketID, deliveryMethodCode) VALUES (%s, %s, %s, %s)", (orderNo, customerID, basketID, deliveryMethodCode))
+    mysql.connection.commit()
+    cur.close()
+
+
 def update_order_status(order_id, status):
     cur = mysql.connection.cursor()
     cur.execute("UPDATE orders SET orderStatus = %s WHERE orderID = %s", (status, order_id))
@@ -193,6 +200,13 @@ def get_all_suppliers():
     return suppliers
 
 #  ----------- baskets query -------------
+def get_all_baskets():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM baskets")
+    baskets = cur.fetchall()
+    cur.close()
+    return baskets
+
 def item_is_in_baskets(item_code):
     cur = mysql.connection.cursor()
     cur.execute(
@@ -205,6 +219,23 @@ def item_is_in_baskets(item_code):
         return False
     cur.close()
     return True
+
+#  ----------- customers query -------------
+def get_all_customers():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM customers")
+    customers = cur.fetchall()
+    cur.close()
+    return customers
+
+#  ----------- delivery method query -------------
+def get_all_delivery_methods():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM delivery_methods")
+    methods = cur.fetchall()
+    cur.close()
+    return methods
+
 # Product CRUD
 def get_products():
     """Get all products."""

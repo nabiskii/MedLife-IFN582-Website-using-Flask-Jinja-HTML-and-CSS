@@ -66,6 +66,13 @@ class EditCategoryForm(FlaskForm):
     submit = SubmitField('Update Category')
 
 # --- ORDER FORM ---
+class AddOrderForm(FlaskForm):
+    orderNo = IntegerField('Order Number', validators=[DataRequired(), NumberRange(min=0)])
+    customerID = SelectField('Customer', coerce=int, validators=[DataRequired()])
+    basketID = SelectField('Basket', coerce=int, validators=[DataRequired()])
+    deliveryMethodCode = SelectField('Delivery Method', validators=[DataRequired()])
+    submit = SubmitField('Create Order')
+
 class EditOrderForm(FlaskForm):
     orderStatus = SelectField('Order Status', choices=[
         ('Pending', 'Pending'),
