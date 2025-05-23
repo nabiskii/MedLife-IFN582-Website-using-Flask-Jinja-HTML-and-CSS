@@ -34,9 +34,9 @@ Orders = [
 
 
 #  ----------- user query -------------
-def check_for_user(username):
+def check_for_user(username, hash_password):
     cur = mysql.connection.cursor()
-    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userName = %s", (username,))
+    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userName = %s AND password = %s", (username, hash_password))
     row = cur.fetchone()
     cur.close()
     if row:

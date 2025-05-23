@@ -1,11 +1,8 @@
 from functools import wraps
+from hashlib import sha256
 
 from flask import *
-from flask_login import UserMixin, current_user, login_user, login_required, logout_user
-from . import mysql, login_manager
-from werkzeug.security import check_password_hash, generate_password_hash
 
-from project import mysql
 from project.forms import CheckoutForm, LoginForm, RegisterForm
 from .db import *
 from .models import UserLogin
@@ -13,25 +10,6 @@ from .session import get_basket, convert_basket_to_order, empty_basket
 from .wrapper import admin_required
 
 bp = Blueprint('main', __name__)
-
-# ***init session management***
-
-class User(UserMixin):
-    def __init__(self, id, username, role):
-        self.id = id
-        self.username = username
-        self.role = role
-
-# Load user object from user ID (used by Flask-Login)
-@login_manager.user_loader
-def load_user(user_id):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT id, username, role FROM users WHERE id = %s", [user_id])
-    user = cur.fetchone()
-    cur.close()
-    if user:
-        return User(id=user[0], username=user[1], role=user[2])
-    return None
 
 
 # # Home page
@@ -45,7 +23,7 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         username = form.username.data
-        password = generate_password_hash(form.password.data)
+        password = sha256(form.password.data.encode()).hexdigest()
         # Check if the user already exists
         user = check_for_user(form.username.data, form.password.data)
         cur = mysql.connection.cursor()
@@ -66,9 +44,8 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = check_for_user(form.username.data)
-        if user != None and check_password_hash(user.password, form.password.data):
-            # login_user(user)
+        user = check_for_user(form.username.data, sha256(form.password.data.encode()).hexdigest())
+        if user != None:
 
             # Store full user info in session
             if user.userType == 'Admin':is_admin = True;
@@ -78,8 +55,6 @@ def login():
                 'username': user.userName,
                 'user_type': user.userType,
                 'is_admin': is_admin,
-                # TODO: After write sql query change it
-                # 'is_admin': is_admin(user.info.id),
             }
             session['logged_in'] = True
             flash('Login successful!')
@@ -99,24 +74,22 @@ def logout():
 
 # Dashboard for authenticated users
 @bp.route('/manage/')
+@admin_required
 def manage():
-    # check if the user is logged in and is an admin
-    if 'user' not in session or session['user']['user_id'] == 0:
-        flash('Please log in before managing orders.', 'error')
-        return redirect(url_for('main.login'))
-    if not session['user']['is_admin']:
-        flash('You do not have permission to manage orders.', 'error')
-        return redirect(url_for('main.index'))
-    # now we know the user is logged in and is an admin
-    # we can show the manage panel
-    accounts = get_all_users()
 
     userAccount = UserLogin(int(session['user']['user_id']), session['user']['username'], None, session['user']['user_type'])
 
-    return render_template('manage.html',  accounts=accounts, user=userAccount)
+    return render_template('manage.html',  user=userAccount)
 
+# Admin-only product management page
+@bp.route('/manage/users')
+@admin_required
+def manage_users():
+    accounts = get_all_users()
 
-@bp.route('/add_user', methods=['GET', 'POST'])
+    return render_template('manage_users.html' ,accounts=accounts,)
+
+@bp.route('/manage/add_user', methods=['GET', 'POST'])
 @admin_required
 def add_user():
     if request.method == 'POST':
@@ -125,13 +98,13 @@ def add_user():
         user_type = request.form['user_type']
 
         # encrypt password
-        encrypted_password = generate_password_hash(password)
+        encrypted_password = sha256(password.encode()).hexdigest()
         insert_user(username, encrypted_password, user_type)
         flash('User added successfully.', 'success')
         return redirect(url_for('main.manage'))
     return render_template('manage_add_user.html')
 
-@bp.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
+@bp.route('/manage/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @admin_required
 def edit_user(user_id):
     user = get_user_by_id(user_id)
@@ -146,7 +119,7 @@ def edit_user(user_id):
         return redirect(url_for('main.manage'))
     return render_template('manage_edit_user.html', user=user)
 
-@bp.route('/delete_user/<int:user_id>')
+@bp.route('/manage/delete_user/<int:user_id>')
 @admin_required
 def delete_user(user_id):
     delete_from_user(user_id)
@@ -154,21 +127,21 @@ def delete_user(user_id):
     return redirect(url_for('main.manage'))
 
 # Admin-only product management page
-@bp.route('/admin/products')
+@bp.route('/manage/products')
 @admin_required
-def admin_products():
+def manage_products():
     return "Admin-only product management page."
 
 # Admin-only category management page
-@bp.route('/admin/categories')
+@bp.route('/manage/categories')
 @admin_required
-def admin_categories():
+def manage_categories():
     return "Admin-only category management page."
 
 # Admin-only order management page
-@bp.route('/admin/orders')
+@bp.route('/manage/orders')
 @admin_required
-def admin_orders():
+def manage_orders():
     return "Admin-only order management page."
 
 # ***init page navigation***
