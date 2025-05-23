@@ -8,8 +8,13 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from project import mysql
 from project.forms import CheckoutForm, LoginForm, RegisterForm
+<<<<<<< HEAD
 from .db import *
+=======
+from .db import add_order, get_orders, is_admin
+>>>>>>> main
 from .session import get_basket, convert_basket_to_order, empty_basket
+from .wrapper import admin_required
 
 bp = Blueprint('main', __name__)
 
@@ -37,14 +42,6 @@ def load_user(user_id):
     user = get_user_by_id(user_id)
     return User(user.id, user.username, user.role) if user else None
 
-# Decorator for admin-only routes
-def admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or current_user.role != 'admin':
-            return "Access Denied: Admins only", 403
-        return f(*args, **kwargs)
-    return decorated_function
 
 # User registration route
 @bp.route('/register', methods=['GET', 'POST'])
@@ -74,6 +71,7 @@ def register():
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+<<<<<<< HEAD
     if request.method == 'POST':
         if form.validate_on_submit():
             username = form.username.data
@@ -96,6 +94,34 @@ def login():
             return redirect(url_for('main.dashboard') if session['is_admin'] else url_for('main.index'))
         
         return render_template('login.html', title='Log In', form=form)
+=======
+    if form.validate_on_submit():
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT userID, password, userType FROM users WHERE userName = %s", [form.username.data])
+        user = cur.fetchone()
+        cur.close()
+        if user and check_password_hash(user[1], form.password.data):
+            user_obj = User(id=user[0], username=form.username.data, role=user[2])
+            login_user(user_obj)
+
+            # Store full user info in session
+            session['user'] = {
+                'user_id': user.info.id,
+                'firstname': user.info.firstname,
+                'surname': user.info.surname,
+                'email': user.info.email,
+                'phone': user.info.phone,
+                'is_admin': "Admin",
+                # TODO: After write sql query change it
+                # 'is_admin': is_admin(user.info.id),
+            }
+            session['logged_in'] = True
+            flash('Login successful!')
+
+            return redirect(url_for('main.index'))
+        flash('Invalid username or password')
+    return render_template('login.html', title='Log In', form=form)
+>>>>>>> main
 
 # User logout route
 @bp.route('/logout')
@@ -105,10 +131,11 @@ def logout():
     return redirect(url_for('main.login'))
 
 # Dashboard for authenticated users
-@bp.route('/dashboard')
+@bp.route('/manage')
 @login_required
-def dashboard():
-    return render_template('dashboard.html', user=current_user)
+@admin_required
+def manage():
+    return render_template('manage.html', user=current_user)
 
 # Admin-only product management page
 @bp.route('/admin/products')
