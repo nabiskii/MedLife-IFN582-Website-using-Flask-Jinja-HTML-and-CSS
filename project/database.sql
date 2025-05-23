@@ -76,6 +76,12 @@ FOREIGN KEY (customerID) REFERENCES customers (customerID) ON DELETE CASCADE,
 FOREIGN KEY (deliveryMethodCode) REFERENCES delivery_methods (deliveryMethodCode)
 );
 
+CREATE TABLE subscription (
+subscriptionID INT AUTO_INCREMENT PRIMARY KEY,
+emailAddress VARCHAR NOT NULL,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+);
+
 -- users
 INSERT INTO users VALUES (NULL, 'SYSADMIN', '0000000000', 'Admin', DEFAULT, DEFAULT);
 INSERT INTO users VALUES (NULL, 'NABILA', '0000000000', 'Admin', DEFAULT, DEFAULT);
