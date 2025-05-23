@@ -76,20 +76,6 @@ FOREIGN KEY (customerID) REFERENCES customers (customerID) ON DELETE CASCADE,
 FOREIGN KEY (deliveryMethodCode) REFERENCES delivery_methods (deliveryMethodCode)
 );
 
-CREATE TABLE payments (
-paymentID INT AUTO_INCREMENT PRIMARY KEY,
-paymentMethod ENUM('Credit Card','Debit Card','After Pay'),
-payeeName VARCHAR(50) NOT NULL,
-paymentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-orderID INT NOT NULL,
-customerID INT NOT NULL,
-paymentStatus ENUM('Pending', 'Confirmed', 'Cancelled') DEFAULT 'Pending',
-createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-FOREIGN KEY (orderID) REFERENCES orders (orderID) ON DELETE CASCADE,
-FOREIGN KEY (customerID) REFERENCES customers (customerID) ON DELETE CASCADE
-);
-
 -- users
 INSERT INTO users VALUES (NULL, 'SYSADMIN', '0000000000', 'Admin', DEFAULT, DEFAULT);
 INSERT INTO users VALUES (NULL, 'NABILA', '0000000000', 'Admin', DEFAULT, DEFAULT);
