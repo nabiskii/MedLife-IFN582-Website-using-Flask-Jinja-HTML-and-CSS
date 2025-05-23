@@ -78,8 +78,8 @@ FOREIGN KEY (deliveryMethodCode) REFERENCES delivery_methods (deliveryMethodCode
 
 CREATE TABLE subscription (
 subscriptionID INT AUTO_INCREMENT PRIMARY KEY,
-emailAddress VARCHAR NOT NULL,
-createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+emailAddress VARCHAR(50) NOT NULL,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- users (Default password = test1234)

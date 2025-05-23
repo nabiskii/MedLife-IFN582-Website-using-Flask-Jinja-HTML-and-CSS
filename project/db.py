@@ -178,7 +178,7 @@ def delete_category(code):
 #  ----------- order query -------------
 def get_all_orders():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT orderID, orderNumber, orderStatus, customerID, orderDate FROM orders")
+    cur.execute("SELECT * FROM orders")
     orders = cur.fetchall()
     cur.close()
     return orders
@@ -190,9 +190,9 @@ def get_order_by_id(order_id):
     cur.close()
     return order
 
-def add_order_admin(orderNo, customerID, basketID, deliveryMethodCode):
+def add_order_admin(customerID, deliveryMethodCode, orderTotalAmount):
     cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO orders (orderNumber, customerID, basketID, deliveryMethodCode) VALUES (%s, %s, %s, %s)", (orderNo, customerID, basketID, deliveryMethodCode))
+    cur.execute("INSERT INTO orders (customerID, deliveryMethodCode, orderTotalAmount) VALUES (%s, %s, %s)", (customerID, deliveryMethodCode, orderTotalAmount))
     mysql.connection.commit()
     cur.close()
 
@@ -216,27 +216,6 @@ def get_all_suppliers():
     suppliers = cur.fetchall()
     cur.close()
     return suppliers
-
-#  ----------- baskets query -------------
-def get_all_baskets():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM baskets")
-    baskets = cur.fetchall()
-    cur.close()
-    return baskets
-
-def item_is_in_baskets(item_code):
-    cur = mysql.connection.cursor()
-    cur.execute(
-        "SELECT COUNT(*) FROM basket_items WHERE itemCode = %s",
-        (item_code,)
-    )
-    result = cur.fetchone()
-    if result is None:
-        cur.close()
-        return False
-    cur.close()
-    return True
 
 #  ----------- customers query -------------
 def get_all_customers():

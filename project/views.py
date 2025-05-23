@@ -187,10 +187,6 @@ def edit_item(code):
 @bp.route('/delete_item/<code>')
 @admin_required
 def delete_item(code):
-    if db.item_is_in_baskets(code):
-        flash('Cannot delete item; it is added to user baskets.', 'danger')
-        return redirect(url_for('main.manage_items'))
-
     db.delete_item(code)
     flash('Item deleted successfully.', 'success')
     return redirect(url_for('main.manage_items'))
@@ -251,19 +247,17 @@ def add_order():
 
     # Populate dropdowns
     customers = db.get_all_customers()
-    baskets = db.get_all_baskets()
     methods = db.get_all_delivery_methods()
 
     form.customerID.choices = [(c['customerID'], f"{c['firstName']} {c['surname']}") for c in customers]
-    form.basketID.choices = [(b['basketID'], f"Basket #{b['basketID']} (Customer {b['customerID']})") for b in baskets]
     form.deliveryMethodCode.choices = [(m['deliveryMethodCode'], m['deliveryMethodName']) for m in methods]
 
     if form.validate_on_submit():
         db.add_order_admin(
-            form.orderNo.data,
+
             form.customerID.data,
-            form.basketID.data,
-            form.deliveryMethodCode.data
+            form.deliveryMethodCode.data,
+            form.orderTotalAmount.data,
         )
         flash("Order successfully added!", "success")
         return redirect(url_for('main.manage_orders'))

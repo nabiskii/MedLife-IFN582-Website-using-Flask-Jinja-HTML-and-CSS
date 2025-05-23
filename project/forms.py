@@ -67,10 +67,9 @@ class EditCategoryForm(FlaskForm):
 
 # --- ORDER FORM ---
 class AddOrderForm(FlaskForm):
-    orderNo = IntegerField('Order Number', validators=[DataRequired(), NumberRange(min=0)])
     customerID = SelectField('Customer', coerce=int, validators=[DataRequired()])
-    basketID = SelectField('Basket', coerce=int, validators=[DataRequired()])
     deliveryMethodCode = SelectField('Delivery Method', validators=[DataRequired()])
+    orderTotalAmount = DecimalField('Order Total Amount', places=2, validators=[DataRequired()])
     submit = SubmitField('Create Order')
 
 class EditOrderForm(FlaskForm):

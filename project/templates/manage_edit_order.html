@@ -4,7 +4,7 @@
   <div class="card mb-4">
     <div class="card-header">Update Order Status</div>
     <div class="card-body">
-      <h4>Order Number: {{order.orderNumber}}</h4>
+      <h4>Order Number: {{order.orderID}}</h4>
       <form method="POST" action="{{ url_for('main.edit_order', order_id=order_id) }}">
         {{ wtf.render_form(edit_order_form) }}
       </form>

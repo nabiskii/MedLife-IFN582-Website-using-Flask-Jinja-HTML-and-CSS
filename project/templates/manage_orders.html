@@ -9,6 +9,8 @@
         <th>Order Number</th>
         <th>Status</th>
         <th>Customer ID</th>
+        <th>Delivery Method</th>
+        <th>Total Amount</th>
         <th>Date</th>
         <th>Actions</th>
     </tr>
@@ -16,9 +18,11 @@
     <tbody>
     {% for order in orders %}
     <tr>
-        <td>{{ order.orderNumber }}</td>
+        <td>{{ order.orderID }}</td>
         <td>{{ order.orderStatus }}</td>
         <td>{{ order.customerID }}</td>
+        <td>{{ order.deliveryMethodCode }}</td>
+        <td>{{ order.orderTotalAmount }}</td>
         <td>{{ order.orderDate }}</td>
         <td>
             <a href="{{ url_for('main.edit_order', order_id=order.orderID) }}" class="btn btn-primary btn-sm">Edit</a>
