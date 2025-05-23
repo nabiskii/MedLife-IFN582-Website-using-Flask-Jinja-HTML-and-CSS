@@ -52,16 +52,16 @@
         <div class="row my-4">
             <div class="col-lg-6">
                 <img src="{{ url_for('static', filename='img/people-about us.png') }}"
-                alt="" class="img-fluid">
+                     alt="" class="img-fluid">
             </div>
             <div class="col-lg-6 d-flex flex-column justify-content-center text-justify">
-                    <p>At Medlife, we are revolutionizing the way people access healthcare by bringing
-                        essential medicines right to your doorstep. Our mission is to provide a seamless, reliable, and
-                        affordable medicine delivery service that prioritizes your health and convenience. With a team
-                        of dedicated professionals and an extensive network of licensed pharmacies, we ensure that every
-                        order is handled with care and delivered promptly. Whether it’s regular prescriptions or
-                        over-the-counter essentials, we are here to make healthcare more accessible for everyone, every
-                        day.</p>
+                <p>At Medlife, we are revolutionizing the way people access healthcare by bringing
+                    essential medicines right to your doorstep. Our mission is to provide a seamless, reliable, and
+                    affordable medicine delivery service that prioritizes your health and convenience. With a team
+                    of dedicated professionals and an extensive network of licensed pharmacies, we ensure that every
+                    order is handled with care and delivered promptly. Whether it’s regular prescriptions or
+                    over-the-counter essentials, we are here to make healthcare more accessible for everyone, every
+                    day.</p>
             </div>
         </div>
     </div>
@@ -98,8 +98,9 @@
         <p>Join our Newsletter to receive latest updates about products and services and a promo code for FREE
             delivery!</p>
         <p>*For first-time users</p>
-        <form class="form-inline justify-content-center d-inline-flex">
-            <input class="form-control mr-sm-2 px-5" type="email" placeholder="" aria-label="Email">
+        <form class="form-inline justify-content-center d-inline-flex" method="POST"
+              action="{{ url_for('main.subscribe') }}">
+            <input class="form-control mr-sm-2 px-5" type="email" name="email" required placeholder="Enter your email">
             <button type="submit" class="btn btn-common btn-newsletter my-2 my-sm-0">Subscribe</button>
         </form>
     </div>

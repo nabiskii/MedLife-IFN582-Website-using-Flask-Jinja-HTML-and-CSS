@@ -233,6 +233,13 @@ def get_all_delivery_methods():
     cur.close()
     return methods
 
+#  ----------- subscription query -------------
+def insert_subscription(email):
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO subscription (emailAddress) VALUES (%s)", (email,))
+    mysql.connection.commit()
+    cur.close()
+
 # Product CRUD
 def get_products():
     """Get all products."""

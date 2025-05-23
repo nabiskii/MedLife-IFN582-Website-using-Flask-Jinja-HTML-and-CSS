@@ -339,3 +339,17 @@ def checkout():
                   'error')
 
     return render_template('checkout.html', form=form)
+
+@bp.route('/subscribe', methods=['POST'])
+def subscribe():
+    email = request.form.get('email')
+    if not email:
+        flash('Email is required.', 'error')
+        return redirect(url_for('main.index'))
+
+    try:
+        db.insert_subscription(email)
+        flash('Thank you for subscribing!', 'success')
+    except Exception as e:
+        flash('Subscription failed: ' + str(e), 'error')
+    return redirect(url_for('main.index'))
