@@ -33,21 +33,11 @@
                     <span style="color: red;">{{ error }}</span>
                     {% endfor %}
 
-    {{ form.confirm_password.label }} {{ form.conform_password() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
-
-                    {{ form.email.label }} {{ form.email() }}<br>
+                    {{ form.confirm_password.label }} {{ form.conform_password() }}<br>
                     {% for error in form.username.errors %}
-                    <span style="color: red;">{{ error }}</span>
+                        <span style="color: red;">{{ error }}</span>
                     {% endfor %}
-
-    {{ form.phone.label }} {{ form.phone() }}<br>
-    {% for error in form.username.errors %}
-        <span style="color: red;">{{ error }}</span>
-    {% endfor %}
-    
-    {{ form.submit() }}
+                    
+                    {{ form.submit() }}
 </form>
 <a href="{{ url_for('login') }}">Login</a>

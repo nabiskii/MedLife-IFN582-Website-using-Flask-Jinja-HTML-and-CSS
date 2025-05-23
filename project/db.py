@@ -1,11 +1,7 @@
 
 from datetime import datetime
-<<<<<<< HEAD
-from . import mysql
-=======
 
 from project import mysql
->>>>>>> main
 from project.models import *
 
 # User CRUD
@@ -69,7 +65,6 @@ def check_user_exists(username):
     cur.close()
     return user is not None
 
-<<<<<<< HEAD
 def check_customer_exists(userID):
     """Check if a customer exists by userID."""
     cur = mysql.connection.cursor()
@@ -77,22 +72,6 @@ def check_customer_exists(userID):
     customer = cur.fetchone()
     cur.close()
     return customer is not None
-=======
-def get_all_user():
-    return DummyUserInfo
-
-def is_admin(user_id):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM users WHERE userType = 'Admin' AND userID = %i", (user_id,))
-    row = cur.fetchone()
-    cur.close()
-    return True if row else False
-
-# Product CRUD
-def get_products():
-    """Get all products."""
-    return Products
->>>>>>> main
 
 def add_cutomer(form):
     """Add a new customer."""
