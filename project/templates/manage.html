@@ -6,7 +6,7 @@
 
 {% if user.userType == 'Admin' %}
   <h3><a href="{{ url_for('main.manage_users') }}">Manage Users</a></h3>
-  <h3><a href="{{ url_for('main.manage_products') }}">Manage Products</a></h3>
+  <h3><a href="{{ url_for('main.manage_items') }}">Manage Items</a></h3>
   <h3><a href="{{ url_for('main.manage_categories') }}">Manage Categories</a></h3>
   <h3><a href="{{ url_for('main.manage_orders') }}">Manage Orders</a></h3>
 {% endif %}

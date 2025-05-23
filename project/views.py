@@ -1,21 +1,14 @@
-from functools import wraps
 from hashlib import sha256
 
 from flask import *
 
-from project.forms import CheckoutForm, LoginForm, RegisterForm
-from .db import *
-from .models import UserLogin
+from project.forms import *
+from . import db
+from . import models
 from .session import get_basket, convert_basket_to_order, empty_basket
 from .wrapper import admin_required
 
 bp = Blueprint('main', __name__)
-
-
-# # Home page
-# @bp.route('/')
-# def index():
-#     return render_template('index.html')
 
 # User registration route
 @bp.route('/register/', methods=['GET', 'POST'])
@@ -25,17 +18,16 @@ def register():
         username = form.username.data
         password = sha256(form.password.data.encode()).hexdigest()
         # Check if the user already exists
-        user = check_for_user(form.username.data, form.password.data)
-        cur = mysql.connection.cursor()
+        cur = db.mysql.connection.cursor()
         cur.execute("SELECT id FROM users WHERE username = %s", [username])
         if cur.fetchone():
-            flash('Username already exists.')
+            flash('Username already exists.', 'danger')
             return redirect(url_for('main.register'))
         cur.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, %s)",
                     (username, password, 'user'))
-        mysql.connection.commit()
+        db.mysql.connection.commit()
         cur.close()
-        flash('Registration successful! Please login.')
+        flash('Registration successful! Please login.','success')
         return redirect(url_for('main.login'))
     return render_template('register.html', form=form)
 
@@ -44,8 +36,8 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = check_for_user(form.username.data, sha256(form.password.data.encode()).hexdigest())
-        if user != None:
+        user = db.check_for_user(form.username.data, sha256(form.password.data.encode()).hexdigest())
+        if user is not None:
 
             # Store full user info in session
             if user.userType == 'Admin':is_admin = True;
@@ -57,10 +49,10 @@ def login():
                 'is_admin': is_admin,
             }
             session['logged_in'] = True
-            flash('Login successful!')
+            flash('Login successful!','success')
 
             return redirect(url_for('main.index'))
-        flash('Invalid username or password')
+        flash('Invalid username or password','danger')
     return render_template('login.html', title='Log In', form=form)
 
 # User logout route
@@ -69,23 +61,21 @@ def logout():
     # logout_user()
     session.pop('user', None)
     session.pop('logged_in', None)
-    flash('You have been logged out.')
+    flash('You have been logged out.','success')
     return redirect(url_for('main.login'))
 
 # Dashboard for authenticated users
 @bp.route('/manage/')
 @admin_required
 def manage():
-
-    userAccount = UserLogin(int(session['user']['user_id']), session['user']['username'], None, session['user']['user_type'])
-
+    userAccount = models.UserLogin(int(session['user']['user_id']), session['user']['username'], "", session['user']['user_type'])
     return render_template('manage.html',  user=userAccount)
 
-# Admin-only product management page
+# Admin-only user management page
 @bp.route('/manage/users')
 @admin_required
 def manage_users():
-    accounts = get_all_users()
+    accounts = db.get_all_users()
 
     return render_template('manage_users.html' ,accounts=accounts,)
 
@@ -99,7 +89,7 @@ def add_user():
 
         # encrypt password
         encrypted_password = sha256(password.encode()).hexdigest()
-        insert_user(username, encrypted_password, user_type)
+        db.insert_user(username, encrypted_password, user_type)
         flash('User added successfully.', 'success')
         return redirect(url_for('main.manage'))
     return render_template('manage_add_user.html')
@@ -107,14 +97,14 @@ def add_user():
 @bp.route('/manage/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @admin_required
 def edit_user(user_id):
-    user = get_user_by_id(user_id)
+    user = db.get_user_by_id(user_id)
     if not user:
         flash('User not found.', 'error')
         return redirect(url_for('main.manage'))
     if request.method == 'POST':
         username = request.form['username']
         user_type = request.form['user_type']
-        update_user(user_id, username, user_type)
+        db.update_user(user_id, username, user_type)
         flash('User updated successfully.', 'success')
         return redirect(url_for('main.manage'))
     return render_template('manage_edit_user.html', user=user)
@@ -122,27 +112,156 @@ def edit_user(user_id):
 @bp.route('/manage/delete_user/<int:user_id>')
 @admin_required
 def delete_user(user_id):
-    delete_from_user(user_id)
+    db.delete_from_user(user_id)
     flash('User deleted.', 'success')
     return redirect(url_for('main.manage'))
 
 # Admin-only product management page
-@bp.route('/manage/products')
+@bp.route('/manage/items')
 @admin_required
-def manage_products():
-    return "Admin-only product management page."
+def manage_items():
+    items = db.get_all_items()
+    return render_template('manage_items.html', items=items)
+
+@bp.route('/add_item', methods=['GET', 'POST'])
+@admin_required
+def add_item():
+    form = AddItemForm()
+    # Populate supplier and category dropdowns from DB
+    suppliers = db.get_all_suppliers()
+    categories = db.get_all_categories()
+
+    form.supplierID.choices = [(s['supplierID'], s['supplierName']) for s in suppliers]
+    form.categoryCode.choices = [(c['categoryCode'], c['categoryName']) for c in categories]
+
+    if form.validate_on_submit():
+        db.add_item(
+            form.itemCode.data,
+            form.itemName.data,
+            form.itemDescription.data,
+            form.unitPrice.data,
+            form.onhandQuantity.data,
+            form.supplierID.data,
+            form.categoryCode.data
+        )
+        flash('Item added successfully!', 'success')
+        return redirect(url_for('main.manage_items'))
+    return render_template('manage_add_item.html', item_form=form)
+
+@bp.route('/edit_item/<code>', methods=['GET', 'POST'])
+@admin_required
+def edit_item(code):
+    item = db.get_item_by_code(code)
+    if not item:
+        flash('Item not found.', 'danger')
+        return redirect(url_for('main.manage_items'))
+
+    form = EditItemForm(data=item)  # preload form with item values
+
+    # Populate dropdown choices
+    suppliers = db.get_all_suppliers()
+    categories = db.get_all_categories()
+
+    form.supplierID.choices = [(s['supplierID'], s['supplierName']) for s in suppliers]
+    form.categoryCode.choices = [(c['categoryCode'], c['categoryName']) for c in categories]
+
+    # reassign
+    form.supplierID.data = item['supplierID']
+    form.categoryCode.data = item['categoryCode']
+
+    if form.validate_on_submit():
+        db.update_item(
+            code,
+            form.itemName.data,
+            form.itemDescription.data,
+            form.unitPrice.data,
+            form.onhandQuantity.data,
+            form.supplierID.data,
+            form.categoryCode.data
+        )
+        flash('Item updated successfully!', 'success')
+        return redirect(url_for('main.manage_items'))
+
+    return render_template('manage_edit_item.html', item_form=form, item=item)
+
+@bp.route('/delete_item/<code>')
+@admin_required
+def delete_item(code):
+    if db.item_is_in_baskets(code):
+        flash('Cannot delete item; it is added to user baskets.', 'danger')
+        return redirect(url_for('main.manage_items'))
+
+    db.delete_item(code)
+    flash('Item deleted successfully.', 'success')
+    return redirect(url_for('main.manage_items'))
 
 # Admin-only category management page
 @bp.route('/manage/categories')
 @admin_required
 def manage_categories():
-    return "Admin-only category management page."
+    categories = db.get_all_categories()
+    return render_template('manage_categories.html', categories=categories)
+
+@bp.route('/add_category', methods=['GET', 'POST'])
+@admin_required
+def add_category():
+    form = AddCategoryForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            db.add_category(
+                form.categoryCode.data,
+                form.categoryName.data
+            )
+            flash('Category added!', 'success')
+            return redirect(url_for('main.manage_categories'))
+        else:
+            flash('Category submission failed.', 'danger')
+    return render_template('manage_add_category.html', add_category_form=form)
+
+@bp.route('/edit_category/<code>', methods=['GET', 'POST'])
+@admin_required
+def edit_category(code):
+    category = db.get_category_by_code(code)
+    form = EditCategoryForm(categoryName=category['categoryName'])
+    if form.validate_on_submit():
+        db.update_category(code, form.categoryName.data)
+        flash('Category updated!', 'success')
+        return redirect(url_for('main.manage_categories'))
+    return render_template('manage_edit_category.html', edit_category_form=form, code=code)
+
+
+@bp.route('/delete_category/<code>')
+@admin_required
+def delete_category(code):
+    db.delete_category(code)
+    flash('Category deleted.', 'success')
+    return redirect(url_for('main.manage_categories'))
 
 # Admin-only order management page
 @bp.route('/manage/orders')
 @admin_required
 def manage_orders():
-    return "Admin-only order management page."
+    orders = db.get_all_orders()
+    return render_template('manage_orders.html', orders=orders)
+
+@bp.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
+@admin_required
+def edit_order(order_id):
+    order = db.get_order_by_id(order_id)
+    form = EditOrderForm(obj=order)
+    if form.validate_on_submit():
+        db.update_order_status(order_id, form.orderStatus.data)
+        flash('Order updated!', 'success')
+        return redirect(url_for('main.manage_orders'))
+    return render_template('manage_edit_order.html', edit_order_form=form, order=order, order_id=order_id)
+
+@bp.route('/delete_order/<int:order_id>')
+@admin_required
+def delete_order(order_id):
+    db.delete_order(order_id)
+    flash('Order deleted.', 'success')
+    return redirect(url_for('main.manage_orders'))
+
 
 # ***init page navigation***
 @bp.route('/', endpoint='index')
@@ -228,8 +347,8 @@ def checkout():
             flash('Thank you for your information, your order is being processed!', )
             order = convert_basket_to_order(get_basket())
             empty_basket()
-            add_order(order)
-            print('Number of orders in db: {}'.format(len(get_orders())))
+            db.add_order(order)
+            print('Number of orders in db: {}'.format(len(db.get_orders())))
             return redirect(url_for('main.index'))
         else:
             flash('The provided information is missing or incorrect',

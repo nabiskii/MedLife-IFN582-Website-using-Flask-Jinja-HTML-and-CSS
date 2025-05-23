@@ -32,17 +32,6 @@
                     <span style="color: red;">{{ error }}</span>
                     {% endfor %}
 
-                    <!--flash msg-->
-                    {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div class="flash-message">
-                        {{ message }}
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-                    {% endwith %}
-
                     {{ form.submit() }}
 
                 </form>
