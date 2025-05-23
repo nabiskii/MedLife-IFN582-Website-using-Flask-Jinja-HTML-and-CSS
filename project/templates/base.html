@@ -58,8 +58,9 @@
                     </li>
                     {% endif %}
                 </ul>
-                <form class="form-inline d-inline-flex">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Eg. Aspirin" aria-label="Search">
+                <form class="form-inline d-inline-flex" method="GET" action="{{ url_for('main.index')}}#products">
+                    <input class="form-control mr-sm-2" type="search" name="search_field" placeholder="Eg. Aspirin"
+                           aria-label="Search">
                     <button class="btn btn-medicine my-2 my-sm-0 px-2" type="submit">Search</button>
                 </form>
             </div>
@@ -68,7 +69,7 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
-    <div class="flash-message alert alert-{{ category }} alert-dismissible fade show"role="alert">
+    <div class="flash-message alert alert-{{ category }} alert-dismissible fade show" role="alert">
         {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>

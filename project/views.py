@@ -120,7 +120,7 @@ def delete_user(user_id):
 @bp.route('/manage/items')
 @admin_required
 def manage_items():
-    items = db.get_all_items()
+    items = db.get_admin_all_items()
     return render_template('manage_items.html', items=items)
 
 @bp.route('/add_item', methods=['GET', 'POST'])
@@ -311,48 +311,12 @@ def index():
         }
     ]
 
-    products = [
-        {
-            "name": "Panadol Rapid 48 Caplets",
-            "price": "10.00",
-            "image": "panadol.jpg"
-        },
-        {
-            "name": "Nurofen Zavance 96 pack",
-            "price": "15.00",
-            "image": "ibuprofen.jpg"
-        },
-        {
-            "name": "Claratyne Allergy & Hayfever Relief",
-            "price": "9.50",
-            "image": "antihistamine.jpg"
-        },
-        {
-            "name": "CeraVe Moisturising Cream",
-            "price": "25.99",
-            "image": "cerave cream.jpg"
-        },
-        {
-            "name": "CeraVe Skin Renewing Night Cream",
-            "price": "36.99",
-            "image": "cerave night cream.jpg"
-        },
-        {
-            "name": "Maybelline Lasting Fix Setting Loose Powder",
-            "price": "9.99",
-            "image": "maybelline powder.jpg"
-        },
-        {
-            "name": "Maybelline Fit Me True-to-tone Blush",
-            "price": "9.50",
-            "image": "maybelline blush.jpg"
-        },
-        {
-            "name": "Difflam Plus Sore Throat Anaesthetic Spray",
-            "price": "8.45",
-            "image": "sore throat.jpg"
-        }
-    ]
+    search_term = request.args.get('search_field', '').strip()
+    if search_term:
+        products = db.search_items(search_term)
+        flash(f"Showing results for '{search_term}'", 'info')
+    else:
+        products = db.get_all_items()
 
     return render_template("index.html", services=services, products=products)
 

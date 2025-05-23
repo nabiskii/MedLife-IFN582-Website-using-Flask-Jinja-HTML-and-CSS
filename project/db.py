@@ -90,10 +90,28 @@ def delete_from_user(user_id):
 #  ----------- item query -------------
 def get_all_items():
     cur = mysql.connection.cursor()
+    cur.execute("SELECT itemCode, itemName AS name, itemDescription, unitPrice AS price, imageURL AS image FROM items")
+    items = cur.fetchall()
+    cur.close()
+    return items
+
+def get_admin_all_items():
+    cur = mysql.connection.cursor()
     cur.execute("SELECT itemCode, itemName, unitPrice, onhandQuantity FROM items")
     items = cur.fetchall()
     cur.close()
     return items
+
+def search_items(term):
+    search_term = "%" + term + "%"
+    cur = mysql.connection.cursor()
+    cur.execute("""SELECT itemCode, itemName AS name, itemDescription, unitPrice AS price, imageURL AS image
+            FROM items
+            WHERE itemName LIKE %s OR itemDescription LIKE %s""", (search_term, search_term ))
+    items = cur.fetchall()
+    cur.close()
+    return items
+
 
 def get_item_by_code(code):
     cur = mysql.connection.cursor()
