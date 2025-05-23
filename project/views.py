@@ -1,4 +1,5 @@
 from functools import wraps
+from hashlib import sha256
 
 from flask import *
 from flask_login import UserMixin, current_user, login_user, login_required, logout_user
@@ -7,12 +8,22 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from project import mysql
 from project.forms import CheckoutForm, LoginForm, RegisterForm
-from .db import add_order, get_orders
+from .db import *
 from .session import get_basket, convert_basket_to_order, empty_basket
 
 bp = Blueprint('main', __name__)
 
 # ***init session management***
+
+# itemdetails/<int:item_id>
+# /
+# order/<int:item_id>
+# order/<int:item_id>/<int:quantity>
+# order/<int:item_id>/<int:quantity>/<string:action>(for updating the quantity)
+# checkout/
+# admin pages
+# clear basket
+# remove item from basket/<int:item_id>
 
 class User(UserMixin):
     def __init__(self, id, username, role):
@@ -23,13 +34,8 @@ class User(UserMixin):
 # Load user object from user ID (used by Flask-Login)
 @login_manager.user_loader
 def load_user(user_id):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT id, username, role FROM users WHERE id = %s", [user_id])
-    user = cur.fetchone()
-    cur.close()
-    if user:
-        return User(id=user[0], username=user[1], role=user[2])
-    return None
+    user = get_user_by_id(user_id)
+    return User(user.id, user.username, user.role) if user else None
 
 # Decorator for admin-only routes
 def admin_required(f):
@@ -40,46 +46,56 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# # Home page
-# @bp.route('/')
-# def index():
-#     return render_template('index.html')
-
 # User registration route
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        password = generate_password_hash(form.password.data)
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT id FROM users WHERE username = %s", [username])
-        if cur.fetchone():
-            flash('Username already exists.')
-            return redirect(url_for('main.register'))
-        cur.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, %s)",
-                    (username, password, 'user'))
-        mysql.connection.commit()
-        cur.close()
-        flash('Registration successful! Please login.')
-        return redirect(url_for('main.login'))
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            # Retrieve username and password from the form
+            username = form.username.data
+            password = sha256(form.password.data.encode()).hexdigest()
+
+            # Check if the username already exists
+            user = check_user_exists(username)
+            if user:
+                flash('Username already exists.')
+                return redirect(url_for('main.register'))
+            
+            # If username does not exist, add the user into the database
+            else:
+                add_user(username, password)
+                flash('Registration successful! Please login.')
+                return redirect(url_for('main.login'))
+        
     return render_template('register.html', form=form)
 
 # User login route
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT id, password, role FROM users WHERE username = %s", [form.username.data])
-        user = cur.fetchone()
-        cur.close()
-        if user and check_password_hash(user[1], form.password.data):
-            user_obj = User(id=user[0], username=form.username.data, role=user[2])
-            login_user(user_obj)
-            return redirect(url_for('main.dashboard'))
-        flash('Invalid username or password')
-    return render_template('login.html', title='Log In', form=form)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            username = form.username.data
+            password = sha256(form.password.data.encode()).hexdigest()
+            # Check if the user exists in the database
+            user = get_user_by_login(username, password)
+
+            if not user:
+                flash('Invalid username or password')
+                return redirect(url_for('main.login'))
+            
+            session['user']={
+                'user_id': user.id,
+                'username': user.username,
+                'role': user.role
+            }
+            session['logged_in'] = True
+            session['is_admin'] = is_admin(username)
+            flash('Login successful!')
+            return redirect(url_for('main.dashboard') if session['is_admin'] else url_for('main.index'))
+        
+        return render_template('login.html', title='Log In', form=form)
 
 # User logout route
 @bp.route('/logout')

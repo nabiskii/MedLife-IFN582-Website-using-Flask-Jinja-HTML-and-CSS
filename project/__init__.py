@@ -6,7 +6,6 @@ from flask_login import LoginManager
 from project.config import Config
 import os
 
-
 mysql = MySQL()
 login_manager = LoginManager()
 
@@ -14,6 +13,15 @@ login_manager.login_view = 'main.login'
 
 # define a function to create a Flask app
 def create_app():
+
+    # MySQL configurations
+    app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER')
+    app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD')
+    app.config['MYSQL_DB'] = os.environ.get('MYSQL_DB')
+    app.config['MYSQL_HOST'] = os.environ.get('MYSQL_HOST')
+    app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+    # create a Flask app instance
     app = Flask(__name__)
     # session secret key (to be changed before submission)
     app.secret_key = os.environ.get('SECRET_KEY') or 'your_secret_key'
@@ -21,7 +29,6 @@ def create_app():
     app.config.from_object(Config)
     # debug mode is enabled (to be disabled before submission)
     app.debug = True
-
 
     # initialize Flask-Bootstrap
     Bootstrap(app)
@@ -33,6 +40,7 @@ def create_app():
     from . import views
     # app.register_blueprint(views.bp)
     app.register_blueprint(views.bp, url_prefix='/')
+
     from . import session
 
     # --- comment database health check ---
@@ -59,4 +67,3 @@ def create_app():
         return render_template('500.html'), 500
 
     return app
-

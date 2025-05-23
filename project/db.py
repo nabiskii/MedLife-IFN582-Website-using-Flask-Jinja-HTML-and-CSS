@@ -1,68 +1,201 @@
 
 from datetime import datetime
-
+from . import mysql
 from project.models import *
 
-DummyProduct = Product('1', 'Claratyne Allergy & Hayfever Relief',
-         'This is description for Claratyne Allergy & Hayfever Relief',79,
-        'p_pic1.jpg', 9.50, datetime(2023, 7, 23), 4.9)
+# User CRUD
+def is_admin(username):
+    """Check if a user is an admin."""
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE userName = %s", (username,))
+    user = cur.fetchone()
+    cur.close()
+    if user and user[3] == 'admin':
+        return True
+    return False
 
-Products = [
-    Product('1', 'Claratyne Allergy & Hayfever Relief',
-         'This is description for Claratyne Allergy & Hayfever Relief',79,
-        'p_pic1.jpg', 9.50, datetime(2023, 7, 23), 4.9),
-    Product('2', 'Nurofen Zavance 96 pack',
-         'This is description for Nurofen Zavance 96 pack',100,
-         'p_pic2.jpg', 15.00,  datetime(2023, 10, 30),4.8),
-    Product('3', 'Panadol Rapid 48 Caplets',
-         'This is description for Panadol Rapid 48 Caplets', 310,
-         'p_pic3.jpg', 10.00,  datetime(2023, 10, 30),3.8)
-]
+def add_user(username, password):
+    """Add a new user."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                INSERT INTO users (userName, password, userType)
+                VALUES (%s, %s, %s)
+                """, (username,
+                      password,
+                      "User"))
+    mysql.connection.commit()
+    cur.close()
 
-DummyUserInfo = UserInfo(
-    '0', 'Dummy', 'Foobar', 'dummy@foobar.com', '1234567890'
-)
+def get_user_by_login(username, password):
+    """Get a user by username."""
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userName = %s AND password = %s", (username, password))
+    user = cur.fetchone()
+    cur.close()
+    if user:
+        return UserAccount(
+            id = user[0],
+            username=user[1],
+            password=user[2],
+            role=user[3]
+        )
+    return None
 
-Orders = [
-    Order('1', OrderStatus.PENDING, DummyUserInfo, 149.99,
-          []),
-    Order('2', OrderStatus.CONFIRMED, DummyUserInfo, 1000.00,
-          [])
-]
+def get_user_by_id(user_id):
+    """Get a user by ID."""
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userID = %s", (user_id,))
+    user = cur.fetchone()
+    cur.close()
+    if user:
+        return UserAccount(
+            id=user[0],
+            username=user[1],
+            password=user[2],
+            role=user[3]
+        )
+    return None
 
-# User Info
-def get_user():
-    return DummyUserInfo
+def check_user_exists(username):
+    """Check if a user exists by username."""
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE userName = %s", (username,))
+    user = cur.fetchone()
+    cur.close()
+    return user is not None
 
-# Product CRUD
-def get_products():
-    """Get all products."""
-    return Products
+def check_customer_exists(userID):
+    """Check if a customer exists by userID."""
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM customers WHERE userID = %s", (userID,))
+    customer = cur.fetchone()
+    cur.close()
+    return customer is not None
 
-def get_product(product_id):
-    """Get a product by its ID."""
-    product_id = str(product_id)
-    for product in Products:
-        if product.id == product_id:
-            return product
-    return DummyProduct
+def add_cutomer(form):
+    """Add a new customer."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                INSERT INTO customers (firstName, surname, phoneNumber, emailAddress, addressLine1, addressLine2, city, state, postCode)
+                VALUES (%s, %s, %s)
+                """, (form.firstname.data,
+                      form.surname.data,
+                      form.phone.data,
+                      form.email.data,
+                      form.address1.data,
+                      form.address2.data,
+                      form.city.data,
+                      form.state.data,
+                      form.postcode.data))
+    mysql.connection.commit()
+    cur.close()
 
-def add_product(product):
-    """Add a new product."""
-    Products.append(product)
 
-def update_product(product_id, udt_product):
-    """Update a product by its ID."""
-    product_id = str(product_id)
-    for id in range(0, len(Products)):
-        if Products[id].id == product_id:
-            Products[id] = udt_product
+# item CRUD
+def get_items():
+    """Get all items."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                SELECT items.itemCode AS 'Item Code',
+                items.itemName AS 'Item Name',
+                items.itemDescription AS 'Item Description',
+                items.itemLongDescription1 AS 'Instruction',
+                items.itemLongDescription2 AS 'Ingredients',
+                items.unitPrice AS 'Unit Price',
+                category.categoryName AS 'Category Name',
+                suppliers.supplierName AS 'Supplier Name',
+                items.onhandQuantity AS 'Onhand Quantity',
+                items.imagePath AS 'Image'
+            FROM items
+            LEFT JOIN 
+                (category, suppliers) ON (category.categoryCode = items.categoryCode
+                AND suppliers.supplierID = items.supplierID)
+            ORDER BY
+                items.itemName;
+                """)
+    items = cur.fetchall()
+    cur.close()
+    return [Item(str(item['Item Code']),
+                 item['Item Name'],
+                 item['Item Description'],
+                 item['Instruction'],
+                 item['Ingredients'],
+                 item['Unit Price'],
+                 item['Category Name'],
+                 item['Supplier Name'],
+                 item['Onhand Quantity'],
+                 item['Image']) for item in items]
 
-def remove_product(product_id):
-        """Remove a product by its ID."""
-        for id in range(0, len(Products)):
-            if Products[id].id == product_id:
-                Products.pop(id)
+
+def get_item(item_id):
+    """Get a particular item based on item id."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                SELECT items.itemCode AS 'Item Code',
+                items.itemName AS 'Item Name',
+                items.itemDescription AS 'Item Description',
+                items.itemLongDescription1 AS 'Instruction',
+                items.itemLongDescription2 AS 'Ingredients',
+                items.unitPrice AS 'Unit Price',
+                category.categoryName AS 'Category Name',
+                suppliers.supplierName AS 'Supplier Name',
+                items.onhandQuantity AS 'Onhand Quantity',
+                items.imagePath AS 'Image'
+            FROM items
+            WHERE items.itemCode = %s
+            LEFT JOIN 
+                (category, suppliers) ON (category.categoryCode = items.categoryCode
+                AND suppliers.supplierID = items.supplierID)
+            ORDER BY
+                items.itemName;
+                """, (item_id,))
+    item = cur.fetchone()
+    cur.close()
+    return Item(str(item['Item Code']),
+                 item['Item Name'],
+                 item['Item Description'],
+                 item['Instruction'],
+                 item['Ingredients'],
+                 item['Unit Price'],
+                 item['Category Name'],
+                 item['Supplier Name'],
+                 item['Onhand Quantity'],
+                 item['Image'])
+
+def add_item(item):
+    """Add a new item."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                INSERT INTO items (itemCode, itemName, itemDescription,
+                itemLongDescription1, itemLongDescription2, unitPrice,
+                categoryCode, supplierID, onhandQuantity, imagePath)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (item.id,
+                      item.name,
+                      item.description,
+                      item.instruction,
+                      item.ingredients,
+                      item.price,
+                      item.category,
+                      item.supplier,
+                      item.onhand_quantity,
+                      item.image))
+    mysql.connection.commit()
+    cur.close()
+
+# admin manage item
+def update_item(item_id, udt_item):
+    """Update a item by its ID."""
+    item_id = str(item_id)
+    for id in range(0, len(Item)):
+        if Item[id].code == item_id:
+            Item[id] = udt_item
+
+def remove_item(item_id):
+        """Remove a item by its ID."""
+        for id in range(0, len(Item)):
+            if Item[id].code == item_id:
+                Item.pop(id)
 
 #  Orders CRUD
 def get_orders():

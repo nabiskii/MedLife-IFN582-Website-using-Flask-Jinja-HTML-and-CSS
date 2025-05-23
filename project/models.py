@@ -3,38 +3,72 @@ from datetime import datetime
 from enum import Enum
 from typing import List
 
+@dataclass
+class UserAccount:
+    id: str
+    username: str
+    password: str
+    role: str
 
 @dataclass
-class Product:
+class CustomerInfo:
     id: str
+    firstname: str
+    surname: str
+    phone: str
+    email: str
+    address1: str
+    address2: str
+    city: str
+    state: str
+    postcode: str
+
+@dataclass
+class Supplier:
+    id: int
     name: str
-    description: str
-    reviews: int
-    image: str = 'foobar.png'
-    price: float = 10.00
-    date: datetime = field(
-        default_factory=lambda: datetime.now()
-    )
-    rating: float = 1.0
 
+@dataclass
+class Category:
+    code: str
+    name: str
 
+@dataclass
+class Item:
+    code: str
+    name: str
+    description1: str
+    description2: int
+    image: str
+    unitprice: float
+    category: Category
+    quantity: int
+    imagepath: str
+
+@dataclass
 class OrderStatus(Enum):
     PENDING = 'Pending'
     CONFIRMED = 'Confirmed'
     CANCELLED = 'Cancelled'
 
+    def is_pending(self):
+        return self == OrderStatus.PENDING
+    def is_confirmed(self):
+        return self == OrderStatus.CONFIRMED
+    def is_cancelled(self):
+        return self == OrderStatus.CANCELLED
+
 @dataclass
-class UserInfo:
-    id: str
-    firstname: str
-    surname: str
-    email: str
-    phone: str
+class DeliveryMethod(Enum):
+    STANDARD = 5
+    EXPRESS = 8
+    ECO = 15
+    TEMP = 25
 
 @dataclass
 class BasketItem:
     id: str
-    product: Product
+    item: Item
     quantity: int = 1
 
     def total_price(self):
@@ -81,9 +115,9 @@ class Basket:
 
 @dataclass
 class Order:
-    id: str
+    number: int
     status: OrderStatus
-    user: UserInfo
+    customer: CustomerInfo
     total_cost: float = 0.0
     items: List[BasketItem] = field(
         default_factory=list,
