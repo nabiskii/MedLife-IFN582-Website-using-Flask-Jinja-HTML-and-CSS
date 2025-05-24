@@ -1,19 +1,235 @@
-
-from datetime import datetime
-
 from project import mysql
 from project.models import *
 
-# User CRUD
-def is_admin(username):
-    """Check if a user is an admin."""
+
+#  ----------- user query -------------
+def check_for_user(username, hash_password):
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM users WHERE userName = %s", (username,))
+    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userName = %s AND password = %s",
+                (username, hash_password))
+    row = cur.fetchone()
+    cur.close()
+    if row:
+        return UserLogin(row['userID'], row['userName'], row['password'], row['userType'])
+    return None
+
+
+def is_admin(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE userType = 'Admin' AND userID = %s", (user_id,))
     user = cur.fetchone()
     cur.close()
     if user and user['userType'] == 'admin':
         return True
     return False
+
+
+def get_user_by_id(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT userID, userName, userType FROM users WHERE userID = %s", (user_id,))
+    user = cur.fetchone()
+    cur.close()
+    return user
+
+
+def get_all_users():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT userID, userName, userType FROM users")
+    users = cur.fetchall()
+    cur.close()
+    return users
+
+
+def insert_user(username, password, user_type):
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO users (userName, password, userType) VALUES (%s, %s, %s)",
+                (username, password, user_type))
+    mysql.connection.commit()
+    cur.close()
+
+
+def update_user(user_id, username, user_type):
+    user_type = user_type.strip()  # Clean whitespace
+    if user_type not in ('Admin', 'User'):
+        raise ValueError(f"Invalid userType: {user_type}")
+
+    cur = mysql.connection.cursor()
+    cur.execute("UPDATE users SET userName = %s, userType = %s WHERE userID = %s",
+                (username, user_type, user_id))
+    mysql.connection.commit()
+    cur.close()
+
+
+def delete_from_user(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM users WHERE userID = %s", (user_id,))
+    mysql.connection.commit()
+    cur.close()
+
+
+#  ----------- item query -------------
+def get_all_items():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT itemCode, itemName AS name, itemDescription, unitPrice AS price, imageURL AS image FROM items")
+    items = cur.fetchall()
+    cur.close()
+    return items
+
+
+def get_admin_all_items():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT itemCode, itemName, unitPrice, onhandQuantity FROM items")
+    items = cur.fetchall()
+    cur.close()
+    return items
+
+
+
+def get_item_by_code(code):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM items WHERE itemCode = %s", (code,))
+    item = cur.fetchone()
+    cur.close()
+    return item
+
+
+def add_item(code, name, desc, price, quantity, supplierID, categoryCode):
+    cur = mysql.connection.cursor()
+    cur.execute(
+        "INSERT INTO items (itemCode, itemName, itemDescription, unitPrice, onhandQuantity, supplierID, categoryCode, imageURL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+        (code, name, desc, price, quantity, supplierID, categoryCode, 'no-img.jpg'))
+    mysql.connection.commit()
+    cur.close()
+
+
+def update_item(code, name, description, price, quantity, supplierID, categoryCode):
+    cur = mysql.connection.cursor()
+    cur.execute(
+        "UPDATE items SET itemName = %s, itemDescription = %s, unitPrice = %s, onhandQuantity = %s, supplierID = %s, categoryCode = %s WHERE itemCode = %s",
+        (name, description, price, quantity, supplierID, categoryCode, code))
+    mysql.connection.commit()
+    cur.close()
+
+
+def delete_item(code):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM items WHERE itemCode = %s", (code,))
+    mysql.connection.commit()
+    cur.close()
+
+
+#  ----------- category query -------------
+def get_all_categories():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM category")
+    categories = cur.fetchall()
+    cur.close()
+    return categories
+
+
+def get_category_by_code(code):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM category WHERE categoryCode = %s", (code,))
+    category = cur.fetchone()
+    cur.close()
+    return category
+
+
+def add_category(code, name):
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO category (categoryCode, categoryName) VALUES (%s, %s)", (code, name))
+    mysql.connection.commit()
+    cur.close()
+
+
+def update_category(code, name):
+    cur = mysql.connection.cursor()
+    cur.execute("UPDATE category SET categoryName = %s WHERE categoryCode = %s", (name, code))
+    mysql.connection.commit()
+    cur.close()
+
+
+def delete_category(code):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM category WHERE categoryCode = %s", (code,))
+    mysql.connection.commit()
+    cur.close()
+
+
+#  ----------- order query -------------
+def get_all_orders():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM orders")
+    orders = cur.fetchall()
+    cur.close()
+    return orders
+
+
+def get_order_by_id(order_id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM orders WHERE orderID = %s", (order_id,))
+    order = cur.fetchone()
+    cur.close()
+    return order
+
+
+def add_order_admin(customerID, deliveryMethodCode, orderTotalAmount):
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO orders (customerID, deliveryMethodCode, orderTotalAmount) VALUES (%s, %s, %s)",
+                (customerID, deliveryMethodCode, orderTotalAmount))
+    mysql.connection.commit()
+    cur.close()
+
+
+def update_order_status(order_id, status):
+    cur = mysql.connection.cursor()
+    cur.execute("UPDATE orders SET orderStatus = %s WHERE orderID = %s", (status, order_id))
+    mysql.connection.commit()
+    cur.close()
+
+
+def delete_order(order_id):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM orders WHERE orderID = %s", (order_id,))
+    mysql.connection.commit()
+    cur.close()
+
+
+#  ----------- supplier query -------------
+def get_all_suppliers():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM suppliers")
+    suppliers = cur.fetchall()
+    cur.close()
+    return suppliers
+
+
+#  ----------- customers query -------------
+def get_all_customers():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM customers")
+    customers = cur.fetchall()
+    cur.close()
+    return customers
+
+
+#  ----------- delivery method query -------------
+def get_all_delivery_methods():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM delivery_methods")
+    methods = cur.fetchall()
+    cur.close()
+    return methods
+
+
+#  ----------- subscription query -------------
+def insert_subscription(email):
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO subscription (emailAddress) VALUES (%s)", (email,))
+    mysql.connection.commit()
+    cur.close()
+
+
 
 def add_user(username, password):
     """Add a new user."""
@@ -27,10 +243,12 @@ def add_user(username, password):
     mysql.connection.commit()
     cur.close()
 
+
 def get_user_by_login(username, password):
     """Get a user by username."""
     cur = mysql.connection.cursor()
-    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userName = %s AND password = %s", (username, password))
+    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userName = %s AND password = %s",
+                (username, password))
     user = cur.fetchone()
     cur.close()
     if user:
@@ -42,20 +260,7 @@ def get_user_by_login(username, password):
         )
     return None
 
-def get_user_by_id(user_id):
-    """Get a user by ID."""
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userID = %s", (user_id,))
-    user = cur.fetchone()
-    cur.close()
-    if user:
-        return UserAccount(
-            id=user['userID'],
-            username=user['userName'],
-            password=user['password'],
-            role=user['userType']
-        )
-    return None
+
 
 def check_user_exists(username):
     """Check if a user exists by username."""
@@ -65,6 +270,7 @@ def check_user_exists(username):
     cur.close()
     return user is not None
 
+
 def check_customer_exists(userID):
     """Check if a customer exists by userID."""
     cur = mysql.connection.cursor()
@@ -72,6 +278,7 @@ def check_customer_exists(userID):
     customer = cur.fetchone()
     cur.close()
     return customer is not None
+
 
 def add_customer(form):
     """Add a new customer."""
@@ -88,11 +295,12 @@ def add_customer(form):
                       form.city.data,
                       form.state.data,
                       form.postcode.data))
-    
+
     cust_id = cur.lastrowid
     mysql.connection.commit()
     cur.close()
     return cust_id
+
 
 def get_customer_id(userID):
     """Get a customer ID by userID."""
@@ -180,6 +388,7 @@ def get_item(item_id):
                 item['Onhand Quantity'],
                 item['Image'])
 
+
 def get_items_by_category(category):
     """Get items by category."""
     cur = mysql.connection.cursor()
@@ -215,6 +424,7 @@ def get_items_by_category(category):
                  item['Supplier Name'],
                  item['Onhand Quantity'],
                  item['Image']) for item in items]
+
 
 def search_items(search):
     """Search for items by name."""
@@ -253,43 +463,11 @@ def search_items(search):
                  item['Onhand Quantity'],
                  item['Image']) for item in items]
 
-def add_item(item):
-    """Add a new item."""
-    cur = mysql.connection.cursor()
-    cur.execute("""
-                INSERT INTO items (itemCode, itemName, itemDescription,
-                itemLongDescription1, itemLongDescription2, unitPrice,
-                categoryCode, supplierID, onhandQuantity, imageURL)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """,(item.id,
-                    item.name,
-                    item.description,
-                    item.instruction,
-                    item.ingredients,
-                    item.price,
-                    item.category,
-                    item.supplier,
-                    item.onhand_quantity,
-                    item.image))
-    mysql.connection.commit()
-    cur.close()
 
-# admin manage item
-def update_item(item_id, udt_item):
-    """Update a item by its ID."""
-    item_id = str(item_id)
-    for id in range(0, len(Item)):
-        if Item[id].code == item_id:
-            Item[id] = udt_item
 
-def remove_item(item_id):
-        """Remove a item by its ID."""
-        for id in range(0, len(Item)):
-            if Item[id].code == item_id:
-                Item.pop(id)
 
 #  ----------- category query -------------
-def get_all_categories():
+def get_distinct_all_categories():
     cur = mysql.connection.cursor()
     cur.execute("SELECT DISTINCT * FROM category")
     categories = cur.fetchall()
@@ -300,20 +478,6 @@ def get_all_categories():
 
 
 #  Orders CRUD
-def get_orders():
-    """Get all orders.
-    return Orders
-    """
-
-def get_order(order_id):
-    """Get an order by its ID.
-    order_id = str(order_id)
-    for order in Orders:
-        if order.id == order_id:
-            return order
-    return None  # or raise an exception if preferred
-"""
-
 def add_order(order, customer_id):
     """Add a new order."""
     cur = mysql.connection.cursor()
@@ -325,24 +489,8 @@ def add_order(order, customer_id):
                       order.deliverycode,
                       order.total_cost,
                       datetime.now()))
-    
+
     order_id = cur.lastrowid
     mysql.connection.commit()
     cur.close()
     return order_id
-
-def update_order(order_id, udt_order):
-    """Update a order by its ID.
-    order_id = str(order_id)
-    for id in range(0, len(Orders)):
-        if Orders[id].id == order_id:
-            Orders[id] = udt_order
-            """
-
-def remove_order(order_id):
-        """Remove a order by its ID.
-        for id in range(0, len(Orders)):
-            if Orders[id].id == order_id:
-                Orders.pop(id)
-                """
-

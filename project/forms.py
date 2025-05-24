@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Length, InputRequired, email, EqualTo
+from wtforms import StringField, PasswordField, SubmitField, DecimalField, IntegerField, SelectField
+from wtforms.validators import DataRequired, Length, InputRequired, email, EqualTo, NumberRange
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=150)])
@@ -26,3 +26,64 @@ class CheckoutForm(FlaskForm):
     postcode = StringField("Postcode", validators = [InputRequired()])
     submit = SubmitField("Send to Agent")
 
+# Admin manage form
+# --- ITEM FORM ---
+class AddItemForm(FlaskForm):
+    itemCode = StringField('Item Code', validators=[DataRequired(), Length(max=10)])
+    itemName = StringField('Item Name', validators=[DataRequired(), Length(max=100)])
+    itemDescription = StringField('Item Description', validators=[DataRequired(), Length(max=250)])
+    unitPrice = DecimalField('Unit Price', places=2, validators=[DataRequired(), NumberRange(min=0)])
+    onhandQuantity = IntegerField('On-hand Quantity', validators=[DataRequired(), NumberRange(min=0)])
+
+    supplierID = SelectField('Supplier', coerce=int, validators=[DataRequired()])
+    categoryCode = SelectField('Category', validators=[DataRequired()])
+
+    submit = SubmitField('Submit')
+
+class EditItemForm(FlaskForm):
+    itemCode = StringField('Item Code', render_kw={'readonly': True})  # read-only in form
+    itemName = StringField('Item Name', validators=[DataRequired(), Length(max=100)])
+    itemDescription = StringField('Item Description', validators=[DataRequired(), Length(max=250)])
+    unitPrice = DecimalField('Unit Price', places=2, validators=[DataRequired(), NumberRange(min=0)])
+    onhandQuantity = IntegerField('On-hand Quantity', validators=[DataRequired(), NumberRange(min=0)])
+
+    supplierID = SelectField('Supplier', coerce=int, validators=[DataRequired()])
+    categoryCode = SelectField('Category', validators=[DataRequired()])
+    submit = SubmitField('Update Item')
+
+# --- CATEGORY FORMS ---
+class AddCategoryForm(FlaskForm):
+    categoryCode = StringField('Category Code', validators=[DataRequired(), Length(max=2)])
+    categoryName = StringField('Category Name', validators=[DataRequired(), Length(max=50)])
+    submit = SubmitField('Add Category')
+
+class EditCategoryForm(FlaskForm):
+    categoryName = StringField('Category Name', validators=[DataRequired(), Length(max=50)])
+    submit = SubmitField('Update Category')
+
+# --- ORDER FORM ---
+class AddOrderForm(FlaskForm):
+    customerID = SelectField('Customer', coerce=int, validators=[DataRequired()])
+    deliveryMethodCode = SelectField('Delivery Method', validators=[DataRequired()])
+    orderTotalAmount = DecimalField('Order Total Amount', places=2, validators=[DataRequired()])
+    submit = SubmitField('Create Order')
+
+class EditOrderForm(FlaskForm):
+    orderStatus = SelectField('Order Status', choices=[
+        ('Pending', 'Pending'),
+        ('Confirmed', 'Confirmed'),
+        ('Cancelled', 'Cancelled')
+    ], validators=[DataRequired()])
+    submit = SubmitField('Update Order')
+
+# --- USER FORMS ---
+class AddUserForm(FlaskForm):
+    userName = StringField('Username', validators=[DataRequired(), Length(max=20)])
+    password = StringField('Password', validators=[DataRequired(), Length(max=80)])
+    userType = SelectField('User Type', choices=[('Admin', 'Admin'), ('User', 'User')], validators=[DataRequired()])
+    submit = SubmitField('Add User')
+
+class EditUserForm(FlaskForm):
+    userName = StringField('Username', validators=[DataRequired(), Length(max=20)])
+    userType = SelectField('User Type', choices=[('Admin', 'Admin'), ('User', 'User')], validators=[DataRequired()])
+    submit = SubmitField('Update User')

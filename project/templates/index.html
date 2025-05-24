@@ -125,8 +125,9 @@
         <p>Join our Newsletter to receive latest updates about products and services and a promo code for FREE
             delivery!</p>
         <p>*For first-time users</p>
-        <form class="form-inline justify-content-center d-inline-flex">
-            <input class="form-control mr-sm-2 px-5" type="email" placeholder="" aria-label="Email">
+        <form class="form-inline justify-content-center d-inline-flex" method="POST"
+              action="{{ url_for('main.subscribe') }}">
+            <input class="form-control mr-sm-2 px-5" type="email" name="email" required placeholder="Enter your email">
             <button type="submit" class="btn btn-common btn-newsletter my-2 my-sm-0">Subscribe</button>
         </form>
     </div>

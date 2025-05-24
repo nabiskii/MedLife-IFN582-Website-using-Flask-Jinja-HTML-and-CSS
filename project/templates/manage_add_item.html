@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% import 'bootstrap5/form.html' as wtf %}
+{% block main %}
+<div class="card mb-4">
+    <div class="card-header">Add Item</div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('main.add_item') }}">
+            {{ wtf.render_form(item_form) }}
+        </form>
+    </div>
+</div>
+
+<p><a href="{{ url_for('main.manage_items') }}">Back to manage items page</a></p>
+<p><a href="{{ url_for('main.logout') }}">Logout</a></p>
+{% endblock %}

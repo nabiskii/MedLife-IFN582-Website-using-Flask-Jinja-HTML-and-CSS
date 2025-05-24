@@ -1,15 +1,11 @@
 from flask import Flask, render_template, session, Blueprint
-from flask_bootstrap import Bootstrap
 from flask import Flask
 from flask_mysqldb import MySQL
-from flask_login import LoginManager
 from project.config import Config
 import os
+from flask_bootstrap import Bootstrap5
 
 mysql = MySQL()
-login_manager = LoginManager()
-
-login_manager.login_view = 'main.login'
 
 # define a function to create a Flask app
 def create_app():
@@ -31,11 +27,10 @@ def create_app():
     app.debug = True
 
     # initialize Flask-Bootstrap
-    Bootstrap(app)
+    bootstrap = Bootstrap5(app)
 
     # init database & login manager
     mysql.init_app(app)
-    login_manager.init_app(app)
 
     from . import views
     # app.register_blueprint(views.bp)

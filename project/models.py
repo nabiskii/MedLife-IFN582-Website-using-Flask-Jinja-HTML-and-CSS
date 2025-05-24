@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime
+from email.policy import default
 from enum import Enum
 from typing import List
 
@@ -58,6 +59,12 @@ class OrderStatus(Enum):
         return self == OrderStatus.CONFIRMED
     def is_cancelled(self):
         return self == OrderStatus.CANCELLED
+@dataclass
+class UserLogin:
+    userID: int
+    userName: str
+    password: str
+    userType: str
 
 @dataclass
 class DeliveryMethod(Enum):
@@ -117,11 +124,43 @@ class Basket:
         return sum(item.total_price() for item in self.items)
 
 
+# @dataclass
+# class Order:
+#     id: int
+#     deliverycode: DeliveryMethod
+#     total_cost: float = 0.0
+#     items: List[BasketItem] = field(
+#         default_factory=list,
+#         init=True)
+#
+# --- Dataclasses (Models) ---
+@dataclass
+class Item:
+    itemCode: str
+    itemName: str
+    itemDescription: str
+    itemLongDescription1: str
+    itemLongDescription2: str
+    unitPrice: float
+    discountPrice : float
+    supplierID : int
+    categoryCode : str
+    onhandQuantity: int
+    imageURL: str = field(default = 'no-img.jpg')
+
+@dataclass
+class Category:
+    categoryCode: str
+    categoryName: str
+
 @dataclass
 class Order:
-    id: int
-    deliverycode: DeliveryMethod
-    total_cost: float = 0.0
-    items: List[BasketItem] = field(
-        default_factory=list,
+    orderID: int
+    orderNumber: int
+    basketID: int
+    customerID: int
+    orderStatus: OrderStatus
+    deliveryMethodCode : DeliveryMethod
+    orderDate: datetime = field(
+        default_factory=lambda: datetime.now(),
         init=True)
