@@ -432,7 +432,7 @@ def checkout():
             return redirect(url_for('main.index'))
         else:
             flash('The provided information is missing or incorrect','error')
-
+    return render_template('checkout.html', form=form, basket=check_basket, basket_total=check_basket.total_cost())
 
 @bp.route('/subscribe', methods=['POST'])
 def subscribe():
