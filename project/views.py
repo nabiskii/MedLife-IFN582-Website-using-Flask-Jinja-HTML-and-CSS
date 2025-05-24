@@ -1,5 +1,6 @@
 from functools import wraps
 from hashlib import sha256
+from subprocess import check_call
 
 from flask import *
 from flask_login import UserMixin, current_user, login_user, login_required, logout_user
@@ -161,16 +162,16 @@ def clear_basket():
 @bp.route("/checkout/", methods=["GET", "POST"] )
 def checkout():
     form = CheckoutForm()
+    check_basket = get_basket()
     if request.method == 'POST':
         # check if user is logged in
         if not session.get('logged_in'):
             flash('Please log in to proceed with checkout.', 'error')
             return redirect(url_for('main.login'))
         
-        basket = get_basket()
-        print(basket)
+        print(check_basket)
         # check if basket is empty
-        if not basket:
+        if not check_basket:
             flash('Your basket is empty. Please add items to your basket before checking out.', 'error')
             return redirect(url_for('main.index'))
 
@@ -180,7 +181,7 @@ def checkout():
             else:
                 cust_id = get_customer_id(session['user']['user_id'])
             
-            order = convert_basket_to_order(basket)
+            order = convert_basket_to_order(check_basket)
             order_id = add_order(order, cust_id)
             flash(f"Thank you, {session['user']['username']}! Your order #{order_id} has been placed successfully.",)
             empty_basket()
@@ -188,7 +189,7 @@ def checkout():
         else:
             flash('The provided information is missing or incorrect','error')
 
-    return render_template('checkout.html', form=form, basket=basket, basket_total=basket.total_price())
+    return render_template('checkout.html', form=form, basket=check_basket, basket_total=check_basket.total_cost())
 
 '''
 
