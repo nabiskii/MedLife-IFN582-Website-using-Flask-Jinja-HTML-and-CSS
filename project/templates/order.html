@@ -37,26 +37,26 @@
                                     class="img-fluid rounded-3" alt="...">
                             </div>
                             <div class="col-lg-4 mb-2">
-                                <h6 class="text-muted">{{item.item.category}}</h6>
-                                <h6 class="mb-0">{{item.item.name}}</h6>
+                                <h6 class="text-muted">{{item.item.categoryCode}}</h6>
+                                <h6 class="mb-0">{{item.item.itemName}}</h6>
                             </div>
 
 
                             <div class="col-lg-2 col-3 mb-2">
                                 <form method="POST"
-                                    action="{{ url_for('main.order_with_quantity_action', item_id=item.id, action='decrease') }}">
+                                    action="{{ url_for('main.order_with_quantity_action', item_id=item.itemCode, action='decrease') }}">
                                     <button class="btn btn-outline-secondary btn-sm" type="submit">−</button>
                                 </form>
-                                <span class="fw-bold">{{ item.quantity }}</span>
+                                <span class="fw-bold">{{ item.onhandQuantity }}</span>
                                 <form method="POST"
-                                    action="{{ url_for('main.order_with_quantity_action', item_id=item.id, action='increase') }}">
+                                    action="{{ url_for('main.order_with_quantity_action', item_id=item.itemCode, action='increase') }}">
                                     <button class="btn btn-outline-secondary btn-sm" type="submit">+</button>
                                 </form>
                             </div>
 
 
                             <div class="col-lg-2 col-4 mb-2">
-                                <strong>${{item.item.unitprice}}</strong>
+                                <strong>${{item.item.unitPrice}}</strong>
                             </div>
                             <div class="col-1 mb-2">
                                 <a href="#"><i class="bi bi-x"></i></a>

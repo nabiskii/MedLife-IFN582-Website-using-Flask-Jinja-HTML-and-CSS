@@ -11,18 +11,19 @@
                 <img src="{{ url_for('static', filename='img/medicine sample.jpg') }}" class="img-fluid" alt="...">
             </div>
             <div class="col-lg-8">
-                <h3>{{item.name}}</h3>
+                <h3>{{item.itemName}}</h3>
                 <div class="mb-3">
-                    <span id="custom-span">Price: ${{item.unitprice}}</span>
+                    <span id="custom-span">Price: ${{item.unitPrice}}</span>
                     <span class="text-muted"><s>$15.00</s></span>
                 </div>
 
-                <a href="{{ url_for('main.order_add', item_id=item.id) }}" class="btn btn-primary mb-4"><i
+                <a href="{{ url_for('main.order_add', item_id=item.itemCode) }}" class="btn btn-primary mb-4"><i
                         class="bi bi-bag-plus"></i>&nbsp;&nbsp;Add to Cart</a>
 
-                <p>{{item.description1}}</p>
+                <p>{{item.itemDescription}}</p>
+                <p>{{item.itemLongDescription1}}</p>
                 <p class="mb-4">
-                    {{item.description2}}
+                    {{item.itemLongDescription2}}
                 </p>
 
             </div>

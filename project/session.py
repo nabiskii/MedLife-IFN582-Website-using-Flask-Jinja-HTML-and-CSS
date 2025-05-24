@@ -5,15 +5,6 @@ from project.db import get_item
 
 DummyBasket = Basket()
 
-def get_user():
-    user_dict = session.get('user')
-    if user_dict:
-        user = UserAccount(
-            id=user_dict['id'],
-            username=user_dict['username'],
-            role=user_dict['role']
-        )
-    return user
 
 def get_basket():
     basket_data = session.get('basket', {})
@@ -66,9 +57,9 @@ def empty_basket():
 def convert_basket_to_order(basket):
     # convert the basket to an order
     order = Order(
-        id = int,
-        deliverycode = DeliveryMethod.STANDARD,
-        total_cost= basket.total_cost(),
+        orderID = int,
+        deliveryMethodCode = DeliveryMethod.STANDARD,
+        orderTotalAmount= basket.total_cost(),
         items = basket.items,
     )
     return order

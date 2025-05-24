@@ -318,16 +318,7 @@ def get_items():
     """Get all items."""
     cur = mysql.connection.cursor()
     cur.execute("""
-                SELECT items.itemCode AS 'Item Code',
-                items.itemName AS 'Item Name',
-                items.itemDescription AS 'Item Description',
-                items.itemLongDescription1 AS 'Instruction',
-                items.itemLongDescription2 AS 'Ingredients',
-                items.unitPrice AS 'Unit Price',
-                category.categoryName AS 'Category Name',
-                suppliers.supplierName AS 'Supplier Name',
-                items.onhandQuantity AS 'Onhand Quantity',
-                items.imageURL AS 'Image'
+                SELECT *
             FROM items
             LEFT JOIN 
                 category ON category.categoryCode = items.categoryCode
@@ -338,16 +329,7 @@ def get_items():
                 """)
     items = cur.fetchall()
     cur.close()
-    return [Item(str(item['Item Code']),
-                 item['Item Name'],
-                 item['Item Description'],
-                 item['Instruction'],
-                 item['Ingredients'],
-                 item['Unit Price'],
-                 item['Category Name'],
-                 item['Supplier Name'],
-                 item['Onhand Quantity'],
-                 item['Image']) for item in items]
+    return items
 
 
 def get_item(item_id):
@@ -472,9 +454,7 @@ def get_distinct_all_categories():
     cur.execute("SELECT DISTINCT * FROM category")
     categories = cur.fetchall()
     cur.close()
-    return [Category(
-        code=categories['categoryCode'],
-        name=categories['categoryName']) for categories in categories]
+    return categories
 
 
 #  Orders CRUD

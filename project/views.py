@@ -1,11 +1,11 @@
 from hashlib import sha256
 
-from flask import *
+from flask import Blueprint, flash, redirect, url_for, render_template, request
 
 from project.forms import *
-from . import db
+from . import db, session
 from . import models
-from .session import get_basket, convert_basket_to_order, empty_basket
+from .session import get_basket, convert_basket_to_order, empty_basket, add_to_basket, remove_from_basket
 from .wrapper import admin_required
 
 bp = Blueprint('main', __name__)
@@ -339,10 +339,10 @@ def order_add(item_id):
         return redirect(url_for('main.index'))
 
     # Add to basket or increment quantity
-    db.add_to_basket(item_id)
+    add_to_basket(item_id)
     
     print(get_basket(),"getting the basket")
-    return redirect(url_for('main.order'))
+    # return redirect(url_for('main.order'))
     return render_template('order.html', item=item, basket=basket, basket_total=basket.total_cost())
 
 @bp.route('/order/<int:item_id>/<int:quantity>')
@@ -354,7 +354,7 @@ def order_with_quantity(item_id, quantity):
         flash('Item not found.')
         return redirect(url_for('main.index'))
 
-    db.add_to_basket(item_id, quantity)
+    add_to_basket(item_id, quantity)
     return render_template('order.html', item=item, basket=basket, basket_total=basket.total_cost())
 
 @bp.route('/order/<int:item_id>/<string:action>', methods =['POST'])
@@ -378,7 +378,7 @@ def order_with_quantity_action(item_id, action):
                     break
     
     if removing_itemid:
-        db.remove_from_basket(item_id)
+        remove_from_basket(item_id)
         flash(f'{item.name} removed from basket.')
 
     return render_template('order.html', item=item, basket=basket, basket_total=basket.total_cost())
@@ -392,7 +392,7 @@ def remove_item(item_id):
         return redirect(url_for('main.index'))
 
     # remove item from basket
-    db.remove_from_basket(item_id)
+    remove_from_basket(item_id)
     flash(f'{item.name} removed from basket.')
     return redirect(url_for('main.order', item_id=item_id))
 
@@ -447,4 +447,3 @@ def subscribe():
     except Exception as e:
         flash('Subscription failed: ' + str(e), 'error')
     return redirect(url_for('main.index'))
-    return render_template('checkout.html', form=form, basket=check_basket, basket_total=check_basket.total_cost())

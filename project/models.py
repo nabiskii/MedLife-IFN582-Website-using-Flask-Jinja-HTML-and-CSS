@@ -1,8 +1,32 @@
 from dataclasses import dataclass, field
 from datetime import datetime
-from email.policy import default
 from enum import Enum
 from typing import List
+
+
+@dataclass
+class OrderStatus(Enum):
+    PENDING = 'Pending'
+    CONFIRMED = 'Confirmed'
+    CANCELLED = 'Cancelled'
+
+    def is_pending(self):
+        return self == OrderStatus.PENDING
+
+    def is_confirmed(self):
+        return self == OrderStatus.CONFIRMED
+
+    def is_cancelled(self):
+        return self == OrderStatus.CANCELLED
+
+
+@dataclass
+class DeliveryMethod(Enum):
+    STANDARD = 5
+    EXPRESS = 8
+    ECO = 15
+    TEMP = 25
+
 
 @dataclass
 class UserAccount:
@@ -10,6 +34,43 @@ class UserAccount:
     username: str
     password: str
     role: str
+
+
+# --- Dataclasses (Models) ---
+@dataclass
+class Item:
+    itemCode: str
+    itemName: str
+    itemDescription: str
+    itemLongDescription1: str
+    itemLongDescription2: str
+    unitPrice: float
+    discountPrice: float
+    supplierID: int
+    categoryCode: str
+    onhandQuantity: int
+    imageURL: str = field(default='no-img.jpg')
+
+
+@dataclass
+class Category:
+    categoryCode: str
+    categoryName: str
+
+
+@dataclass
+class Order:
+    orderID: int
+    orderNumber: int
+    basketID: int
+    customerID: int
+    orderStatus: OrderStatus
+    deliveryMethodCode: DeliveryMethod
+    orderTotalAmount: float
+    orderDate: datetime = field(
+        default_factory=lambda: datetime.now(),
+        init=True)
+
 
 @dataclass
 class CustomerInfo:
@@ -24,41 +85,19 @@ class CustomerInfo:
     state: str
     postcode: str
 
+
 @dataclass
 class Supplier:
     id: int
     name: str
+
 
 @dataclass
 class Category:
     code: str
     name: str
 
-@dataclass
-class Item:
-    id: str
-    name: str
-    description: str
-    description1: str
-    description2: int
-    unitprice: float
-    category: Category
-    quantity: int
-    supplier: str
-    imagepath: str
 
-@dataclass
-class OrderStatus(Enum):
-    PENDING = 'Pending'
-    CONFIRMED = 'Confirmed'
-    CANCELLED = 'Cancelled'
-
-    def is_pending(self):
-        return self == OrderStatus.PENDING
-    def is_confirmed(self):
-        return self == OrderStatus.CONFIRMED
-    def is_cancelled(self):
-        return self == OrderStatus.CANCELLED
 @dataclass
 class UserLogin:
     userID: int
@@ -66,12 +105,6 @@ class UserLogin:
     password: str
     userType: str
 
-@dataclass
-class DeliveryMethod(Enum):
-    STANDARD = 5
-    EXPRESS = 8
-    ECO = 15
-    TEMP = 25
 
 @dataclass
 class BasketItem:
@@ -81,7 +114,7 @@ class BasketItem:
 
     def total_price(self):
         """Calculate the total price for this basket item."""
-        return self.item.unitprice * self.quantity
+        return self.item.unitPrice * self.quantity
 
     def increment_quantity(self):
         """Increment the quantity of this basket item."""
@@ -91,6 +124,7 @@ class BasketItem:
         """Decrement the quantity of this basket item."""
         if self.quantity > 1:
             self.quantity -= 1
+
 
 @dataclass
 class Basket:
@@ -123,7 +157,6 @@ class Basket:
         """Calculate the total cost of the basket."""
         return sum(item.total_price() for item in self.items)
 
-
 # @dataclass
 # class Order:
 #     id: int
@@ -133,34 +166,3 @@ class Basket:
 #         default_factory=list,
 #         init=True)
 #
-# --- Dataclasses (Models) ---
-@dataclass
-class Item:
-    itemCode: str
-    itemName: str
-    itemDescription: str
-    itemLongDescription1: str
-    itemLongDescription2: str
-    unitPrice: float
-    discountPrice : float
-    supplierID : int
-    categoryCode : str
-    onhandQuantity: int
-    imageURL: str = field(default = 'no-img.jpg')
-
-@dataclass
-class Category:
-    categoryCode: str
-    categoryName: str
-
-@dataclass
-class Order:
-    orderID: int
-    orderNumber: int
-    basketID: int
-    customerID: int
-    orderStatus: OrderStatus
-    deliveryMethodCode : DeliveryMethod
-    orderDate: datetime = field(
-        default_factory=lambda: datetime.now(),
-        init=True)
