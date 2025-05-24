@@ -342,6 +342,7 @@ def get_item(item_id):
                     items.itemLongDescription1 AS 'Instruction',
                     items.itemLongDescription2 AS 'Ingredients',
                     items.unitPrice AS 'Unit Price',
+                    items.discountPrice AS 'Discount Price',
                     category.categoryName AS 'Category Name',
                     suppliers.supplierName AS 'Supplier Name',
                     items.onhandQuantity AS 'Onhand Quantity',
@@ -365,8 +366,9 @@ def get_item(item_id):
                 item['Instruction'],
                 item['Ingredients'],
                 item['Unit Price'],
-                item['Category Name'],
+                item['Discount Price'],
                 item['Supplier Name'],
+                item['Category Name'],
                 item['Onhand Quantity'],
                 item['Image'])
 
