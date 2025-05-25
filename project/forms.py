@@ -4,22 +4,13 @@ from wtforms.validators import DataRequired, Length, InputRequired, email, Equal
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=150)])
-    password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm', message='Passwords must match')])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), Length(min=8)])
-    firstname = StringField('First Name', validators=[DataRequired(), Length(min=2, max=150)])
-    surname = StringField('Surname', validators=[DataRequired(), Length(min=2, max=150)])
-    email = StringField('Email', validators=[DataRequired(), email()])
-    phone = StringField('Phone', validators=[DataRequired(), Length(min=10, max=15)])
-    address = StringField('Address', validators=[DataRequired(), Length(min=5, max=200)])
-    city = StringField('City', validators=[DataRequired(), Length(min=2, max=100)])
-    state = StringField('State', validators=[DataRequired(), Length(min=2, max=100)])
-    country = StringField('Country', validators=[DataRequired(), Length(min=2, max=100)])
-    zip_code = StringField('Zip Code', validators=[DataRequired(), Length(4)])
+    password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm_password', message='Passwords must match')])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), Length(min=5)])
     submit = SubmitField('Register')
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=150)])
-    password = PasswordField('Password', validators=[DataRequired(),Length(min=8)])
+    password = PasswordField('Password', validators=[DataRequired(),Length(min=5)])
     submit = SubmitField('Login')
 
 # form used in basket
@@ -28,6 +19,11 @@ class CheckoutForm(FlaskForm):
     surname = StringField("Your surname", validators = [InputRequired()])
     email = StringField("Your email", validators = [InputRequired(), email()])
     phone = StringField("Your phone number", validators = [InputRequired()])
+    address1 = StringField("Address line 1", validators = [InputRequired()])
+    address2 = StringField("Address line 2")
+    city = StringField("City", validators = [InputRequired()])
+    state = StringField("State", validators = [InputRequired()])
+    postcode = StringField("Postcode", validators = [InputRequired()])
     submit = SubmitField("Send to Agent")
 
 # Admin manage form

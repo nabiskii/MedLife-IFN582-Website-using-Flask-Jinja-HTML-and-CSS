@@ -1,54 +1,90 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block main %}
-<section>  
-    <div class="container">
-        <div class="row mt-2 mb-2">
-            <div class="col-12">
-                <h3>Shopping Basket</h3>
-            </div>
-        </div>
 
-        {% for tour in order.tours %}
-        <div class="row shadow my-row mb-3">
-            <div class="col-sm-10 card">
-                <h5 class="card-header">{{ tour.date.strftime("%d-%m-%Y") }} : {{ tour.city.name }} {{ tour.name }}</h5>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-2">
-                            <img class="img-thumbnail" src="{{ url_for('static', filename='img/' + tour.image) }}">
-                        </div>
-                        <div class="col-10">
-                            <p class="card-text">{{ tour.description }}</p>   
-                        </div>  
-                    </div>                      
+<div class="container mx-10 my-5">
+    <h2 class="mb-3">Cart Summary</h2>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-lg-4 order-2">
+                    <div class="card mb-3">
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Your cart</span>
+                        </h4>
+
+                        <hr class="mb-4">
+
+                        <h5 class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Total Price</span>
+                            <strong>${{basket_total}}</strong>
+                        </h5>
+
+                        <a class="nav-link btn-common btn-medicine d-block text-center" type="button"
+                            href="{{ url_for('main.checkout') }}">Checkout&nbsp;&nbsp;<i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
                 </div>
+
+                <div class="col-lg-8 order-1">
+                    <div class="card mb-3">
+                        {% if basket|length > 0 %}
+                        {% for basketItem in basket.items %}
+
+                        <div class="row align-items-center mb-3">
+                            <div class="col-lg-3 col-12 mb-2">
+                                <img src="{{ url_for('static', filename='img/medicine sample.jpg') }}"
+                                    class="img-fluid rounded-3" alt="...">
+                            </div>
+                            <div class="col-lg-4 mb-2">
+                                <h6 class="text-muted">{{basketItem.item.categoryCode}}</h6>
+                                <h6 class="mb-0">{{basketItem.item.itemName}}</h6>
+                            </div>
+
+
+                            <div class="col-lg-2 col-3 mb-2">
+                                <form method="POST"
+                                    action="{{ url_for('main.order_with_quantity_action', item_id=basketItem.id, action='decrease') }}">
+                                    <button class="btn btn-outline-secondary btn-sm" type="submit">−</button>
+                                </form>
+                                <span class="fw-bold">{{ basketItem.quantity }}</span>
+                                <form method="POST"
+                                    action="{{ url_for('main.order_with_quantity_action', item_id=basketItem.id, action='increase') }}">
+                                    <button class="btn btn-outline-secondary btn-sm" type="submit">+</button>
+                                </form>
+                            </div>
+
+
+                            <div class="col-lg-2 col-4 mb-2">
+                                <strong>${{basketItem.item.unitPrice}}</strong>
+                            </div>
+                            <div class="col-1 mb-2">
+                                <a href="#"><i class="bi bi-x"></i></a>
+                            </div>
+                        </div>
+
+                        <hr class="mb-4">
+                        {% endfor %}
+                        {% else %}
+                        <h5 class="mb-3">Your basket is empty.</h5>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-lg-12 mb-2">
+                                <a href="{{ url_for('main.index') }}"><i class="bi bi-arrow-left"></i>&nbsp;&nbsp;Back
+                                    to
+                                    shopping</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
 
-            <div class="col-sm-2 d-flex flex-column justify-content-between align-items-end">
-                <h5>{{ "$%.2f"|format(tour.price) }}</h5>
-                <form method="POST" action="{{ url_for('main.deleteorderitem') }}">
-                    <input type="hidden" id="id" name="id" value="{{ tour.id }}">
-                    <input type="submit" value="Delete" class="btn btn-primary mb-3">
-                </form> 
-            </div>
-        </div>
-        {% endfor %}
-        
-        <!-- total price and controls -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <h5>Quote = {{ "$%.2f"|format(totalprice) }}</h5>
-            </div>
         </div>
 
-        <div class="row mt-2 mb-4">
-            <div class="col-12">
-                <a href="{{ url_for('main.index', _anchor='cities_anchor') }}" class="btn btn-primary me-3">Cities</a>
-                <a href="{{ url_for('main.checkout') }}" class="btn btn-primary me-3">Checkout</a>
-                <a href="{{ url_for('main.deleteorder') }}" class="btn btn-primary">Empty Basket</a>
-            </div>
-        </div>
     </div>
-</section>
+</div>
+
 {% endblock %}

@@ -2,6 +2,7 @@
 
 {% block main %}
 <!--hero-->
+{% if not search %}
 <section id="hero" class="section hero d-flex align-items-center">
     <div class="container">
         <div class="row my-4">
@@ -51,8 +52,7 @@
         <hr class="custom-divider">
         <div class="row my-4">
             <div class="col-lg-6">
-                <img src="{{ url_for('static', filename='img/people-about us.png') }}"
-                     alt="" class="img-fluid">
+                <img src="{{ url_for('static', filename='img/people-about us.png') }}" alt="" class="img-fluid">
             </div>
             <div class="col-lg-6 d-flex flex-column justify-content-center text-justify">
                 <p>At Medlife, we are revolutionizing the way people access healthcare by bringing
@@ -67,29 +67,56 @@
     </div>
 </section>
 
-<!-- Products Section -->
+<!-- Products -->
 <section id="products" class="section products">
     <div class="container my-5">
         <h1 class="heading text-center">Our Products</h1>
 
-        <div class="row mb-5">
-            {% for product in products %}
-            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-4">
-                <div class="product-item card custom-hover">
-                    <img src="{{ url_for('static', filename='img/' + product.image) }}" alt="">
-                    <div class="card-body">
-                        <div class="row justify-content-between py-3">
-                            <a href="main.index.html" class="btn btn-primary">View Details</a>
-                            <span><strong>${{ product.price }}</strong></span>
-                        </div>
-                        <h5 class="card-title">{{ product.name }}</h5>
-                    </div>
-                </div>
-            </div>
+        <div class="d-flex justify-content-center mb-4">
+            <a href="{{ url_for('main.index', category='all') }}"
+                class="btn btn-outline-primary mx-2 {% if selected_category == 'all' %}active{% endif %}">
+                All
+            </a>
+            {% for category in all_categories %}
+            <a href="{{ url_for('main.index', category=category.categoryCode) }}"
+                class="btn btn-outline-primary mx-2 {% if selected_category == category.categoryCode %}active{% endif %}">
+                {{ category.categoryName }}
+            </a>
             {% endfor %}
         </div>
     </div>
 </section>
+{% else %}
+
+<div>
+    <h3>Search results for "{{search}}"</h3>
+</div>
+
+{% endif %}
+<section id="products" class="section products">
+    <div class="container my-5">
+        <div class="row mb-5">
+            {% if items %}
+            {% for item in items %}
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-4">
+                <div class="product-item card custom-hover">
+                    <img src="{{ url_for('static', filename='img/medicine sample.jpg') }}" alt="" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.itemName }}</h5>
+                        <p class="card-text"><strong>${{ item.unitPrice }}</strong></p>
+                        <a href="{{ url_for('main.product_details', item_id=item.itemCode) }}" class="btn btn-primary">View
+                            Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <h3>No products found!</h3>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
 
 <!-- Newsletter -->
 <section id="newsletter" class="section newsletter">

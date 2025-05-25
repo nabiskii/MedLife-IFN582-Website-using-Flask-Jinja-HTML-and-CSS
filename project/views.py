@@ -1,11 +1,11 @@
 from hashlib import sha256
 
-from flask import *
+from flask import Blueprint, flash, redirect, url_for, render_template, request
 
 from project.forms import *
-from . import db
+from . import db, session
 from . import models
-from .session import get_basket, convert_basket_to_order, empty_basket
+from .session import get_basket, convert_basket_to_order, empty_basket, add_to_basket, remove_from_basket
 from .wrapper import admin_required
 
 bp = Blueprint('main', __name__)
@@ -284,7 +284,7 @@ def delete_order(order_id):
 
 
 # ***init page navigation***
-@bp.route('/', endpoint='index')
+@bp.route('/', methods=['GET'])
 def index():
     services = [
         {
@@ -305,40 +305,134 @@ def index():
         }
     ]
 
-    search_term = request.args.get('search_field', '').strip()
-    if search_term:
-        products = db.search_items(search_term)
-        flash(f"Showing results for '{search_term}'", 'info')
-    else:
-        products = db.get_all_items()
+    all_categories = db.get_distinct_all_categories()
+    selected_category = request.args.get('category', 'all')
+    search = request.args.get('search','').strip()
+    print(search)
 
-    return render_template("index.html", services=services, products=products)
+    if search:
+        items = db.search_items(search)
+    elif selected_category == 'all':
+        items = db.get_items()
+    else:
+        items = db.get_items_by_category(selected_category)
+
+    return render_template("index.html", services=services, items=items, all_categories=all_categories, search=search, selected_category=selected_category)
+
+@bp.route('/product_details/<int:item_id>')
+def product_details(item_id):
+    return render_template('product_details.html', item=db.get_item(item_id))
+
+@bp.route('/order/')
+def order():
+    basket = get_basket()
+
+    return render_template('order.html', basket=basket, basket_total=basket.total_cost())
+
+@bp.route('/order/<int:item_id>')
+def order_add(item_id):
+    basket = get_basket()
+    item = db.get_item(item_id)
+    
+    if not item:
+        flash('Item not found.')
+        return redirect(url_for('main.index'))
+
+    # Add to basket or increment quantity
+    add_to_basket(item_id)
+    
+    print(get_basket(),"getting the basket")
+    # return redirect(url_for('main.order'))
+    return render_template('order.html', item=item, basket=basket, basket_total=basket.total_cost())
+
+@bp.route('/order/<int:item_id>/<int:quantity>')
+def order_with_quantity(item_id, quantity):
+    basket = get_basket()
+    item = db.get_item(item_id)
+
+    if not item:
+        flash('Item not found.')
+        return redirect(url_for('main.index'))
+
+    add_to_basket(item_id, quantity)
+    return render_template('order.html', item=item, basket=basket, basket_total=basket.total_cost())
+
+@bp.route('/order/<int:item_id>/<string:action>', methods =['POST'])
+def order_with_quantity_action(item_id, action):
+    removing_itemid = False
+    basket = get_basket()
+    item = db.get_item(item_id)
+
+    if not item:
+        flash('Item not found.')
+        return redirect(url_for('main.index'))
+
+    for basket_item in basket.items:
+        if basket_item.id == item_id:
+            if action == 'increase':
+                basket_item.increment_quantity()
+            elif action == 'decrease':
+                basket_item.decrement_quantity()
+                if basket_item.quantity == 0:
+                    removing_itemid = True
+                    break
+    
+    if removing_itemid:
+        remove_from_basket(item_id)
+        flash(f'{item.name} removed from basket.')
+
+    return render_template('order.html', item=item, basket=basket, basket_total=basket.total_cost())
+
+@bp.route('/removeitem/<int:item_id>')
+def remove_item(item_id):
+    item = db.get_item(item_id)
+
+    if not item:
+        flash('Item not found.')
+        return redirect(url_for('main.index'))
+
+    # remove item from basket
+    remove_from_basket(item_id)
+    flash(f'{item.name} removed from basket.')
+    return redirect(url_for('main.order', item_id=item_id))
+
+@bp.route('/clearbasket/')
+def clear_basket():
+    # Clear the basket in the session
+    empty_basket()
+    flash('Basket cleared successfully.')
+    return redirect(url_for('main.order'))
 
 @bp.route("/checkout/", methods=["GET", "POST"] )
 def checkout():
     form = CheckoutForm()
+    check_basket = get_basket()
     if request.method == 'POST':
-
-        # retrieve correct order object
-        order = get_basket()
+        # check if user is logged in
+        if not session.get('logged_in'):
+            flash('Please log in to proceed with checkout.', 'error')
+            return redirect(url_for('main.login'))
+        
+        print(check_basket)
+        # check if basket is empty
+        if not check_basket:
+            flash('Your basket is empty. Please add items to your basket before checking out.', 'error')
+            return redirect(url_for('main.index'))
 
         if form.validate_on_submit():
-            order.status = True
-            order.firstname = form.firstname.data
-            order.surname = form.surname.data
-            order.email = form.email.data
-            order.phone = form.phone.data
-            flash('Thank you for your information, your order is being processed!', )
-            order = convert_basket_to_order(get_basket())
+            if not db.check_customer_exists(session['user']['user_id']):
+                cust_id = db.add_customer(session['user']['user_id'], form.firstname.data, form.surname.data, form.email.data, form.phone.data, form.address1.data, form.address2.data, form.city.data, form.state.data, form.postcode.data)
+            else:
+                cust_id = db.get_customer_id(session['user']['user_id'])
+            
+            order = convert_basket_to_order(check_basket)
+            order_id = add_order(order, cust_id)
+            flash(f"Thank you, {session['user']['username']}! Your order #{order_id} has been placed successfully.",)
             empty_basket()
-            db.add_order(order)
-            print('Number of orders in db: {}'.format(len(db.get_orders())))
             return redirect(url_for('main.index'))
         else:
-            flash('The provided information is missing or incorrect',
-                  'error')
-
-    return render_template('checkout.html', form=form)
+            flash('The provided information is missing or incorrect','error')
+    return render_template('checkout.html', form=form, basket=check_basket, basket_total=check_basket.total_cost())
 
 @bp.route('/subscribe', methods=['POST'])
 def subscribe():

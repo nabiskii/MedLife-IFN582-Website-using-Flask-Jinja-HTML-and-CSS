@@ -1,53 +1,28 @@
-
-
 from project import mysql
 from project.models import *
-
-DummyProduct = Product('1', 'Claratyne Allergy & Hayfever Relief',
-         'This is description for Claratyne Allergy & Hayfever Relief',79,
-        'p_pic1.jpg', 9.50, datetime(2023, 7, 23), 4.9)
-
-Products = [
-    Product('1', 'Claratyne Allergy & Hayfever Relief',
-         'This is description for Claratyne Allergy & Hayfever Relief',79,
-        'p_pic1.jpg', 9.50, datetime(2023, 7, 23), 4.9),
-    Product('2', 'Nurofen Zavance 96 pack',
-         'This is description for Nurofen Zavance 96 pack',100,
-         'p_pic2.jpg', 15.00,  datetime(2023, 10, 30),4.8),
-    Product('3', 'Panadol Rapid 48 Caplets',
-         'This is description for Panadol Rapid 48 Caplets', 310,
-         'p_pic3.jpg', 10.00,  datetime(2023, 10, 30),3.8)
-]
-
-DummyUserInfo = UserInfo(
-    '0', 'Dummy', 'Foobar', 'dummy@foobar.com', '1234567890'
-)
-
-Orders = [
-    DummyOrder('1', OrderStatus.PENDING, DummyUserInfo, 149.99,
-          []),
-    DummyOrder('2', OrderStatus.CONFIRMED, DummyUserInfo, 1000.00,
-          [])
-]
-
 
 
 #  ----------- user query -------------
 def check_for_user(username, hash_password):
     cur = mysql.connection.cursor()
-    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userName = %s AND password = %s", (username, hash_password))
+    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userName = %s AND password = %s",
+                (username, hash_password))
     row = cur.fetchone()
     cur.close()
     if row:
-        return UserLogin(row ['userID'], row['userName'], row['password'], row['userType'])
+        return UserLogin(row['userID'], row['userName'], row['password'], row['userType'])
     return None
+
 
 def is_admin(user_id):
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM users WHERE userType = 'Admin' AND userID = %s", (user_id,))
-    row = cur.fetchone()
+    user = cur.fetchone()
     cur.close()
-    return True if row else False
+    if user and user['userType'] == 'admin':
+        return True
+    return False
+
 
 def get_user_by_id(user_id):
     cur = mysql.connection.cursor()
@@ -56,6 +31,7 @@ def get_user_by_id(user_id):
     cur.close()
     return user
 
+
 def get_all_users():
     cur = mysql.connection.cursor()
     cur.execute("SELECT userID, userName, userType FROM users")
@@ -63,12 +39,14 @@ def get_all_users():
     cur.close()
     return users
 
+
 def insert_user(username, password, user_type):
     cur = mysql.connection.cursor()
     cur.execute("INSERT INTO users (userName, password, userType) VALUES (%s, %s, %s)",
                 (username, password, user_type))
     mysql.connection.commit()
     cur.close()
+
 
 def update_user(user_id, username, user_type):
     user_type = user_type.strip()  # Clean whitespace
@@ -81,11 +59,13 @@ def update_user(user_id, username, user_type):
     mysql.connection.commit()
     cur.close()
 
+
 def delete_from_user(user_id):
     cur = mysql.connection.cursor()
     cur.execute("DELETE FROM users WHERE userID = %s", (user_id,))
     mysql.connection.commit()
     cur.close()
+
 
 #  ----------- item query -------------
 def get_all_items():
@@ -95,6 +75,7 @@ def get_all_items():
     cur.close()
     return items
 
+
 def get_admin_all_items():
     cur = mysql.connection.cursor()
     cur.execute("SELECT itemCode, itemName, unitPrice, onhandQuantity FROM items")
@@ -102,15 +83,6 @@ def get_admin_all_items():
     cur.close()
     return items
 
-def search_items(term):
-    search_term = "%" + term + "%"
-    cur = mysql.connection.cursor()
-    cur.execute("""SELECT itemCode, itemName AS name, itemDescription, unitPrice AS price, imageURL AS image
-            FROM items
-            WHERE itemName LIKE %s OR itemDescription LIKE %s""", (search_term, search_term ))
-    items = cur.fetchall()
-    cur.close()
-    return items
 
 
 def get_item_by_code(code):
@@ -120,19 +92,24 @@ def get_item_by_code(code):
     cur.close()
     return item
 
+
 def add_item(code, name, desc, price, quantity, supplierID, categoryCode):
     cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO items (itemCode, itemName, itemDescription, unitPrice, onhandQuantity, supplierID, categoryCode, imageURL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                (code, name, desc, price, quantity, supplierID, categoryCode, 'no-img.jpg'))
+    cur.execute(
+        "INSERT INTO items (itemCode, itemName, itemDescription, unitPrice, onhandQuantity, supplierID, categoryCode, imageURL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+        (code, name, desc, price, quantity, supplierID, categoryCode, 'no-img.jpg'))
     mysql.connection.commit()
     cur.close()
 
+
 def update_item(code, name, description, price, quantity, supplierID, categoryCode):
     cur = mysql.connection.cursor()
-    cur.execute("UPDATE items SET itemName = %s, itemDescription = %s, unitPrice = %s, onhandQuantity = %s, supplierID = %s, categoryCode = %s WHERE itemCode = %s",
-                (name, description, price, quantity, supplierID, categoryCode, code))
+    cur.execute(
+        "UPDATE items SET itemName = %s, itemDescription = %s, unitPrice = %s, onhandQuantity = %s, supplierID = %s, categoryCode = %s WHERE itemCode = %s",
+        (name, description, price, quantity, supplierID, categoryCode, code))
     mysql.connection.commit()
     cur.close()
+
 
 def delete_item(code):
     cur = mysql.connection.cursor()
@@ -149,6 +126,7 @@ def get_all_categories():
     cur.close()
     return categories
 
+
 def get_category_by_code(code):
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM category WHERE categoryCode = %s", (code,))
@@ -156,17 +134,20 @@ def get_category_by_code(code):
     cur.close()
     return category
 
+
 def add_category(code, name):
     cur = mysql.connection.cursor()
     cur.execute("INSERT INTO category (categoryCode, categoryName) VALUES (%s, %s)", (code, name))
     mysql.connection.commit()
     cur.close()
 
+
 def update_category(code, name):
     cur = mysql.connection.cursor()
     cur.execute("UPDATE category SET categoryName = %s WHERE categoryCode = %s", (name, code))
     mysql.connection.commit()
     cur.close()
+
 
 def delete_category(code):
     cur = mysql.connection.cursor()
@@ -183,6 +164,7 @@ def get_all_orders():
     cur.close()
     return orders
 
+
 def get_order_by_id(order_id):
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM orders WHERE orderID = %s", (order_id,))
@@ -190,9 +172,11 @@ def get_order_by_id(order_id):
     cur.close()
     return order
 
+
 def add_order_admin(customerID, deliveryMethodCode, orderTotalAmount):
     cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO orders (customerID, deliveryMethodCode, orderTotalAmount) VALUES (%s, %s, %s)", (customerID, deliveryMethodCode, orderTotalAmount))
+    cur.execute("INSERT INTO orders (customerID, deliveryMethodCode, orderTotalAmount) VALUES (%s, %s, %s)",
+                (customerID, deliveryMethodCode, orderTotalAmount))
     mysql.connection.commit()
     cur.close()
 
@@ -203,11 +187,13 @@ def update_order_status(order_id, status):
     mysql.connection.commit()
     cur.close()
 
+
 def delete_order(order_id):
     cur = mysql.connection.cursor()
     cur.execute("DELETE FROM orders WHERE orderID = %s", (order_id,))
     mysql.connection.commit()
     cur.close()
+
 
 #  ----------- supplier query -------------
 def get_all_suppliers():
@@ -217,6 +203,7 @@ def get_all_suppliers():
     cur.close()
     return suppliers
 
+
 #  ----------- customers query -------------
 def get_all_customers():
     cur = mysql.connection.cursor()
@@ -224,6 +211,7 @@ def get_all_customers():
     customers = cur.fetchall()
     cur.close()
     return customers
+
 
 #  ----------- delivery method query -------------
 def get_all_delivery_methods():
@@ -233,6 +221,7 @@ def get_all_delivery_methods():
     cur.close()
     return methods
 
+
 #  ----------- subscription query -------------
 def insert_subscription(email):
     cur = mysql.connection.cursor()
@@ -240,63 +229,250 @@ def insert_subscription(email):
     mysql.connection.commit()
     cur.close()
 
-# Product CRUD
-def get_products():
-    """Get all products."""
-    return Products
 
-def get_product(product_id):
-    """Get a product by its ID."""
-    product_id = str(product_id)
-    for product in Products:
-        if product.id == product_id:
-            return product
-    return DummyProduct
 
-def add_product(product):
-    """Add a new product."""
-    Products.append(product)
+def add_user(username, password):
+    """Add a new user."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                INSERT INTO users (userName, password, userType)
+                VALUES (%s, %s, %s)
+                """, (username,
+                      password,
+                      "User"))
+    mysql.connection.commit()
+    cur.close()
 
-def update_product(product_id, udt_product):
-    """Update a product by its ID."""
-    product_id = str(product_id)
-    for id in range(0, len(Products)):
-        if Products[id].id == product_id:
-            Products[id] = udt_product
 
-def remove_product(product_id):
-        """Remove a product by its ID."""
-        for id in range(0, len(Products)):
-            if Products[id].id == product_id:
-                Products.pop(id)
+def get_user_by_login(username, password):
+    """Get a user by username."""
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT userID, userName, password, userType FROM users WHERE userName = %s AND password = %s",
+                (username, password))
+    user = cur.fetchone()
+    cur.close()
+    if user:
+        return UserAccount(
+            id=user['userID'],
+            username=user['userName'],
+            password=user['password'],
+            role=user['userType']
+        )
+    return None
+
+
+
+def check_user_exists(username):
+    """Check if a user exists by username."""
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE userName = %s", (username,))
+    user = cur.fetchone()
+    cur.close()
+    return user is not None
+
+
+def check_customer_exists(userID):
+    """Check if a customer exists by userID."""
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM customers WHERE userID = %s", (userID,))
+    customer = cur.fetchone()
+    cur.close()
+    return customer is not None
+
+
+def add_customer(form):
+    """Add a new customer."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                INSERT INTO customers (firstName, surname, phoneNumber, emailAddress, addressLine1, addressLine2, city, state, postCode)
+                VALUES (%s, %s, %s)
+                """, (form.firstname.data,
+                      form.surname.data,
+                      form.phone.data,
+                      form.email.data,
+                      form.address1.data,
+                      form.address2.data,
+                      form.city.data,
+                      form.state.data,
+                      form.postcode.data))
+
+    cust_id = cur.lastrowid
+    mysql.connection.commit()
+    cur.close()
+    return cust_id
+
+
+def get_customer_id(userID):
+    """Get a customer ID by userID."""
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT customerID FROM customers WHERE userID = %s", (userID,))
+    customer = cur.fetchone()
+    cur.close()
+    if customer:
+        return customer['customerID']
+    return None
+
+
+# item CRUD
+def get_items():
+    """Get all items."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                SELECT *
+            FROM items
+            LEFT JOIN 
+                category ON category.categoryCode = items.categoryCode
+            LEFT JOIN 
+                suppliers ON suppliers.supplierID = items.supplierID
+            ORDER BY
+                items.itemName;
+                """)
+    items = cur.fetchall()
+    cur.close()
+    return items
+
+
+def get_item(item_id):
+    """Get a particular item based on item id."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                SELECT items.itemCode AS 'Item Code',
+                    items.itemName AS 'Item Name',
+                    items.itemDescription AS 'Item Description',
+                    items.itemLongDescription1 AS 'Instruction',
+                    items.itemLongDescription2 AS 'Ingredients',
+                    items.unitPrice AS 'Unit Price',
+                    items.discountPrice AS 'Discount Price',
+                    category.categoryName AS 'Category Name',
+                    suppliers.supplierName AS 'Supplier Name',
+                    items.onhandQuantity AS 'Onhand Quantity',
+                    items.imageURL AS 'Image'
+                FROM 
+                    items
+                LEFT JOIN 
+                    category ON category.categoryCode = items.categoryCode
+                LEFT JOIN 
+                    suppliers ON suppliers.supplierID = items.supplierID
+                WHERE 
+                    items.itemCode = %s
+                ORDER BY 
+                    items.itemName;
+                """, (item_id,))
+    item = cur.fetchone()
+    cur.close()
+    return Item(str(item['Item Code']),
+                item['Item Name'],
+                item['Item Description'],
+                item['Instruction'],
+                item['Ingredients'],
+                item['Unit Price'],
+                item['Discount Price'],
+                item['Supplier Name'],
+                item['Category Name'],
+                item['Onhand Quantity'],
+                item['Image'])
+
+
+def get_items_by_category(category):
+    """Get items by category."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                SELECT items.itemCode AS 'Item Code',
+                items.itemName AS 'Item Name',
+                items.itemDescription AS 'Item Description',
+                items.itemLongDescription1 AS 'Instruction',
+                items.itemLongDescription2 AS 'Ingredients',
+                items.unitPrice AS 'Unit Price',
+                category.categoryName AS 'Category Name',
+                suppliers.supplierName AS 'Supplier Name',
+                items.onhandQuantity AS 'Onhand Quantity',
+                items.imageURL AS 'Image'
+            FROM items
+            LEFT JOIN 
+                category ON category.categoryCode = items.categoryCode
+            LEFT JOIN 
+                suppliers ON suppliers.supplierID = items.supplierID
+            WHERE category.categoryCode = %s
+            ORDER BY
+                items.itemName;
+                """, (category,))
+    items = cur.fetchall()
+    cur.close()
+    return [Item(str(item['Item Code']),
+                 item['Item Name'],
+                 item['Item Description'],
+                 item['Instruction'],
+                 item['Ingredients'],
+                 item['Unit Price'],
+                 item['Category Name'],
+                 item['Supplier Name'],
+                 item['Onhand Quantity'],
+                 item['Image']) for item in items]
+
+
+def search_items(search):
+    """Search for items by name."""
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                SELECT items.itemCode AS 'Item Code',
+                items.itemName AS 'Item Name',
+                items.itemDescription AS 'Item Description',
+                items.itemLongDescription1 AS 'Instruction',
+                items.itemLongDescription2 AS 'Ingredients',
+                items.unitPrice AS 'Unit Price',
+                category.categoryName AS 'Category Name',
+                suppliers.supplierName AS 'Supplier Name',
+                items.onhandQuantity AS 'Onhand Quantity',
+                items.imageURL AS 'Image'
+            FROM items
+            LEFT JOIN 
+                category ON category.categoryCode = items.categoryCode
+            LEFT JOIN 
+                suppliers ON suppliers.supplierID = items.supplierID
+            WHERE items.itemName LIKE %s OR items.itemDescription LIKE %s
+            OR items.itemLongDescription1 LIKE %s OR items.itemLongDescription2 LIKE %s
+            ORDER BY
+                items.itemName;
+                """, ('%' + search + '%', '%' + search + '%', '%' + search + '%', '%' + search + '%'))
+    items = cur.fetchall()
+    cur.close()
+    return [Item(str(item['Item Code']),
+                 item['Item Name'],
+                 item['Item Description'],
+                 item['Instruction'],
+                 item['Ingredients'],
+                 item['Unit Price'],
+                 item['Category Name'],
+                 item['Supplier Name'],
+                 item['Onhand Quantity'],
+                 item['Image']) for item in items]
+
+
+
+
+#  ----------- category query -------------
+def get_distinct_all_categories():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT DISTINCT * FROM category")
+    categories = cur.fetchall()
+    cur.close()
+    return categories
+
 
 #  Orders CRUD
-def get_orders():
-    """Get all orders."""
-    return Orders
-
-def get_order(order_id):
-    """Get an order by its ID."""
-    order_id = str(order_id)
-    for order in Orders:
-        if order.id == order_id:
-            return order
-    return None  # or raise an exception if preferred
-
-def add_order(order):
+def add_order(order, customer_id):
     """Add a new order."""
-    Orders.append(order)
+    cur = mysql.connection.cursor()
+    cur.execute("""
+                INSERT INTO orders (orderID, customerID, deliveryCode, totalCost, orderDate)
+                VALUES (%s, %s, %s, %s)
+                """, (order.id,
+                      customer_id,
+                      order.deliverycode,
+                      order.total_cost,
+                      datetime.now()))
 
-def update_order(order_id, udt_order):
-    """Update a order by its ID."""
-    order_id = str(order_id)
-    for id in range(0, len(Orders)):
-        if Orders[id].id == order_id:
-            Orders[id] = udt_order
-
-def remove_order(order_id):
-        """Remove a order by its ID."""
-        for id in range(0, len(Orders)):
-            if Orders[id].id == order_id:
-                Orders.pop(id)
-
+    order_id = cur.lastrowid
+    mysql.connection.commit()
+    cur.close()
+    return order_id

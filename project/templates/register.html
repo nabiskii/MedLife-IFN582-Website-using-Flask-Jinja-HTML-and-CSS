@@ -19,7 +19,7 @@
             <div class="col-md-6">
 
                 <h2>Register</h2>
-                <form method="POST">
+                <form action="" method="POST">
 
                     {{ form.hidden_tag() }}
 
@@ -34,51 +34,6 @@
                     {% endfor %}
 
                     {{ form.confirm_password.label }} {{ form.confirm_password() }}<br>
-                    {% for error in form.username.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-
-                    {{ form.firstname.label }} {{ form.firstname() }}<br>
-                    {% for error in form.username.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-
-                    {{ form.surname.label }} {{ form.surname() }}<br>
-                    {% for error in form.username.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-
-                    {{ form.email.label }} {{ form.email() }}<br>
-                    {% for error in form.username.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-
-                    {{ form.phone.label }} {{ form.phone() }}<br>
-                    {% for error in form.username.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-
-                    {{ form.address.label }} {{ form.address() }}<br>
-                    {% for error in form.username.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-
-                    {{ form.city.label }} {{ form.city() }}<br>
-                    {% for error in form.username.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-
-                    {{ form.state.label }} {{ form.state() }}<br>
-                    {% for error in form.username.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-
-                    {{ form.country.label }} {{ form.country() }}<br>
-                    {% for error in form.username.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-
-                    {{ form.zip_code.label }} {{ form.zip_code() }}<br>
                     {% for error in form.username.errors %}
                     <span style="color: red;">{{ error }}</span>
                     {% endfor %}
