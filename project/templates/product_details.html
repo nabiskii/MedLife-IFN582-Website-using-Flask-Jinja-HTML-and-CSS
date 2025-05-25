@@ -17,14 +17,14 @@
                     <span class="text-muted"><s>$15.00</s></span>
                 </div>
 
-                <a href="{{ url_for('main.order_add', item_id=item.itemCode) }}" class="btn btn-primary mb-4"><i
-                        class="bi bi-bag-plus"></i>&nbsp;&nbsp;Add to Cart</a>
-
                 <p>{{item.itemDescription}}</p>
                 <p>{{item.itemLongDescription1}}</p>
                 <p class="mb-4">
                     {{item.itemLongDescription2}}
                 </p>
+
+                 <a href="{{ url_for('main.order_add', item_id=item.itemCode) }}" class="btn btn-primary mb-4"><i
+                        class="bi bi-bag-plus"></i>&nbsp;&nbsp;Add to Cart</a>
 
             </div>
         </div>
