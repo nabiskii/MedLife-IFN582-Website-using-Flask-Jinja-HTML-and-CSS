@@ -26,14 +26,14 @@
         <div class="row">
             <div class="col-12 text-lg-center">
                 <br>
-                <h2 >Thank you for shopping at MedLife.</h2>
-                <h3 >
+                <h1 >Thank you for shopping at MedLife.</h1>
+                <h6 >
                     Please provide your login details to access your private account.
                     If you have not joined Medlife yet,
                     <br> please
                     <a href="{{ url_for('main.register') }}" class="underlined-link" > register first
                     </a>
-                </h3>
+                </h6>
             </div>
         </div>
         <div class="row mt-4 justify-content-center p-3">
@@ -68,6 +68,13 @@
             </div>
         </div>
   </div>
-
 </div>
+
+  <div class="row">
+                            <div class="col-lg-12 mb-2">
+                                <a href="{{ url_for('main.index') }}"><i class="bi bi-arrow-left"></i>&nbsp;&nbsp;Back
+                                    to
+                                    shopping</a>
+                            </div>
+                        </div>
 {% endblock %} 
