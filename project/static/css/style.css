@@ -230,7 +230,7 @@ img {
      background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    height: 500px
+    height: 200px
     var(--background-color)
 }
 
@@ -238,4 +238,18 @@ img {
     color: rgb(235, 231, 227);
     font-style: italic;
     /* opacity: 100; */
+}
+
+/* Styling for the form labels */
+label {
+    font-weight: bold;
+    font-size:medium;
+    color: #2e2e2e;
+    text-align:left;
+    margin-right: 8px;
+    text-wrap-mode: nowrap;
+    /* background-color: #e9ecef; */
+    border-radius: .25rem;
+    height: 35px;
+
 }

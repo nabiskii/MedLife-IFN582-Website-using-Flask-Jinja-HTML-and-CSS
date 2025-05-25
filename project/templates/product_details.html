@@ -11,7 +11,7 @@
                 <img src="{{ url_for('static', filename='img/medicine sample.jpg') }}" class="img-fluid" alt="...">
             </div>
             <div class="col-lg-8">
-                <h3>{{item.itemName}}</h3>
+                <h2>{{item.itemName}}</h2>
                 <div class="mb-3">
                     <span id="custom-span">Price: ${{item.unitPrice}}</span>
                     <span class="text-muted"><s>$15.00</s></span>
@@ -23,12 +23,21 @@
                     {{item.itemLongDescription2}}
                 </p>
 
-                 <a href="{{ url_for('main.order_add', item_id=item.itemCode) }}" class="btn btn-primary mb-4"><i
+                 <a href="{{ url_for('main.order_add', item_id=item.itemCode) }}" class="btn btn-success mb-4"><i
                         class="bi bi-bag-plus"></i>&nbsp;&nbsp;Add to Cart</a>
 
             </div>
         </div>
     </div>
+
+<!-- ADJUST URL HERE TO GO BACK TO PRODUCTS  -->
+   <div class="row">
+                            <div class="col-lg-12 mb-2">
+                                <a href="{{ url_for('main.index') }}"><i class="bi bi-arrow-left"></i>&nbsp;&nbsp;Back
+                                    to
+                                    shopping</a>
+                            </div>
+                        </div>
 
 </div>
 
