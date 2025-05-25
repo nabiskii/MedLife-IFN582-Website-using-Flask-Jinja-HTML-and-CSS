@@ -25,13 +25,51 @@ body {
 }
 
 h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-weight: 600;
+h2
+ {
+    color: #18191aee; 
+    font-weight: bold;
+    margin-bottom: 20px;
+    
+}
+
+h3
+{
+color: rgba(52, 58, 64, 0.904)ee; 
+    font-weight: bold;
     font-family: var(--brand-font);
+    text-align: center;
+    font-size:large;
+    text-wrap-mode: nowrap;
+}
+
+h4
+{
+    color: rgba(52, 58, 64, 0.904)ee; 
+    font-weight: 500;
+    font-family: var(--brand-font);
+    text-align: center;
+    font-size:large;
+    text-wrap-mode: nowrap;
+}
+h5
+{
+    color: rgba(52, 58, 64, 0.904)ee; 
+    font-weight: 300;
+    font-family: var(--brand-font);
+    text-align: center;
+    font-size:large;
+ 
+}
+
+h6
+{
+    color: rgba(52, 58, 64, 0.904)ee; 
+    font-weight: 500;
+    font-family: var(--brand-font);
+    text-align: center;
+    font-size:large;
+ 
 }
 
 a {
@@ -203,4 +241,48 @@ img {
     background-color: var(--contrast-color);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
+}
+
+/* Changes the link color to blue, for better visibility */
+.underlined-link {
+    text-decoration: underline;
+    font-weight: bold;
+    color: var(--brand-color); 
+}
+/* Remove underline on hover, for a neat effect */
+.underlined-link:hover {
+    text-decoration: none; 
+}
+.bg-section
+{
+    background-image: url('/static/img/login.jpg');
+    /* background-size:auto; */
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 200px
+    var(--background-color);
+    max-width: 100%;
+    height: auto;
+   /* margin-bottom: 50px;  */
+   
+}
+
+.custom-placeholder::placeholder{
+    color: rgb(235, 231, 227);
+    font-style: italic;
+    /* opacity: 100; */
+}
+
+/* Styling for the form labels */
+label {
+    font-weight: bold;
+    font-size:medium;
+    color: #2e2e2e;
+    text-align:left;
+    margin-right: 8px;
+    text-wrap-mode: nowrap;
+    /* background-color: #e9ecef; */
+    border-radius: .25rem;
+    height: 35px;
+
 }
