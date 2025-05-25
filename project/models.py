@@ -138,9 +138,9 @@ class Basket:
         """Add a tour to the basket."""
         self.items.append(item)
 
-    def remove_item(self, item: BasketItem):
+    def remove_item(self, item_id:str):
         """Remove a tour from the basket by its ID."""
-        self.items = [tour for tour in self.items if tour.id != item.id]
+        self.items = [basketItem for basketItem in self.items if basketItem.id != item_id]
 
     def get_item(self, item_id: str):
         """Get a tour from the basket by its ID."""

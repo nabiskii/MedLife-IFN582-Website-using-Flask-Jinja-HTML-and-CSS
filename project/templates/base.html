@@ -41,7 +41,7 @@
                         <a class="nav-link" href="{{ url_for('main.index') }}#products">Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.checkout') }}">Cart</a>
+                        <a class="nav-link" href="{{ url_for('main.order') }}">Cart</a>
                     </li>
                     {% if session['user'] and session['user']['is_admin'] %}
                     <li class="nav-item ms-2">
@@ -59,7 +59,8 @@
                     {% endif %}
                 </ul>
                 <form class="form-inline d-inline-flex" method="GET" action="{{ url_for('main.index')}}#products">
-                    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Eg. Aspirin"                           aria-label="Search">
+                    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Eg. Aspirin"
+                           aria-label="Search">
                     <button class="btn btn-medicine my-2 my-sm-0 px-2" type="submit">Search</button>
                 </form>
             </div>

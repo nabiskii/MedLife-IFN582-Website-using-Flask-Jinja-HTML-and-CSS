@@ -39,16 +39,16 @@ def create_app():
     from . import session
 
     # --- comment database health check ---
-    # with app.app_context():
-    #     try:
-    #         cur = mysql.connection.cursor()
-    #         cur.execute("SELECT 1")
-    #         cur.close()
-    #         print("[DB CHECK] Database is connected.")
-    #     except Exception as e:
-    #         print(f"[DB CHECK] Error connecting to database: {e}")
-    #         raise SystemExit("Exiting due to DB error.")
-    #  -------------------------------------
+    with app.app_context():
+        try:
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT 1")
+            cur.close()
+            print("[DB CHECK] Database is connected.")
+        except Exception as e:
+            print(f"[DB CHECK] Error connecting to database: {e}")
+            raise SystemExit("Exiting due to DB error.")
+     # -------------------------------------
 
     # add error handler
     @app.errorhandler(404)

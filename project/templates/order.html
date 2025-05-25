@@ -87,7 +87,7 @@
                                 <strong>${{basketItem.item.unitPrice}}</strong>
                             </div>
                             <div class="col-1 mb-2">
-                                <a href="#"><i class="bi bi-x"></i></a>
+                                <a href="{{ url_for('main.remove_item', item_id=basketItem.id) }}"><i class="bi bi-x"></i></a>
                             </div>
                         </div>
 
@@ -98,7 +98,7 @@
                         {% endif %}
 <!-- Needs to be fixed to the correct route -->
                      <div class="col-2 ">
-                        <form method="POST" action="{{ url_for('main.clear_basket') }}">
+                        <form method="GET" action="{{ url_for('main.clear_basket') }}">
                              <input type="submit" value="Empty basket" class="btn btn-danger mb-3">
                          </form>
                      </div>
