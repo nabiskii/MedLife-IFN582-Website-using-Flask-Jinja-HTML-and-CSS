@@ -6,7 +6,7 @@
     <div class="card mb-4">
         <div class="card-header">Edit Category</div>
         <div class="card-body">
-            <form method="POST" action="{{ url_for('main.edit_category', code=edit_category_code) }}">
+            <form method="POST">
                 {{ wtf.render_form(edit_category_form) }}
             </form>
         </div>

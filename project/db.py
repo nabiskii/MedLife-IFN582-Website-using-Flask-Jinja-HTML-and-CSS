@@ -252,11 +252,11 @@ def get_user_by_login(username, password):
     user = cur.fetchone()
     cur.close()
     if user:
-        return UserAccount(
-            id=user['userID'],
-            username=user['userName'],
+        return UserLogin(
+            userID=user['userID'],
+            userName=user['userName'],
             password=user['password'],
-            role=user['userType']
+            userType=user['userType']
         )
     return None
 

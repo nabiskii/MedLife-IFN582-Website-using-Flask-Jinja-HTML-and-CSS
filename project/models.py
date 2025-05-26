@@ -27,15 +27,6 @@ class DeliveryMethod(Enum):
     ECO = 15
     TEMP = 25
 
-
-@dataclass
-class UserAccount:
-    id: str
-    username: str
-    password: str
-    role: str
-
-
 # --- Dataclasses (Models) ---
 @dataclass
 class Item:
@@ -47,7 +38,7 @@ class Item:
     unitPrice: float
     discountPrice: float
     supplierID: int
-    categoryCode: str
+    categoryName: str
     onhandQuantity: int
     imageURL: str = field(default='no-img.jpg')
 
@@ -135,7 +126,7 @@ class Basket:
         return len(self.items)
 
     def add_item(self, item: BasketItem):
-        """Add a tour to the basket."""
+        """Add an item to the basket."""
         self.items.append(item)
 
     def remove_item(self, item_id:str):
@@ -143,12 +134,13 @@ class Basket:
         self.items = [basketItem for basketItem in self.items if basketItem.id != item_id]
 
     def get_item(self, item_id: str):
-        """Get a tour from the basket by its ID."""
+        """Get a product from the basket by its ID."""
         for item in self.items:
             if item.id == item_id:
                 return item
         return None
-
+    
+    #not used (remove)
     def empty(self):
         """Empty the basket."""
         self.items = []
@@ -156,13 +148,3 @@ class Basket:
     def total_cost(self):
         """Calculate the total cost of the basket."""
         return sum(item.total_price() for item in self.items)
-
-# @dataclass
-# class Order:
-#     id: int
-#     deliverycode: DeliveryMethod
-#     total_cost: float = 0.0
-#     items: List[BasketItem] = field(
-#         default_factory=list,
-#         init=True)
-#
