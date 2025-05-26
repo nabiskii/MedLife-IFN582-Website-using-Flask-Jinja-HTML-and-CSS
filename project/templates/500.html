@@ -1,8 +1,16 @@
 {% extends 'base.html' %}
 
 {% block main %}
-    <h1>Error</h1>
-    <p>
+<div class="container">
+
+    <h1>Error 500</h1>
+    <h2>
+        Oooops!
+    </h2>
+            <img src="{{ url_for('static', filename='img/error500.png') }}" alt="" class="img">
+    <h5>
         Sorry, but the server has encounterd an error. Please try again in a few minutes. 
-    </p>
+    </h5>
+</div>
+
 {% endblock %}

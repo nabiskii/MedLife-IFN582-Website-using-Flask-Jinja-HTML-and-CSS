@@ -1,54 +1,123 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block main %}
-<section>  
-    <div class="container">
-        <div class="row mt-2 mb-2">
-            <div class="col-12">
-                <h3>Shopping Basket</h3>
-            </div>
-        </div>
 
-        {% for tour in order.tours %}
-        <div class="row shadow my-row mb-3">
-            <div class="col-sm-10 card">
-                <h5 class="card-header">{{ tour.date.strftime("%d-%m-%Y") }} : {{ tour.city.name }} {{ tour.name }}</h5>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-2">
-                            <img class="img-thumbnail" src="{{ url_for('static', filename='img/' + tour.image) }}">
+<div class="container mx-10 my-5">
+    <h2 class="mb-3">Cart Summary</h2>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+
+                <div class="col-lg-4 order-2">
+                    <div class="justify-content-between card mb-3">
+                       <h3 class="col-lg-4 d-flex align-items-center mb-3">
+                          Cart totals
+                       </h3>
+                        <div>
+                            <br>    
+                              <div class="col-lg-6 mb-3">
+                                <form class="mb-3">
+                                    <div class="d-inline-flex align-items-center">
+                                    <label class= "d-flex justify-content-between align-items-center mb-3" for="form-delivery-method">Delivery Charges</label>
+                                    <select class="form-select form-control-lg ms-3 mx-auto" aria-label="Default select example" >
+                                       <option selected>Standard Delivery- $5.00</option>
+                                        <option value="2">Eco Delivery- $8.00</option>
+                                        <option value="3">Express Delivery- $15.00</option>
+                                        <option value="4">Temp-Controlled Delivery- $25.00</option>
+                                    </select>
+                                    
+                                    </div>
+                                </form>
+
+                            </div>
+                            
                         </div>
-                        <div class="col-10">
-                            <p class="card-text">{{ tour.description }}</p>   
-                        </div>  
-                    </div>                      
+
+                        <!-- doing dynamically: INSERT DELIVERY TYPE VARIABLE HERE -->
+                        <!-- doing dynamically: INSERT DELIVERY ASSOCIATED FEE VARIABLE HERE -->
+                        <br>
+                        <h5 class="d-flex justify-content-between align-items-center mb-3">Products total
+                            <span >$ ----------<!--E VARIABLE HERE --></span>
+                        </h5>
+                        <hr class="mb-4">
+
+
+                        <h5 class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Total Price</span>
+                            <strong>${{basket_total}} </strong>
+                        </h5>
+
+                        <a class="nav-link btn-common btn-medicine d-block text-center" type="button"
+                            href="{{ url_for('main.checkout') }}">Checkout&nbsp;&nbsp;<i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
                 </div>
+
+                <div class="col-lg-8 order-1">
+                    <div class="card mb-3">
+                        {% if basket|length > 0 %}
+                        {% for basketItem in basket.items %}
+
+                        <div class="row align-items-center mb-3">
+                            <div class="col-lg-3 col-12 mb-2">
+                                <img src="{{ url_for('static', filename='img/medicine sample.jpg') }}"
+                                    class="img-fluid rounded-3" alt="...">
+                            </div>
+                            <div class="col-lg-4 mb-2">
+                                <h6 class="text-muted">{{basketItem.item.categoryCode}}</h6>
+                                <h6 class="mb-0">{{basketItem.item.itemName}}</h6>
+                            </div>
+
+
+                            <div class="d-inline-flex align-items-center col-lg-2 col-3 mb-3">
+                                <form method="POST"
+                                    action="{{ url_for('main.order_with_quantity_action', item_id=basketItem.id, action='decrease') }}">
+                                    <button class="btn btn-outline-secondary btn-sm mx-2" type="submit">−</button>
+                                </form>
+                               
+                                <span class="fw-bold mb-2">{{ basketItem.quantity }}</span>
+                                <form method="POST"
+                                    action="{{ url_for('main.order_with_quantity_action', item_id=basketItem.id, action='increase') }}">
+                                    <button class="btn btn-outline-secondary btn-sm mx-2" type="submit">+</button>
+                                </form>
+                            </div>
+
+
+                            <div class="col-lg-2 col-4 mb-2">
+                                <strong>${{basketItem.item.unitPrice}}</strong>
+                            </div>
+                            <div class="col-1 mb-2">
+                                <a href="#"><i class="bi bi-x"></i></a>
+                            </div>
+                        </div>
+
+                        <hr class="mb-4">
+                        {% endfor %}
+                        {% else %}
+                        <h5 class="mb-3">Your basket is empty.</h5>
+                        {% endif %}
+<!-- Needs to be fixed to the correct route -->
+                     <div class="col-2 ">
+                        <form method="POST" action="{{ url_for('main.clear_basket') }}">
+                             <input type="submit" value="Empty basket" class="btn btn-danger mb-3">
+                         </form>
+                     </div>
+                </div>
+
             </div>
 
-            <div class="col-sm-2 d-flex flex-column justify-content-between align-items-end">
-                <h5>{{ "$%.2f"|format(tour.price) }}</h5>
-                <form method="POST" action="{{ url_for('main.deleteorderitem') }}">
-                    <input type="hidden" id="id" name="id" value="{{ tour.id }}">
-                    <input type="submit" value="Delete" class="btn btn-primary mb-3">
-                </form> 
-            </div>
-        </div>
-        {% endfor %}
-        
-        <!-- total price and controls -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <h5>Quote = {{ "$%.2f"|format(totalprice) }}</h5>
-            </div>
         </div>
 
-        <div class="row mt-2 mb-4">
-            <div class="col-12">
-                <a href="{{ url_for('main.index', _anchor='cities_anchor') }}" class="btn btn-primary me-3">Cities</a>
-                <a href="{{ url_for('main.checkout') }}" class="btn btn-primary me-3">Checkout</a>
-                <a href="{{ url_for('main.deleteorder') }}" class="btn btn-primary">Empty Basket</a>
-            </div>
-        </div>
     </div>
-</section>
+     <div class="row">
+                            <div class="col-lg-12 mb-2">
+                                <a href="{{ url_for('main.index') }}"><i class="bi bi-arrow-left"></i>&nbsp;&nbsp;Back
+                                    to
+                                    shopping</a>
+                            </div>
+                        </div>
+</div>
+
+
+
 {% endblock %}
