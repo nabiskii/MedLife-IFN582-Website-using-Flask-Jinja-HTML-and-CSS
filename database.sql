@@ -27,7 +27,7 @@ addressLine1 VARCHAR(50) NOT NULL,
 addressLine2 VARCHAR(50) NOT NULL,
 city VARCHAR(50) NOT NULL,
 state VARCHAR(50) NOT NULL,
-zipCode VARCHAR(4) NOT NULL,
+postCode VARCHAR(4) NOT NULL,
 FOREIGN KEY (userID) REFERENCES users(userID)
 );
 
@@ -143,7 +143,7 @@ SELECT
 	customers.addressLine2 AS 'Address Line 2',
 	customers.city AS 'City',
 	customers.state AS 'State',
-	customers.zipCode AS 'Zip Code'
+	customers.postCode AS 'Post Code'
 FROM customers
 LEFT JOIN users ON customers.userID = users.userID
 ORDER BY
