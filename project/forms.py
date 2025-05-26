@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, DecimalField, IntegerField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, DecimalField, IntegerField, SelectField, RadioField
 from wtforms.validators import DataRequired, Length, InputRequired, email, EqualTo, NumberRange
 
 class RegisterForm(FlaskForm):
@@ -22,9 +22,25 @@ class CheckoutForm(FlaskForm):
     address1 = StringField("Address line 1", validators = [InputRequired()])
     address2 = StringField("Address line 2")
     city = StringField("City", validators = [InputRequired()])
-    state = StringField("State", validators = [InputRequired()])
+    state = SelectField("State", choices=[
+        ('NSW', 'New South Wales'),
+        ('VIC', 'Victoria'),
+        ('QLD', 'Queensland'),
+        ('WA', 'Western Australia'),
+        ('SA', 'South Australia'),
+        ('TAS', 'Tasmania'),
+        ('ACT', 'Australian Capital Territory'),
+        ('NT', 'Northern Territory')], validators = [InputRequired()])
     postcode = StringField("Postcode", validators = [InputRequired()])
-    submit = SubmitField("Send to Agent")
+    paymenttype = RadioField('Payment Type', choices=[
+        ('Credit Card', 'Credit Card'),
+        ('Debit Card', 'Debit Card'),
+        ('PayPal', 'PayPal')], validators=[InputRequired()])
+    nameoncard = StringField('Name on Card', validators=[InputRequired(), Length(max=50)])
+    cardnumber = StringField('Card Number', validators=[InputRequired(), Length(min=16, max=16)])
+    expirydate = StringField('Expiry Date (MM/YY)', validators=[InputRequired(), Length(min=5, max=5)])
+    cvv = PasswordField('CVV', validators=[InputRequired(), Length(min=3, max=3)], render_kw={'style':'margin-bottom: 15px;'})
+    submit = SubmitField('Submit Payment')
 
 # Admin manage form
 # --- ITEM FORM ---

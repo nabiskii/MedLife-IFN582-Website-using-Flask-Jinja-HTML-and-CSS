@@ -7,6 +7,7 @@ from . import db, session
 from . import models
 from .session import get_basket, convert_basket_to_order, empty_basket, add_to_basket, remove_from_basket
 from .wrapper import admin_required
+from .models import DeliveryMethod
 
 bp = Blueprint('main', __name__)
 
@@ -14,45 +15,48 @@ bp = Blueprint('main', __name__)
 @bp.route('/register/', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        password = sha256(form.password.data.encode()).hexdigest()
-        # Check if the user already exists
-        cur = db.mysql.connection.cursor()
-        cur.execute("SELECT id FROM users WHERE username = %s", [username])
-        if cur.fetchone():
-            flash('Username already exists.', 'danger')
-            return redirect(url_for('main.register'))
-        cur.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, %s)",
-                    (username, password, 'user'))
-        db.mysql.connection.commit()
-        cur.close()
-        flash('Registration successful! Please login.','success')
-        return redirect(url_for('main.login'))
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            username = form.username.data
+            password = sha256(form.password.data.encode()).hexdigest()
+            # Check if the user already exists
+            cur = db.mysql.connection.cursor()
+            cur.execute("SELECT userID FROM users WHERE username = %s", [username])
+            if cur.fetchone():
+                flash('Username already exists.', 'danger')
+                cur.close()
+                return redirect(url_for('main.register'))
+            cur.execute("INSERT INTO users (userName, password, userType) VALUES (%s, %s, %s)",
+                        (username, password, 'User'))
+            db.mysql.connection.commit()
+            cur.close()
+            flash('Registration successful! Please login.','success')
+            return redirect(url_for('main.login'))
     return render_template('register.html', form=form)
 
 # User login route
 @bp.route('/login/', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
-        user = db.check_for_user(form.username.data, sha256(form.password.data.encode()).hexdigest())
-        if user is not None:
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            user = db.check_for_user(form.username.data, sha256(form.password.data.encode()).hexdigest())
+            if user is not None:
 
-            # Store full user info in session
-            if user.userType == 'Admin':is_admin = True;
-            else:is_admin = False;
-            session['user'] = {
-                'user_id': str(user.userID),
-                'username': user.userName,
-                'user_type': user.userType,
-                'is_admin': is_admin,
-            }
-            session['logged_in'] = True
-            flash('Login successful!','success')
+                # Store full user info in session
+                if user.userType == 'Admin':is_admin = True;
+                else:is_admin = False;
+                session['user'] = {
+                    'user_id': str(user.userID),
+                    'username': user.userName,
+                    'user_type': user.userType,
+                    'is_admin': is_admin,
+                }
+                session['logged_in'] = True
+                flash('Login successful!','success')
 
-            return redirect(url_for('main.index'))
-        flash('Invalid username or password','danger')
+                return redirect(url_for('main.index'))
+            flash('Invalid username or password','danger')
     return render_template('login.html', title='Log In', form=form)
 
 # User logout route
@@ -62,7 +66,7 @@ def logout():
     session.pop('user', None)
     session.pop('logged_in', None)
     flash('You have been logged out.','success')
-    return redirect(url_for('main.login'))
+    return redirect(url_for('main.index'))
 
 # Dashboard for authenticated users
 @bp.route('/manage/')
@@ -151,11 +155,15 @@ def add_item():
 @bp.route('/edit_item/<code>', methods=['GET', 'POST'])
 @admin_required
 def edit_item(code):
+    print("editing item code value",code)
     item = db.get_item_by_code(code)
-    if not item:
+    print(item, "item in edit_item")
+    if item is None:
+        print(item, "item in edit_item not found")
         flash('Item not found.', 'danger')
         return redirect(url_for('main.manage_items'))
 
+    print("crossed the item not found check")
     form = EditItemForm(data=item)  # preload form with item values
 
     # Populate dropdown choices
@@ -325,12 +333,14 @@ def product_details(item_id):
 
 @bp.route('/order/')
 def order():
+    print("inside order")
     basket = get_basket()
 
     return render_template('order.html', basket=basket, basket_total=basket.total_cost())
 
 @bp.route('/order/<int:item_id>')
 def order_add(item_id):
+    print("inside order_add")
     basket = get_basket()
     item = db.get_item(item_id)
     
@@ -347,6 +357,7 @@ def order_add(item_id):
 
 @bp.route('/order/<int:item_id>/<int:quantity>')
 def order_with_quantity(item_id, quantity):
+    print("inside order with quantity")
     basket = get_basket()
     item = db.get_item(item_id)
 
@@ -362,18 +373,21 @@ def order_with_quantity_action(item_id, action):
     removing_itemid = False
     basket = get_basket()
     item = db.get_item(item_id)
+    print("item in order_with_quantity_action: ", item)
 
     if not item:
         flash('Item not found.')
         return redirect(url_for('main.index'))
 
     for basket_item in basket.items:
-        if basket_item.id == item_id:
+        print("basket_item: ", basket_item)
+        if basket_item.id == int(item_id):
             if action == 'increase':
                 basket_item.increment_quantity()
             elif action == 'decrease':
-                basket_item.decrement_quantity()
-                if basket_item.quantity == 0:
+                if basket_item.quantity > 1:
+                    basket_item.decrement_quantity()
+                else:
                     removing_itemid = True
                     break
     
@@ -385,6 +399,7 @@ def order_with_quantity_action(item_id, action):
 
 @bp.route('/removeitem/<int:item_id>')
 def remove_item(item_id):
+    print("inside remove item")
     item = db.get_item(item_id)
 
     if not item:
@@ -393,7 +408,7 @@ def remove_item(item_id):
 
     # remove item from basket
     remove_from_basket(item_id)
-    flash(f'{item.name} removed from basket.')
+    flash(f'{item.itemName} removed from basket.')
     return redirect(url_for('main.order', item_id=item_id))
 
 @bp.route('/clearbasket/')
@@ -407,17 +422,21 @@ def clear_basket():
 def checkout():
     form = CheckoutForm()
     check_basket = get_basket()
+    selected_method = int(request.args.get('delivery', 5))
+    basket_total = check_basket.total_cost()+selected_method
     if request.method == 'POST':
+        print("Checkout POST request received")
         # check if user is logged in
         if not session.get('logged_in'):
             flash('Please log in to proceed with checkout.', 'error')
             return redirect(url_for('main.login'))
         
-        print(check_basket)
+        print("checkout basket data: ",check_basket)
         # check if basket is empty
         if not check_basket:
             flash('Your basket is empty. Please add items to your basket before checking out.', 'error')
             return redirect(url_for('main.index'))
+
 
         if form.validate_on_submit():
             if not db.check_customer_exists(session['user']['user_id']):
@@ -426,13 +445,13 @@ def checkout():
                 cust_id = db.get_customer_id(session['user']['user_id'])
             
             order = convert_basket_to_order(check_basket)
-            order_id = add_order(order, cust_id)
+            order_id = db.add_order(order, cust_id)
             flash(f"Thank you, {session['user']['username']}! Your order #{order_id} has been placed successfully.",)
             empty_basket()
             return redirect(url_for('main.index'))
         else:
             flash('The provided information is missing or incorrect','error')
-    return render_template('checkout.html', form=form, basket=check_basket, basket_total=check_basket.total_cost())
+    return render_template('checkout.html', form=form, basket=check_basket, basket_total=basket_total, delivery_methods=DeliveryMethod, selected_method=selected_method)
 
 @bp.route('/subscribe', methods=['POST'])
 def subscribe():

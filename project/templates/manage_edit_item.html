@@ -4,7 +4,7 @@
 <div class="card mb-4">
     <div class="card-header">Edit Item</div>
     <div class="card-body">
-        <form method="POST" action="{{ url_for('main.edit_item', code=item.id) }}') }}">
+        <form method="POST">
             {{ wtf.render_form(item_form) }}
         </form>
     </div>
