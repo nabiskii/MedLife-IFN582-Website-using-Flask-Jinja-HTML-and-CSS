@@ -59,8 +59,9 @@
                                 <strong>${{basketItem.item.unitPrice}}</strong>
                             </div>
                             <div class="col-1 mb-2">
-                                <a href="{{ url_for('main.remove_item', item_id=basketItem.id) }}"><i
-                                        class="bi bi-x"></i></a>
+
+                                <a href="{{ url_for('main.remove_item', item_id=basketItem.id) }}"><i class="bi bi-x"></i></a>
+
                             </div>
                         </div>
 
@@ -69,6 +70,15 @@
                         {% else %}
                         <h5 class="mb-3">Your basket is empty.</h5>
                         {% endif %}
+
+<!-- Needs to be fixed to the correct route -->
+                     <div class="col-2 ">
+                        <form method="GET" action="{{ url_for('main.clear_basket') }}">
+                             <input type="submit" value="Empty basket" class="btn btn-danger mb-3">
+                         </form>
+                     </div>
+                </div>
+
 
                         <div class="col-2 ">
                             <a href="{{ url_for('main.clear_basket') }}" class="btn btn-danger mb-1" role="button">Empty basket</a>

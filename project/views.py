@@ -331,7 +331,7 @@ def index():
 def product_details(item_id):
     return render_template('product_details.html', item=db.get_item(item_id))
 
-@bp.route('/order/')
+@bp.route('/order/', methods=['GET'])
 def order():
     print("inside order")
     basket = get_basket()
@@ -340,8 +340,6 @@ def order():
 
 @bp.route('/order/<int:item_id>')
 def order_add(item_id):
-    print("inside order_add")
-    basket = get_basket()
     item = db.get_item(item_id)
     
     if not item:
@@ -352,8 +350,7 @@ def order_add(item_id):
     add_to_basket(item_id)
     
     print(get_basket(),"getting the basket")
-    # return redirect(url_for('main.order'))
-    return render_template('order.html', item=item, basket=basket, basket_total=basket.total_cost())
+    return redirect(url_for('main.order'))
 
 @bp.route('/order/<int:item_id>/<int:quantity>')
 def order_with_quantity(item_id, quantity):
@@ -366,12 +363,11 @@ def order_with_quantity(item_id, quantity):
         return redirect(url_for('main.index'))
 
     add_to_basket(item_id, quantity)
-    return render_template('order.html', item=item, basket=basket, basket_total=basket.total_cost())
+    return redirect(url_for('main.order'))
 
 @bp.route('/order/<int:item_id>/<string:action>', methods =['POST'])
 def order_with_quantity_action(item_id, action):
-    removing_itemid = False
-    basket = get_basket()
+    tmp_basket = get_basket()
     item = db.get_item(item_id)
     print("item in order_with_quantity_action: ", item)
 
@@ -379,23 +375,21 @@ def order_with_quantity_action(item_id, action):
         flash('Item not found.')
         return redirect(url_for('main.index'))
 
-    for basket_item in basket.items:
-        print("basket_item: ", basket_item)
-        if basket_item.id == int(item_id):
+
+    for basket_item in tmp_basket.items:
+        if basket_item.id == item_id:
+
             if action == 'increase':
                 basket_item.increment_quantity()
+                break
             elif action == 'decrease':
-                if basket_item.quantity > 1:
-                    basket_item.decrement_quantity()
-                else:
-                    removing_itemid = True
-                    break
-    
-    if removing_itemid:
-        remove_from_basket(item_id)
-        flash(f'{item.name} removed from basket.')
 
-    return render_template('order.html', item=item, basket=basket, basket_total=basket.total_cost())
+                basket_item.decrement_quantity()
+                break
+
+
+    session['basket'] = tmp_basket
+    return redirect(url_for('main.order'))
 
 @bp.route('/removeitem/<int:item_id>')
 def remove_item(item_id):
@@ -409,7 +403,9 @@ def remove_item(item_id):
     # remove item from basket
     remove_from_basket(item_id)
     flash(f'{item.itemName} removed from basket.')
-    return redirect(url_for('main.order', item_id=item_id))
+
+    return redirect(url_for('main.order'))
+
 
 @bp.route('/clearbasket/')
 def clear_basket():

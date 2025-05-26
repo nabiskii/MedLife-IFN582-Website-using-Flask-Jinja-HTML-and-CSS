@@ -129,11 +129,9 @@ class Basket:
         """Add an item to the basket."""
         self.items.append(item)
 
-    def remove_item(self, item: BasketItem):
-        """Remove an item from the basket by its ID."""
-        print("before removing",self.items)
-        self.items = [product for product in self.items if product.id != int(item.itemCode)]
-        print("after removing",self.items)
+    def remove_item(self, item_id:str):
+        """Remove a tour from the basket by its ID."""
+        self.items = [basketItem for basketItem in self.items if basketItem.id != item_id]
 
     def get_item(self, item_id: str):
         """Get a product from the basket by its ID."""
