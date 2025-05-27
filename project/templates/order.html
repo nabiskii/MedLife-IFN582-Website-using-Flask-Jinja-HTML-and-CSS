@@ -13,16 +13,33 @@
                             <span>Your cart</span>
                         </h4>
 
-                        <hr class="mb-4">
 
-                        <h5 class="d-flex justify-content-between align-items-center mb-3">
-                            <span>Total Price</span>
+
+                        {% for item in basket.items %}
+
+                        <div class="d-flex align-items-center justify-content-between">
+                            <p class="my-0 text-start fw-light">{{ item.item.itemName }}</p>
+                            <small class="text-muted">${{ item.total_price() }}</small>
+                        </div>
+
+                        <hr class="mb-2">
+
+                        {% endfor %}
+
+                        <h5 class="d-flex justify-content-between align-items-center mb-3 mt-2">
+                            <span class="fw-bold">Total Price</span>
                             <strong>${{basket_total}}</strong>
                         </h5>
 
+                        {% if basket|length > 0 %}
                         <a class="nav-link btn-common btn-medicine d-block text-center" type="button"
                             href="{{ url_for('main.checkout') }}">Checkout&nbsp;&nbsp;<i class="bi bi-arrow-right"></i>
                         </a>
+                        {% else %}
+                        <a class="nav-link btn-common d-block text-center disabled" type="button"
+                            href="#">Checkout&nbsp;&nbsp;<i class="bi bi-arrow-right"></i>
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -33,7 +50,7 @@
 
                         <div class="col-lg-4 col-12 d-flex flex-wrap align-items-center mb-2">
                             <div class="col-lg-3 col-12 mb-2">
-                                <img src="{{ url_for('static', filename='img/medicine sample.jpg') }}"
+                                <img src="{{ url_for('static', filename='img/'+ basketItem.item.imageURL) }}"
                                     class="img-fluid rounded-3" alt="...">
                             </div>
                             <div class="col-lg-4 mb-2">
@@ -60,7 +77,8 @@
                             </div>
                             <div class="col-1 mb-2">
 
-                                <a href="{{ url_for('main.remove_item', item_id=basketItem.id) }}"><i class="bi bi-x"></i></a>
+                                <a href="{{ url_for('main.remove_item', item_id=basketItem.id) }}"><i
+                                        class="bi bi-x"></i></a>
 
                             </div>
                         </div>
@@ -70,13 +88,10 @@
                         {% else %}
                         <h5 class="mb-3">Your basket is empty.</h5>
                         {% endif %}
-
-<!-- Needs to be fixed to the correct route -->
-                     <div class="col-2 ">
-                        <form method="GET" action="{{ url_for('main.clear_basket') }}">
-                             <input type="submit" value="Empty basket" class="btn btn-danger mb-3">
-                         </form>
-                     </div>
+                        <div class="col-3 ">
+                            <a href="{{ url_for('main.clear_basket') }}" class="btn btn-danger mb-1" role="button">Empty
+                                basket</a>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-12 mb-2">

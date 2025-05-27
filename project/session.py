@@ -7,7 +7,7 @@ DummyBasket = Basket()
 
 def get_basket():
     basket_data = session.get('basket', {})
-    print("session baskey data:", basket_data)
+    print("session basket data:", basket_data)
     basket = Basket()
     print("Basket Data from Session:", basket_data)
     if not basket_data:
@@ -51,19 +51,18 @@ def add_to_basket(item_id, quantity=1):
 
 def remove_from_basket(item_id):
     basket = get_basket()
-    basket.remove_item(get_item(item_id))
+    basket.remove_item(item_id)
     # now store/update the basket in the session
     _save_basket_to_session(basket)
 
 def empty_basket():
     session['basket'] = {"items": []}
 
-def convert_basket_to_order(basket):
+def convert_basket_to_order(cust_id, delivery_method, total_cost):
     # convert the basket to an order
     order = Order(
-        orderID = int,
-        deliveryMethodCode = DeliveryMethod.STANDARD,
-        orderTotalAmount= basket.total_cost(),
-        items = basket.items,
+        customerID = cust_id,
+        deliveryMethodCode = delivery_method,
+        orderTotalAmount= total_cost
     )
     return order
