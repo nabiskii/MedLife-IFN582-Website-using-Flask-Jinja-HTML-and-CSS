@@ -48,7 +48,7 @@
                         {% if basket|length > 0 %}
                         {% for basketItem in basket.items %}
 
-                        <div class="col-lg-4 col-12 d-flex flex-wrap align-items-center mb-2">
+                        <div class="row align-items-center mb-3">
                             <div class="col-lg-3 col-12 mb-2">
                                 <img src="{{ url_for('static', filename='img/'+ basketItem.item.imageURL) }}"
                                     class="img-fluid rounded-3" alt="...">
@@ -58,23 +58,24 @@
                                 <h6 class="mb-0">{{basketItem.item.itemName}}</h6>
                             </div>
 
-
-                            <div class="d-flex align-items-center me-3 mb-2">
-                                <form method="POST"
-                                    action="{{ url_for('main.order_with_quantity_action', item_id=basketItem.id, action='decrease') }}">
-                                    <button class="btn btn-outline-secondary btn-sm me-2" type="submit">−</button>
-                                </form>
-                                <span class="fw-bold">{{ basketItem.quantity }}</span>
-                                <form method="POST"
-                                    action="{{ url_for('main.order_with_quantity_action', item_id=basketItem.id, action='increase') }}">
-                                    <button class="btn btn-outline-secondary btn-sm ms-2" type="submit">+</button>
-                                </form>
+                            <div class="col-lg-2 col-12 mb-2">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <form method="POST"
+                                        action="{{ url_for('main.order_with_quantity_action', item_id=basketItem.id, action='decrease') }}">
+                                        <button class="btn btn-outline-secondary btn-sm mx-2" type="submit">−</button>
+                                    </form>
+                                    <span class="fw-bold">{{ basketItem.quantity }}</span>
+                                    <form method="POST"
+                                        action="{{ url_for('main.order_with_quantity_action', item_id=basketItem.id, action='increase') }}">
+                                        <button class="btn btn-outline-secondary btn-sm mx-2" type="submit">+</button>
+                                    </form>
+                                </div>
                             </div>
-
-
-                            <div class="mb-2">
-                                <strong>${{basketItem.item.unitPrice}}</strong>
+                            
+                            <div class="col-lg-2 col-6 mb-2">
+                                <strong>${{ basketItem.item.unitPrice }}</strong>
                             </div>
+           
                             <div class="col-1 mb-2">
 
                                 <a href="{{ url_for('main.remove_item', item_id=basketItem.id) }}"><i
