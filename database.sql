@@ -129,6 +129,11 @@ INSERT INTO delivery_methods VALUES ('ECO', 'Eco-Friendly Delivery', '8.00');
 INSERT INTO delivery_methods VALUES ('EXPRESS', 'Express Delivery', '15.00');
 INSERT INTO delivery_methods VALUES ('TEMP', 'Temperature-Controlled Delivery', '25.00');
 
+-- orders
+INSERT INTO orders VALUES (1, '3', DEFAULT, 'Confirmed', 'STANDARD', 100.00 , DEFAULT);
+INSERT INTO orders VALUES (2, '1', DEFAULT, 'Confirmed', 'ECO', 59.90, DEFAULT);
+INSERT INTO orders VALUES (3, '4', DEFAULT, 'Confirmed', 'EXPRESS', 29.99, DEFAULT);
+INSERT INTO orders VALUES (4, '2', DEFAULT, DEFAULT, 'TEMP', 84.59, DEFAULT);
 
 -- READ------------------------------------------------------------------------------------------------------------------------------------
 -- customers read table

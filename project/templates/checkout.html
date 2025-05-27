@@ -33,26 +33,26 @@
                                     <label for="delivery">Delivery Method:</label>
                                     <select name="delivery" id="delivery" onchange="this.form.submit()">
                                         {% for method in delivery_methods %}
-                                        <option value="{{ method.value }}" {% if selected_method==method.value
-                                            %}selected{% endif %}>{{ method.name }} - ${{ method.value }}
+                                        <option value="{{ method.value }}" {% if selected_method == method.value %}selected{% endif %}>
+                                            {{ method.name }} - ${{ method.value }}
                                         </option>
                                         {% endfor %}
                                     </select>
                                 </form>
-                            </div>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <div>
-                                <h5 class="my-0">Delivery Charges</h5>
-                            </div>
-                            <span class="text-muted">${{ selected_method }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <h5 class="my-0">Total(AUD)</h5>
-                            <strong>${{ basket_total }}</strong>
-                        </li>
-                    </ul>
-                </div>
+                            </li>
+            
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Delivery Charges</span>
+                                <span class="text-muted">${{ selected_method }}</span>
+                            </li>
+            
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Total (AUD)</strong>
+                                <strong>${{ basket_total }}</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>            
 
                 <div class="col-md-8 order-lg-1">
                     <div class="card p-4 mb-3">
