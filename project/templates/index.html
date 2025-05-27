@@ -32,7 +32,7 @@
     <div class="container">
         <div class="row">
             {% for service in services %}
-            <div class="col-lg-3 d-flex">
+            <div class="col-lg-3 d-flex mb-4">
                 <div class="card custom-hover mb-4 service-card w-100">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ service.title }}</h5>
@@ -90,7 +90,8 @@
 </section>
 {% else %}
 
-<div>
+<div class="container my-5">
+    <h1 class="heading text-center">Search Results</h1>
     <h3>Search results for "{{search}}"</h3>
 </div>
 

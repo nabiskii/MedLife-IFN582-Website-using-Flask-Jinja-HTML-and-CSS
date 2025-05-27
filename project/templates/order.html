@@ -31,7 +31,11 @@
                             <strong>${{basket_total}}</strong>
                         </h5>
 
-                        {% if basket|length > 0 %}
+                        {% if (not session['logged_in']) %}
+                        <a class="nav-link btn-common btn-medicine d-block text-center" type="button"
+                            href="{{ url_for('main.login') }}">Login before continuing&nbsp;&nbsp;<i class="bi bi-arrow-right"></i>
+                        </a>
+                        {% elif basket|length > 0 %}
                         <a class="nav-link btn-common btn-medicine d-block text-center" type="button"
                             href="{{ url_for('main.checkout') }}">Checkout&nbsp;&nbsp;<i class="bi bi-arrow-right"></i>
                         </a>
@@ -71,11 +75,11 @@
                                     </form>
                                 </div>
                             </div>
-                            
+
                             <div class="col-lg-2 col-6 mb-2">
                                 <strong>${{ basketItem.item.unitPrice }}</strong>
                             </div>
-           
+
                             <div class="col-1 mb-2">
 
                                 <a href="{{ url_for('main.remove_item', item_id=basketItem.id) }}"><i

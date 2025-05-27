@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, Blueprint
 from flask import Flask
 from flask_mysqldb import MySQL
-from project.config import Config
+from config import Config
 import os
 from flask_bootstrap import Bootstrap5
 

@@ -27,7 +27,7 @@ addressLine1 VARCHAR(50) NOT NULL,
 addressLine2 VARCHAR(50) NOT NULL,
 city VARCHAR(50) NOT NULL,
 state VARCHAR(50) NOT NULL,
-postCode VARCHAR(4) NOT NULL,
+zipCode VARCHAR(4) NOT NULL,
 FOREIGN KEY (userID) REFERENCES users(userID)
 );
 
@@ -109,18 +109,18 @@ INSERT INTO category VALUES ('SC', 'Skincare');
 INSERT INTO items VALUES ('38762059', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 10 pack', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 10 pack', 'Claratyne Hayfever Allergy Relief tablets are non-drowsy and provide rapid 24 hour relief from the symptoms of hayfever allergy.', 'Always read the label and follow the directions for use.', '13.99', '9.50', '1', 'MD', '100', '38762059.jpg');
 INSERT INTO items VALUES ('13982406', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 80 pack', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 80 pack', 'Claratyne Hayfever Allergy Relief tablets are non-drowsy and provide rapid 24 hour relief from the symptoms of hayfever allergy.', 'Always read the label and follow the directions for use.', '33.99', NULL, '1', 'MD', '100', '13982406.jpg');
 INSERT INTO items VALUES ('72145608', 'CeraVe Skin Renewing Night Cream 48g', 'CeraVe Skin Renewing Night Cream 48g', 'Skin renewing night cream with peptides', 'Apply the CeraVe Skin Renewing Night Cream to freshly cleansed face in small dots around your face. Gently massage the night cream into the skin until thoroughly absorbed. Use it every night before bed in your evening skincare routine.', '41.50', '28.69', '2', 'SC', '100', '72145608.jpg');
-INSERT INTO items VALUES ('21458930', 'CeraVe Skin Renewing Night Cream 100g', 'CeraVe Skin Renewing Night Cream 100g', 'Skin renewing night cream with peptides', 'Apply the CeraVe Skin Renewing Night Cream to freshly cleansed face in small dots around your face. Gently massage the night cream into the skin until thoroughly absorbed. Use it every night before bed in your evening skincare routine.', '79.99', NULL, '2', 'SC', '100', '21458930.jpg');
+INSERT INTO items VALUES ('21458930', 'CeraVe Skin Renewing Night Cream 100g', 'CeraVe Skin Renewing Night Cream 100g', 'Skin renewing night cream with peptides', 'Apply the CeraVe Skin Renewing Night Cream to freshly cleansed face in small dots around your face. Gently massage the night cream into the skin until thoroughly absorbed. Use it every night before bed in your evening skincare routine.', '79.99', NULL, '2', 'SC', '0', '21458930.jpg');
 INSERT INTO items VALUES ('26873194', 'CeraVe Moisturising Cream 170g', 'CeraVe Moisturising Cream 170g', 'Rich Ceramide moistering cream for dry to very dry skin.', 'Apply liberally as often as needed, or as directed by a physician.', '16.00', '11.19', '2', 'SC', '100', '26873194.jpg');
 INSERT INTO items VALUES ('36790128', 'CeraVe Moisturising Cream 454g', 'CeraVe Moisturising Cream 454g', 'Rich Ceramide moistering cream for dry to very dry skin.', 'Apply liberally as often as needed, or as directed by a physician.', '25.99', NULL, '2', 'SC', '100', '36790128.jpg');
-INSERT INTO items VALUES ('94018536', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Mint', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Mint', 'Difflam Plus Anaesthetic Sore Throat Spray has a triple action antibacterial + anti-inflammatory + anaesthetic formula for fast numbing relief of a sore throat.', 'Spray 3 times directly onto the sore/inflamed area Swallow gently. Before first use or after a period of non-use, prime the spray by depressing the pump until the mist is released. After use, wipe the nozzle with a tissue to prevent blockage.', '11.99', '10.99', '1', 'MD', '100', '94018536.jpg');
-INSERT INTO items VALUES ('90871245', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Watermelon', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Watermelon', 'Difflam Plus Anaesthetic Sore Throat Spray has a triple action antibacterial + anti-inflammatory + anaesthetic formula for fast numbing relief of a sore throat.', 'Spray 3 times directly onto the sore/inflamed area Swallow gently. Before first use or after a period of non-use, prime the spray by depressing the pump until the mist is released. After use, wipe the nozzle with a tissue to prevent blockage.', '11.99', '10.99', '1', 'MD', '100', '90871245.jpg');
+INSERT INTO items VALUES ('94018536', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Mint', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Mint', 'Difflam Plus Anaesthetic Sore Throat Spray has a triple action antibacterial + anti-inflammatory + anaesthetic formula for fast numbing relief of a sore throat.', 'Spray 3 times directly onto the sore/inflamed area Swallow gently. Before first use or after a period of non-use, prime the spray by depressing the pump until the mist is released. After use, wipe the nozzle with a tissue to prevent blockage.', '11.99', '10.99', '1', 'MD', '0', '94018536.jpg');
+INSERT INTO items VALUES ('90871245', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Watermelon', 'Difflam Plus Sore Throat Anaesthetic Spray 30ml - Watermelon', 'Difflam Plus Anaesthetic Sore Throat Spray has a triple action antibacterial + anti-inflammatory + anaesthetic formula for fast numbing relief of a sore throat.', 'Spray 3 times directly onto the sore/inflamed area Swallow gently. Before first use or after a period of non-use, prime the spray by depressing the pump until the mist is released. After use, wipe the nozzle with a tissue to prevent blockage.', '11.99', '10.99', '1', 'MD', '0', '90871245.jpg');
 INSERT INTO items VALUES ('62846620', 'Maybelline Fit Me True-to-tone Blush - Rose', 'Maybelline Fit Me True-to-tone Blush - Rose', 'Create a natural flush of colour with Maybelline Fit Me Blush.', 'Sweep blush onto the apples of the cheeks from the cheekbones to temples.', '9.49', '8.99', '2', 'MU', '100', '62846620.jpg');
 INSERT INTO items VALUES ('85623014', 'Maybelline Fit Me True-to-tone Blush - Coral', 'Maybelline Fit Me True-to-tone Blush - Coral', 'Create a natural flush of colour with Maybelline Fit Me Blush.', 'Sweep blush onto the apples of the cheeks from the cheekbones to temples.', '9.49', '8.99', '2', 'MU', '100', '85623014.jpg');
 INSERT INTO items VALUES ('80439217', 'Maybelline Lasting Fix Setting Loose Powder', 'Maybelline Lasting Fix Setting Loose Powder', "Maybelline's loose powder that sets foundation and perfects the look of skin for an airbrush effect. Maybelline Master Fix Translucent Loose Powder is a micro-fine loose powder that sets makeup, mattifies and blurs for an invisible finish with a soft-focus effect.", 'Swirl lightly over face with a powder brush. Can be used alone or on top of makeup.', '9.99', '9.49', '2', 'MU', '100', '80439217.jpg');
 INSERT INTO items VALUES ('60381297', 'Maybelline Lasting Fix Loose Translucent Setting Powder', 'Maybelline Lasting Fix Loose Translucent Setting Powder', "Maybelline's loose powder that sets foundation and perfects the look of skin for an airbrush effect. Maybelline Master Fix Translucent Loose Powder is a micro-fine loose powder that sets makeup, mattifies and blurs for an invisible finish with a soft-focus effect.", 'Swirl lightly over face with a powder brush. Can be used alone or on top of makeup.', '9.99', NULL, '2', 'MU', '100', '60381297.jpg');
 INSERT INTO items VALUES ('17530942', 'Nurofen Zavance 96 Tablets', 'Nurofen Zavance 96 Tablets', 'Nurofen Zavance is absorbed up to 2X faster than standard Nurofen. They are easy to swallow and are fast and effective in the temporary relief of pain and/or inflammation associated with: headache, migraine headache, tension headache, muscular pain, cold & flu symptoms, period pain, dental pain, sinus pain, back pain, arthritic pain, Reduces fever.', 'Suitable For: Adults and children from 7 years. For the temporary relief of pain and/or inflammation.', '28.99', '20.99', '1', 'MD', '100', '17530942.jpg');
 INSERT INTO items VALUES ('74023185', 'Nurofen Zavance 96 Caplets', 'Nurofen Zavance 96 Caplets', 'Nurofen Zavance is absorbed up to 2X faster than standard Nurofen. They are easy to swallow and are fast and effective in the temporary relief of pain and/or inflammation associated with: headache, migraine headache, tension headache, muscular pain, cold & flu symptoms, period pain, dental pain, sinus pain, back pain, arthritic pain, Reduces fever.', 'Suitable For: Adults and children from 7 years. For the temporary relief of pain and/or inflammation.', '28.99', '20.99', '1', 'MD', '100', '74023185.jpg');
-INSERT INTO items VALUES ('58219437', 'Panadol Rapid 48 Caplets', 'Panadol Rapid 48 Caplets', 'Panadol Rapid Paracetamol 500mg is a fast, effective temporary relief of pain and discomfort associated with Headache/Tension headache, Migraine headache, Muscular aches, Period pain, Toothache, Cold & flu symptoms. Reduces fever.', '2 Caplets in every 4-6 hrs with water as required (maximum 8 caplets in 24 hrs)', '11.99', NULL, '1', 'MD', '100', '58219437.jpg');
+INSERT INTO items VALUES ('58219437', 'Panadol Rapid 48 Caplets', 'Panadol Rapid 48 Caplets', 'Panadol Rapid Paracetamol 500mg is a fast, effective temporary relief of pain and discomfort associated with Headache/Tension headache, Migraine headache, Muscular aches, Period pain, Toothache, Cold & flu symptoms. Reduces fever.', '2 Caplets in every 4-6 hrs with water as required (maximum 8 caplets in 24 hrs)', '11.99', NULL, '1', 'MD', '0', '58219437.jpg');
 INSERT INTO items VALUES ('49217683', 'Panadol Rapid 48 Tablets', 'Panadol Rapid 48 Tablets', 'Panadol Rapid Paracetamol 500mg is a fast, effective temporary relief of pain and discomfort associated with Headache/Tension headache, Migraine headache, Muscular aches, Period pain, Toothache, Cold & flu symptoms. Reduces fever.', '2 Tablets in every 4-6 hrs with water as required (maximum 8 caplets in 24 hrs)', '8.99', NULL, '1', 'MD', '100', '49217683.jpg');
 
 -- delivery_methods
@@ -134,101 +134,3 @@ INSERT INTO orders VALUES (1, '3', DEFAULT, 'Confirmed', 'STANDARD', 100.00 , DE
 INSERT INTO orders VALUES (2, '1', DEFAULT, 'Confirmed', 'ECO', 59.90, DEFAULT);
 INSERT INTO orders VALUES (3, '4', DEFAULT, 'Confirmed', 'EXPRESS', 29.99, DEFAULT);
 INSERT INTO orders VALUES (4, '2', DEFAULT, DEFAULT, 'TEMP', 84.59, DEFAULT);
-
--- READ------------------------------------------------------------------------------------------------------------------------------------
--- customers read table
-SELECT
-	customers.customerID AS 'Customer ID',
-    users.userID AS 'User ID',
-	users.userName AS 'User Name',
-	CONCAT(customers.firstName, ' ', customers.surname) AS 'Customer Name',
-    customers.phoneNumber AS 'Phone Number',
-	customers.emailAddress AS 'Email Address',
-	customers.addressLine1 AS 'Address Line 1',
-	customers.addressLine2 AS 'Address Line 2',
-	customers.city AS 'City',
-	customers.state AS 'State',
-	customers.postCode AS 'Post Code'
-FROM customers
-LEFT JOIN users ON customers.userID = users.userID
-ORDER BY
-	customers.customerID;
-
--- suppliers read table
-SELECT
-	supplierName AS 'Supplier Name'
-FROM suppliers
-ORDER BY
-	supplierName;
-
--- category read table
-SELECT
-	categoryCode AS 'Category Code',
-	categoryName AS 'Category Name'
-FROM category
-ORDER BY
-	categoryCode;
-
--- users read table
-SELECT
-	users.userID AS 'User ID',
-	users.userName AS 'User Name',
-	customers.customerID AS 'Customer ID',
-    CONCAT(customers.firstName, ' ', customers.surname) AS 'Customer Name',
-	users.userType AS 'User Type',
-	users.createdAt AS 'Creation Date & Time',
-	users.updatedAt AS 'Updated Date & Time'
-FROM users
-LEFT JOIN customers ON customers.userID = users.userID
-ORDER BY
-	users.userID;
-
--- items read table
-SELECT
-	items.itemCode AS 'Item Code',
-	items.itemName AS 'Item Name',
-	items.itemDescription AS 'Item Description',
-	items.itemLongDescription1 AS 'Instruction',
-	items.itemLongDescription2 AS 'Ingredients',
-	items.unitPrice AS 'Unit Price',
-	IFNULL(items.discountPrice, items.unitPrice) AS 'Selling Price',
-    category.categoryName AS 'Category Name',
-    suppliers.supplierName AS 'Supplier Name',
-	items.onhandQuantity AS 'Onhand Quantity',
-	items.imageURL AS 'Image'
-FROM items
-LEFT JOIN 
-	(category, suppliers) ON (category.categoryCode = items.categoryCode
-    AND suppliers.supplierID = items.supplierID)
-ORDER BY
-	items.itemName;
-	
--- UPDATE & DELETE-----------------------------------------------------------------------------------------------------------------------------------
--- (customers) add item into baskets
-INSERT INTO basket_items (itemCode, quantity) VALUES (%s, %s);
-
--- (customers) adjust item quantity in baskets
-UPDATE basket_items
-SET quantity = %s
-WHERE basketID = %s
-AND itemCode = %s;
-
--- (customers) remove item from baskets
-DELETE FROM basket_items
-WHERE basketID = %s
-AND itemCode = %s;
-
--- admin (items)
-INSERT INTO items (itemCode, itemName, itemDescription, itemLongDescription1, itemLongDescription2, unitPrice, discountPrice, supplierID, categoryCode, onhandQuantity, imageURL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-UPDATE items SET unitPirce = %s, discountPrice = %s WHERE itemCode = %s;
-DELETE FROM items WHERE itemCode = %s;
-
--- admin (category)
-INSERT INTO category (categoryCode, categoryName) VALUES (%s, %s);
-UPDATE category SET categoryCode = %s, categoryName = %s WHERE categoryCode = %s;
-DELETE FROM category WHERE categoryCode = %s;
-
--- admin (orders)
-INSERT INTO orders -- what should admin add into the order
-UPDATE orders SET (orderStatus) VALUES (%s);
-DELETE FROM orders WHERE orderNumber = %s;
