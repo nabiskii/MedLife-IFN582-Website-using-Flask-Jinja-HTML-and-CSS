@@ -27,6 +27,11 @@ class DeliveryMethod(Enum):
     ECO = 15
     TEMP = 25
 
+    def get_delivery_method_by_amount(amount: float):
+        for method in DeliveryMethod:
+            if method.value == amount:
+                return method.name
+
 # --- Dataclasses (Models) ---
 @dataclass
 class Item:
@@ -40,7 +45,7 @@ class Item:
     supplierID: int
     categoryName: str
     onhandQuantity: int
-    imageURL: str = field(default='no-img.jpg')
+    imageURL: str = field(default='no_image.jpg')
 
 
 @dataclass
@@ -51,17 +56,12 @@ class Category:
 
 @dataclass
 class Order:
-    orderID: int
-    orderNumber: int
-    basketID: int
     customerID: int
-    orderStatus: OrderStatus
     deliveryMethodCode: DeliveryMethod
     orderTotalAmount: float
     orderDate: datetime = field(
         default_factory=lambda: datetime.now(),
         init=True)
-
 
 @dataclass
 class CustomerInfo:
@@ -124,17 +124,21 @@ class Basket:
     def __len__(self):
         """Get the number of items in the basket."""
         return len(self.items)
+    
+    def get_total_quantity(self):
+        """Get the total quantity of items in the basket."""
+        return sum(item.quantity for item in self.items)
 
     def add_item(self, item: BasketItem):
         """Add an item to the basket."""
         self.items.append(item)
 
     def remove_item(self, item_id:str):
-        """Remove a tour from the basket by its ID."""
+        """Remove an item from the basket by its ID."""
         self.items = [basketItem for basketItem in self.items if basketItem.id != item_id]
 
     def get_item(self, item_id: str):
-        """Get a product from the basket by its ID."""
+        """Get a item from the basket by its ID."""
         for item in self.items:
             if item.id == item_id:
                 return item

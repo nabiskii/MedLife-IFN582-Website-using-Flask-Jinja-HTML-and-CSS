@@ -97,7 +97,7 @@ def add_item(code, name, desc, price, quantity, supplierID, categoryCode):
     cur = mysql.connection.cursor()
     cur.execute(
         "INSERT INTO items (itemCode, itemName, itemDescription, unitPrice, onhandQuantity, supplierID, categoryCode, imageURL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-        (code, name, desc, price, quantity, supplierID, categoryCode, 'no-img.jpg'))
+        (code, name, desc, price, quantity, supplierID, categoryCode, code + '.jpg'))
     mysql.connection.commit()
     cur.close()
 
@@ -154,7 +154,6 @@ def delete_category(code):
     cur.execute("DELETE FROM category WHERE categoryCode = %s", (code,))
     mysql.connection.commit()
     cur.close()
-
 
 #  ----------- order query -------------
 def get_all_orders():
@@ -221,6 +220,13 @@ def get_all_delivery_methods():
     cur.close()
     return methods
 
+def get_delivery_method_by_price(price):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT deliveryMethodCode FROM delivery_methods WHERE surchargePrice = %s", (price,))
+    method = cur.fetchone()
+    cur.close()
+    return method
+
 
 #  ----------- subscription query -------------
 def insert_subscription(email):
@@ -280,13 +286,14 @@ def check_customer_exists(userID):
     return customer is not None
 
 
-def add_customer(form):
+def add_customer(userid, form):
     """Add a new customer."""
     cur = mysql.connection.cursor()
     cur.execute("""
-                INSERT INTO customers (firstName, surname, phoneNumber, emailAddress, addressLine1, addressLine2, city, state, postCode)
-                VALUES (%s, %s, %s)
-                """, (form.firstname.data,
+                INSERT INTO customers (userID, firstName, surname, phoneNumber, emailAddress, addressLine1, addressLine2, city, state, zipCode)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (userid,
+                      form.firstname.data,
                       form.surname.data,
                       form.phone.data,
                       form.email.data,
@@ -383,6 +390,7 @@ def get_items_by_category(category):
                 items.itemLongDescription1 AS 'Instruction',
                 items.itemLongDescription2 AS 'Ingredients',
                 items.unitPrice AS 'Unit Price',
+                items.discountPrice AS 'Discount Price',
                 category.categoryName AS 'Category Name',
                 suppliers.supplierName AS 'Supplier Name',
                 items.onhandQuantity AS 'Onhand Quantity',
@@ -404,6 +412,7 @@ def get_items_by_category(category):
                  item['Instruction'],
                  item['Ingredients'],
                  item['Unit Price'],
+                 item['Discount Price'],
                  item['Category Name'],
                  item['Supplier Name'],
                  item['Onhand Quantity'],
@@ -420,6 +429,7 @@ def search_items(search):
                 items.itemLongDescription1 AS 'Instruction',
                 items.itemLongDescription2 AS 'Ingredients',
                 items.unitPrice AS 'Unit Price',
+                items.discountPrice AS 'Discount Price',
                 category.categoryName AS 'Category Name',
                 suppliers.supplierName AS 'Supplier Name',
                 items.onhandQuantity AS 'Onhand Quantity',
@@ -442,6 +452,7 @@ def search_items(search):
                  item['Instruction'],
                  item['Ingredients'],
                  item['Unit Price'],
+                 item['Discount Price'],
                  item['Category Name'],
                  item['Supplier Name'],
                  item['Onhand Quantity'],
@@ -460,17 +471,17 @@ def get_distinct_all_categories():
 
 
 #  Orders CRUD
-def add_order(order, customer_id):
+def add_order(order):
     """Add a new order."""
     cur = mysql.connection.cursor()
     cur.execute("""
-                INSERT INTO orders (orderID, customerID, deliveryCode, totalCost, orderDate)
+                INSERT INTO orders (customerID, deliveryMethodCode, orderTotalAmount, orderDate)
                 VALUES (%s, %s, %s, %s)
-                """, (order.id,
-                      customer_id,
-                      order.deliverycode,
-                      order.total_cost,
-                      datetime.now()))
+                """, (order.customerID,
+                      order.deliveryMethodCode,
+                      order.orderTotalAmount,
+                      datetime.now()
+                      ))
 
     order_id = cur.lastrowid
     mysql.connection.commit()

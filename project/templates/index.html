@@ -100,7 +100,7 @@
             {% for item in items %}
             <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-4">
                 <div class="product-item card custom-hover">
-                    <img src="{{ url_for('static', filename='img/medicine sample.jpg') }}" alt="" class="card-img-top">
+                    <img src="{{ url_for('static', filename='img/'+ item.imageURL) }}" alt="" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title">{{ item.itemName }}</h5>
                         <p class="card-text"><strong>${{ item.unitPrice }}</strong></p>

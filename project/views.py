@@ -95,7 +95,7 @@ def add_user():
         encrypted_password = sha256(password.encode()).hexdigest()
         db.insert_user(username, encrypted_password, user_type)
         flash('User added successfully.', 'success')
-        return redirect(url_for('main.manage'))
+        return redirect(url_for('main.manage_users'))
     return render_template('manage_add_user.html')
 
 @bp.route('/manage/edit_user/<int:user_id>', methods=['GET', 'POST'])
@@ -110,15 +110,17 @@ def edit_user(user_id):
         user_type = request.form['user_type']
         db.update_user(user_id, username, user_type)
         flash('User updated successfully.', 'success')
-        return redirect(url_for('main.manage'))
+        return redirect(url_for('main.manage_users'))
     return render_template('manage_edit_user.html', user=user)
 
 @bp.route('/manage/delete_user/<int:user_id>')
 @admin_required
 def delete_user(user_id):
+    user = db.get_user_by_id(user_id)
+    username = user['userName']
     db.delete_from_user(user_id)
-    flash('User deleted.', 'success')
-    return redirect(url_for('main.manage'))
+    flash(f'User {username} deleted.', 'success')
+    return redirect(url_for('main.manage_users'))
 
 # Admin-only product management page
 @bp.route('/manage/items')
@@ -383,10 +385,11 @@ def order_with_quantity_action(item_id, action):
                 basket_item.increment_quantity()
                 break
             elif action == 'decrease':
-
-                basket_item.decrement_quantity()
+                if basket_item.quantity > 1:
+                    basket_item.decrement_quantity()
+                else:
+                    remove_from_basket(item_id)
                 break
-
 
     session['basket'] = tmp_basket
     return redirect(url_for('main.order'))
@@ -417,9 +420,11 @@ def clear_basket():
 @bp.route("/checkout/", methods=["GET", "POST"] )
 def checkout():
     form = CheckoutForm()
-    check_basket = get_basket()
+    basket = get_basket()
     selected_method = int(request.args.get('delivery', 5))
-    basket_total = check_basket.total_cost()+selected_method
+    basket_total = basket.total_cost()+selected_method
+    basket_num_items = basket.get_total_quantity()
+
     if request.method == 'POST':
         print("Checkout POST request received")
         # check if user is logged in
@@ -427,27 +432,30 @@ def checkout():
             flash('Please log in to proceed with checkout.', 'error')
             return redirect(url_for('main.login'))
         
-        print("checkout basket data: ",check_basket)
+        print("checkout basket data: ",basket)
         # check if basket is empty
-        if not check_basket:
+        if not basket:
             flash('Your basket is empty. Please add items to your basket before checking out.', 'error')
             return redirect(url_for('main.index'))
 
+        # get delivery method name
+        delivery_method = models.DeliveryMethod.get_delivery_method_by_amount(selected_method)
 
         if form.validate_on_submit():
             if not db.check_customer_exists(session['user']['user_id']):
-                cust_id = db.add_customer(session['user']['user_id'], form.firstname.data, form.surname.data, form.email.data, form.phone.data, form.address1.data, form.address2.data, form.city.data, form.state.data, form.postcode.data)
+                cust_id = db.add_customer(session['user']['user_id'], form)
             else:
                 cust_id = db.get_customer_id(session['user']['user_id'])
             
-            order = convert_basket_to_order(check_basket)
-            order_id = db.add_order(order, cust_id)
+            order = convert_basket_to_order(cust_id, delivery_method, basket_total)
+            order_id = db.add_order(order)
+
             flash(f"Thank you, {session['user']['username']}! Your order #{order_id} has been placed successfully.",)
             empty_basket()
             return redirect(url_for('main.index'))
         else:
             flash('The provided information is missing or incorrect','error')
-    return render_template('checkout.html', form=form, basket=check_basket, basket_total=basket_total, delivery_methods=DeliveryMethod, selected_method=selected_method)
+    return render_template('checkout.html', form=form, basket=basket, basket_total=basket_total, delivery_methods=DeliveryMethod, selected_method=selected_method, basket_num_items=basket_num_items)
 
 @bp.route('/subscribe', methods=['POST'])
 def subscribe():
