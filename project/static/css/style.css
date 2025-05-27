@@ -38,7 +38,6 @@ h3
 color: rgba(52, 58, 64, 0.904)ee; 
     font-weight: bold;
     font-family: var(--brand-font);
-    text-align: center;
     font-size:large;
     text-wrap-mode: nowrap;
 }
@@ -285,4 +284,13 @@ label {
     border-radius: .25rem;
     height: 35px;
 
+}
+
+/*service card*/
+.service-card {
+    height: 100%; 
+    min-height: 260px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
