@@ -286,3 +286,11 @@ label {
     height: 35px;
 
 }
+
+.contrast-text {
+    color: var(--contrast-color);
+}
+
+.brand-color-text {
+    color: var(--brand-color);
+}
