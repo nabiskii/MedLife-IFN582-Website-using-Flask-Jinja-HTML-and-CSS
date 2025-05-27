@@ -45,7 +45,7 @@ class Item:
     supplierID: int
     categoryName: str
     onhandQuantity: int
-    imageURL: str = field(default='no_image.jpg')
+    imageURL: str = field(default='medicine sample.jpg')
 
 
 @dataclass

@@ -13,6 +13,13 @@
             <div class="col-lg-8">
                 <h2>{{item.itemName}}</h2>
                 <div class="mb-3">
+                    {% if item.onhandQuantity > 0 %}
+                    <span id="custom-span" class="brand-color-text" ;>Available</span>
+                    {% else %}
+                    <span id="custom-span" class="contrast-text">Out of stock</span>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
                     {% if item.discountPrice %}
                     <span id="custom-span">Price: ${{item.discountPrice}}</span>
                     <span class="text-muted"><s>${{item.unitPrice}}</s></span>

@@ -285,6 +285,13 @@ label {
 
 }
 
+.contrast-text {
+    color: var(--contrast-color);
+}
+
+.brand-color-text {
+    color: var(--brand-color);
+}
 /*service card*/
 .service-card {
     height: 100%; 
