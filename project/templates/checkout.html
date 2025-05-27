@@ -11,48 +11,50 @@
             <p>Please provide your details to place your order. Thank you!</p>
 
             <div class="row">
-                <div class="col-lg-4 order-lg-2">
-                    <h4 class="d-flex justify-content-between align-items-center mb-3">
-                        <span>Your Cart</span>
-                        <span class="badge badge-pill badge-secondary">{{ basket|length }}</span>
-                    </h4>
-
-                    <ul class="list-group mb-3">
-                        {% for item in basket.items %}
-                        <li class="list-group-item d-flex justify-content-between">
-                            <div>
-                                <h5 class="my-0">{{ item.item.itemName }}</h5>
-                                <small class="text-muted">{{ item.item.categoryName }}</small>
-                            </div>
-                            <span class="text-muted">${{ item.total_price() }}</span>
-                        </li>
-                        {% endfor %}
-                        <li class="list-group-item d-flex justify-content-between">
-                            <div>
-                                <form method="GET" action="{{ url_for('main.checkout') }}">
-                                    <label for="delivery">Delivery Method:</label>
-                                    <select name="delivery" id="delivery" onchange="this.form.submit()">
+                <div class="col-lg-4 order-lg-2 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white border-bottom">
+                            <h4 class="d-flex justify-content-between align-items-center mb-0">
+                                <span>Your Cart</span>
+                                <span class="badge bg-secondary rounded-pill">{{ basket|length }}</span>
+                            </h4>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            {% for item in basket.items %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="my-0 fw-semibold">{{ item.item.itemName }}</h6>
+                                    <small class="text-muted">{{ item.item.categoryName }}</small>
+                                </div>
+                                <span class="text-muted">${{ item.total_price() }}</span>
+                            </li>
+                            {% endfor %}
+            
+                            <li class="list-group-item">
+                                <form method="GET" action="{{ url_for('main.checkout') }}" class="d-flex justify-content-between align-items-center">
+                                    <label for="delivery" class="me-2 mb-0 fw-medium">Delivery:</label>
+                                    <select name="delivery" id="delivery" onchange="this.form.submit()" class="form-select form-select-sm w-auto">
                                         {% for method in delivery_methods %}
-                                        <option value="{{ method.value }}" {% if selected_method==method.value
-                                            %}selected{% endif %}>{{ method.name }} - ${{ method.value }}
+                                        <option value="{{ method.value }}" {% if selected_method == method.value %}selected{% endif %}>
+                                            {{ method.name }} - ${{ method.value }}
                                         </option>
                                         {% endfor %}
                                     </select>
                                 </form>
-                            </div>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <div>
-                                <h5 class="my-0">Delivery Charges</h5>
-                            </div>
-                            <span class="text-muted">${{ selected_method }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <h5 class="my-0">Total(AUD)</h5>
-                            <strong>${{ basket_total }}</strong>
-                        </li>
-                    </ul>
-                </div>
+                            </li>
+            
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Delivery Charges</span>
+                                <span class="text-muted">${{ selected_method }}</span>
+                            </li>
+            
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Total (AUD)</strong>
+                                <strong>${{ basket_total }}</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>            
 
                 <div class="col-md-8 order-lg-1">
                     <div class="card p-4 mb-3">
