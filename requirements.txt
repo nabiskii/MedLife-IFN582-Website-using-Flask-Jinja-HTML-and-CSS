@@ -1,4 +1,10 @@
-WTForms~=3.2.1
-Flask~=3.1.0
-Flask-Login~=0.6.3
-Bootstrap-Flask~=2.5.0
+Flask==3.1.0
+Flask-WTF==1.2.2
+WTForms==3.2.1
+email_validator==2.2.0
+Flask-Login==0.6.3
+Flask-MySQLdb==2.0.0
+mysqlclient==2.2.7
+Bootstrap-Flask==2.5.0
+dominate==2.9.1
+visitor==0.1.3
