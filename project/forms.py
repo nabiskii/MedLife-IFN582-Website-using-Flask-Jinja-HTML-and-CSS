@@ -6,12 +6,12 @@ class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=150)])
     password = PasswordField('Password', validators=[DataRequired(), EqualTo('confirm_password', message='Passwords must match')])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), Length(min=5)])
-    submit = SubmitField('Register')
+    submit = SubmitField('Register', render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=150)])
     password = PasswordField('Password', validators=[DataRequired(),Length(min=5)])
-    submit = SubmitField('Login')
+    submit = SubmitField('Login', render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})
 
 # form used in basket
 class CheckoutForm(FlaskForm):
@@ -40,7 +40,7 @@ class CheckoutForm(FlaskForm):
     cardnumber = StringField('Card Number', validators=[InputRequired(), Length(min=16, max=16)])
     expirydate = StringField('Expiry Date (MM/YY)', validators=[InputRequired(), Length(min=5, max=5)])
     cvv = PasswordField('CVV', validators=[InputRequired(), Length(min=3, max=3)], render_kw={'style':'margin-bottom: 15px;'})
-    submit = SubmitField('Submit Payment')
+    submit = SubmitField('Submit Payment', render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})
 
 # Admin manage form
 # --- ITEM FORM ---
@@ -54,7 +54,7 @@ class AddItemForm(FlaskForm):
     supplierID = SelectField('Supplier', coerce=int, validators=[DataRequired()])
     categoryCode = SelectField('Category', validators=[DataRequired()])
 
-    submit = SubmitField('Submit')
+    submit = SubmitField('Submit' , render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})
 
 class EditItemForm(FlaskForm):
     itemCode = StringField('Item Code', render_kw={'readonly': True})  # read-only in form
@@ -65,24 +65,24 @@ class EditItemForm(FlaskForm):
 
     supplierID = SelectField('Supplier', coerce=int, validators=[DataRequired()])
     categoryCode = SelectField('Category', validators=[DataRequired()])
-    submit = SubmitField('Update Item')
+    submit = SubmitField('Update Item', render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})
 
 # --- CATEGORY FORMS ---
 class AddCategoryForm(FlaskForm):
     categoryCode = StringField('Category Code', validators=[DataRequired(), Length(max=2)])
     categoryName = StringField('Category Name', validators=[DataRequired(), Length(max=50)])
-    submit = SubmitField('Add Category')
+    submit = SubmitField('Add Category', render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})
 
 class EditCategoryForm(FlaskForm):
     categoryName = StringField('Category Name', validators=[DataRequired(), Length(max=50)])
-    submit = SubmitField('Update Category')
+    submit = SubmitField('Update Category', render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})
 
 # --- ORDER FORM ---
 class AddOrderForm(FlaskForm):
     customerID = SelectField('Customer', coerce=int, validators=[DataRequired()])
     deliveryMethodCode = SelectField('Delivery Method', validators=[DataRequired()])
     orderTotalAmount = DecimalField('Order Total Amount', places=2, validators=[DataRequired()])
-    submit = SubmitField('Create Order')
+    submit = SubmitField('Create Order', render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})
 
 class EditOrderForm(FlaskForm):
     orderStatus = SelectField('Order Status', choices=[
@@ -90,7 +90,7 @@ class EditOrderForm(FlaskForm):
         ('Confirmed', 'Confirmed'),
         ('Cancelled', 'Cancelled')
     ], validators=[DataRequired()])
-    submit = SubmitField('Update Order')
+    submit = SubmitField('Update Order', render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})
 
 # --- USER FORMS ---
 class AddUserForm(FlaskForm):
@@ -102,4 +102,4 @@ class AddUserForm(FlaskForm):
 class EditUserForm(FlaskForm):
     userName = StringField('Username', validators=[DataRequired(), Length(max=20)])
     userType = SelectField('User Type', choices=[('Admin', 'Admin'), ('User', 'User')], validators=[DataRequired()])
-    submit = SubmitField('Update User')
+    submit = SubmitField('Update User', render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})

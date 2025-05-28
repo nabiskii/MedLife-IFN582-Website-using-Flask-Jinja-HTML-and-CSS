@@ -107,7 +107,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ item.itemName }}</h5>
                         <p class="card-text"><strong>${{ item.unitPrice }}</strong></p>
-                        <a href="{{ url_for('main.product_details', item_id=item.itemCode) }}" class="btn btn-primary">View
+                        <a href="{{ url_for('main.product_details', item_id=item.itemCode) }}" class="btn btn-jumbotron":custom-hover>View
                             Details</a>
                     </div>
                 </div>
@@ -130,7 +130,7 @@
         <p>*For first-time users</p>
         <form class="form-inline justify-content-center d-inline-flex" method="POST"
               action="{{ url_for('main.subscribe') }}">
-            <input class="form-control mr-sm-2 px-5 custom-placeholder" type="email" name="email" required placeholder="Enter your email">
+            <input class="form-control mr-sm-2 px-5 custom-placeholder" type="email" name="email" required placeholder="example@domain.com">
             <button type="submit" class="btn btn-common btn-newsletter my-2 my-sm-0 ms-2">Subscribe</button>
         </form>
     </div>
