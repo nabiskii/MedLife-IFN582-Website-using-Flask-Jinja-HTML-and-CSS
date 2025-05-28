@@ -58,7 +58,7 @@ def create_app():
 
     @app.errorhandler(500)
     # define a custom error handler for 500 errors
-    def page_not_found(e):
+    def server_error(e):
         return render_template('500.html'), 500
 
     return app

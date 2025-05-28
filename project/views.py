@@ -470,3 +470,8 @@ def subscribe():
     except Exception as e:
         flash('Subscription failed: ' + str(e), 'error')
     return redirect(url_for('main.index'))
+
+@bp.route('/trigger_500')
+def trigger_500():
+    # Force a division by zero error
+    return 1/0
