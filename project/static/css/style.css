@@ -133,7 +133,7 @@ img {
     background-color: var(--bg-dark-color);
     color: var(--white-color);
     border: var(--bg-dark-color);
-    padding: 10px;
+    padding: 7px;
 }
 
 .btn-jumbotron:hover {
@@ -141,6 +141,24 @@ img {
     color: var(--white-color);
     border: var(--contrast-color);
 }
+
+/* TEST responsiveness */
+.btn-test{
+    background-color:aliceblue;
+    color:#758BFD;
+    border: var(--bg-dark-color);
+    padding: 7px;
+    flex-flow: row wrap;
+    display:inline-flexbox;
+}
+
+.btn-test:hover {
+    background-color: var(--contrast-color);
+    color: var(--white-color);
+    border: var(--contrast-color);
+}
+/* END OF TEST */
+
 
 /* services */
 
@@ -224,10 +242,13 @@ img {
 }
 
 .product-item {
-    display: flex;
+    display:flex;
     align-items: center;
     justify-content: space-between;
     padding: 15px;
+    flex-flow: row wrap;
+    height: 100%; 
+    min-height: 260px; 
 }
 
 .flash-message {
@@ -266,7 +287,7 @@ img {
 }
 
 .custom-placeholder::placeholder{
-    color: rgb(235, 231, 227);
+    color: rgba(104, 100, 97, 0.521);
     font-style: italic;
     /* opacity: 100; */
 }

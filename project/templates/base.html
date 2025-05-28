@@ -60,7 +60,7 @@
                     {% endif %}
                 </ul>
                 <form class="form-inline d-inline-flex" method="GET" action="{{ url_for('main.index')}}#products">
-                    <input class="form-control mr-sm-2" type="search" name="search" placeholder="Eg. Aspirin"
+                    <input class="form-control mr-sm-2 custom-placeholder" type="search" name="search" placeholder="Eg. Aspirin"
                            aria-label="Search">
                     <button class="btn btn-medicine my-2 my-sm-0 px-2" type="submit">Search</button>
                 </form>
@@ -115,7 +115,7 @@
         <div class="container">
             <div class="row custom-justify text-center text-lg-left align-items-start">
                 <div class="col-lg-5 me-4 my-4 custom-justify">
-                    <h5>GROUP84</h5>
+                    <h6>GROUP 84</h6>
                     <ul class="list-unstyled mb-0">
                         <li><strong>Eunse Shim</strong> – User Interface (UI) Design</li>
                         <li><strong>Monica Nunes Serico</strong> – User Interface (UI) Design</li>
@@ -125,16 +125,16 @@
                     </ul>
                 </div>
                 <div class="col-lg-3 me-4 my-4 custom-justify">
-                    <h5>USEFUL LINKS</h5>
+                    <h6>USEFUL LINKS</h6>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('main.index') }}#features">Features</a></li>
-                        <li><a href="{{ url_for('main.index') }}#about">About</a></li>
-                        <li><a href="{{ url_for('main.index') }}#products">Products</a></li>
-                        <li><a href="{{ url_for('main.checkout') }}">Cart</a></li>
+                        <li><a href="{{ url_for('main.index') }}#features" class="underlined-link">Features</a></li>
+                        <li><a href="{{ url_for('main.index') }}#about" class="underlined-link">About</a></li>
+                        <li><a href="{{ url_for('main.index') }}#products"class="underlined-link">Products</a></li>
+                        <li><a href="{{ url_for('main.checkout') }}" class="underlined-link">Cart</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 me-4 my-4 custom-justify">
-                    <h5>CONTACT US</h5>
+                    <h6>CONTACT US</h6>
                     <ul class="list-unstyled">
                         <li><i class="bi bi-house-fill"></i> Brisbane, QLD 4001, AUS</li>
                         <li><i class="bi bi-envelope-fill"></i> example@domain.com</li>

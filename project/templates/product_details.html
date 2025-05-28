@@ -42,7 +42,7 @@
                 {% endif %}
 
                 {% if session['user'] and session['user']['is_admin'] %}
-                <a href="{{ url_for('main.edit_item', code=item.itemCode) }}" class="btn btn-primary mb-4"><i
+                <a href="{{ url_for('main.edit_item', code=item.itemCode) }}" class="btn btn-jumbotron mb-4":custom-hover><i
                         class="bi bi-pencil-square"></i>&nbsp;&nbsp;Edit Item</a>
                 {% endif %}
 
