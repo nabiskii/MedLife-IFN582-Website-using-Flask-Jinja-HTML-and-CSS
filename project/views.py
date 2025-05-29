@@ -25,7 +25,7 @@ def register():
             if cur.fetchone():
                 flash('Username already exists.', 'danger')
                 cur.close()
-                return redirect(url_for('main.register'))
+                return redirect(url_for('main.login'))
             cur.execute("INSERT INTO users (userName, password, userType) VALUES (%s, %s, %s)",
                         (username, password, 'User'))
             db.mysql.connection.commit()
@@ -109,6 +109,8 @@ def edit_user(user_id):
         username = request.form['username']
         user_type = request.form['user_type']
         db.update_user(user_id, username, user_type)
+        if username == session['user']['username']:
+            session['user']['is_admin'] = False
         flash('User updated successfully.', 'success')
         return redirect(url_for('main.manage_users'))
     return render_template('manage_edit_user.html', user=user)
@@ -175,10 +177,6 @@ def edit_item(code):
     form.supplierID.choices = [(s['supplierID'], s['supplierName']) for s in suppliers]
     form.categoryCode.choices = [(c['categoryCode'], c['categoryName']) for c in categories]
 
-    # reassign
-    form.supplierID.data = item['supplierID']
-    form.categoryCode.data = item['categoryCode']
-
     if form.validate_on_submit():
         db.update_item(
             code,
@@ -239,9 +237,14 @@ def edit_category(code):
 @bp.route('/delete_category/<code>')
 @admin_required
 def delete_category(code):
-    db.delete_category(code)
-    flash('Category deleted.', 'success')
-    return redirect(url_for('main.manage_categories'))
+    items = db.get_items_by_category(code)
+    if items:
+        flash("This category has items associated with it, please edit or delete the items before continuing.")
+        return redirect(url_for('main.manage_categories'))
+    else:
+        db.delete_category(code)
+        flash('Category deleted.', 'success')
+        return redirect(url_for('main.manage_categories'))
 
 # Admin-only order management page
 @bp.route('/manage/orders')
@@ -331,6 +334,10 @@ def index():
 
 @bp.route('/product_details/<int:item_id>')
 def product_details(item_id):
+    quantity = int(request.args.get('quantity',1))
+    if quantity < 1 or quantity > 10:
+        flash("Quantity must be between 1 and 10.", "error")
+        return redirect(url_for('main.product_details', item_id=item_id))
     return render_template('product_details.html', item=db.get_item(item_id))
 
 @bp.route('/order/', methods=['GET'])
@@ -470,3 +477,8 @@ def subscribe():
     except Exception as e:
         flash('Subscription failed: ' + str(e), 'error')
     return redirect(url_for('main.index'))
+
+@bp.route('/trigger_500')
+def trigger_500():
+    # Force a division by zero error
+    return 1/0
