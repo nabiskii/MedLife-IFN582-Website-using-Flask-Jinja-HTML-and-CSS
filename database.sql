@@ -68,7 +68,7 @@ CREATE TABLE orders (
 orderID INT AUTO_INCREMENT PRIMARY KEY,
 customerID INT NOT NULL,
 orderDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-orderStatus ENUM('Pending', 'Confirmed', 'Cancelled') DEFAULT 'Pending',
+orderStatus ENUM('Pending', 'Confirmed', 'Cancelled') DEFAULT 'Confirmed',
 deliveryMethodCode ENUM('STANDARD', 'ECO', 'EXPRESS', 'TEMP') NOT NULL,
 orderTotalAmount DECIMAL(10,2) NOT NULL,
 updatedDate DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
