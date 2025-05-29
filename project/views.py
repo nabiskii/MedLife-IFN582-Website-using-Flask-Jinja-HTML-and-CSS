@@ -86,6 +86,7 @@ def manage_users():
 @bp.route('/manage/add_user', methods=['GET', 'POST'])
 @admin_required
 def add_user():
+    form = AddUserForm()
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -96,12 +97,13 @@ def add_user():
         db.insert_user(username, encrypted_password, user_type)
         flash('User added successfully.', 'success')
         return redirect(url_for('main.manage_users'))
-    return render_template('manage_add_user.html')
+    return render_template('manage_add_user.html',add_user_form=form)
 
 @bp.route('/manage/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @admin_required
 def edit_user(user_id):
     user = db.get_user_by_id(user_id)
+    form=EditUserForm(data=user)   
     if not user:
         flash('User not found.', 'error')
         return redirect(url_for('main.manage'))
@@ -113,7 +115,7 @@ def edit_user(user_id):
             session['user']['is_admin'] = False
         flash('User updated successfully.', 'success')
         return redirect(url_for('main.manage_users'))
-    return render_template('manage_edit_user.html', user=user)
+    return render_template('manage_edit_user.html', user=user, edit_user_form=form)
 
 @bp.route('/manage/delete_user/<int:user_id>')
 @admin_required
