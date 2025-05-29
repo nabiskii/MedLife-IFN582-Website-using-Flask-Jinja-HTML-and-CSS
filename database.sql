@@ -83,12 +83,12 @@ createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- users (Default password = test1234)
-INSERT INTO users VALUES (NULL, 'SYSADMIN', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'Admin', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'NABILA', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'Admin', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'HANNAH', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'LUKE', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'ELSIE', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
-INSERT INTO users VALUES (NULL, 'MONICA', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'sysadmin', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'Admin', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'nabila', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'Admin', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'hannah', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'luke', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'elsie', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
+INSERT INTO users VALUES (NULL, 'monica', '937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244', 'User', DEFAULT, DEFAULT);
 
 -- customers
 INSERT INTO customers VALUES (NULL, '3', 'Hannah', 'Law', '0432274880', 'N12229628@qut.edu.au', '2 George Street', 'Gardens Point', 'Brisbane', 'Queensland', '4000');
@@ -104,6 +104,7 @@ INSERT INTO suppliers VALUES (NULL, 'Kelvin Grove Medical Ltd.');
 INSERT INTO category VALUES ('MD', 'Medicine');
 INSERT INTO category VALUES ('MU', 'Makeup');
 INSERT INTO category VALUES ('SC', 'Skincare');
+INSERT INTO category VALUES ('MI', 'Miscellaneous');
 
 -- items
 INSERT INTO items VALUES ('38762059', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 10 pack', 'Claratyne Allergy & Hayfever Relief Antihistamine Tablets 10 pack', 'Claratyne Hayfever Allergy Relief tablets are non-drowsy and provide rapid 24 hour relief from the symptoms of hayfever allergy.', 'Always read the label and follow the directions for use.', '13.99', '9.50', '1', 'MD', '100', '38762059.jpg');
