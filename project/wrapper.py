@@ -10,7 +10,7 @@ def admin_required(func):
             flash('Please log in before moving on.', 'error')
             return redirect(url_for('main.login'))
         if not session['user']['is_admin']:
-            flash('You do not have permission to view this page.', 'error')
+            flash('You do not have permission to view admin page.', 'error')
             return redirect(url_for('main.index'))
         return func(*args, **kwargs)
     return wrapper
