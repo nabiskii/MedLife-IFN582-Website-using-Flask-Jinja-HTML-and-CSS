@@ -25,7 +25,7 @@ def register():
             if cur.fetchone():
                 flash('Username already exists.', 'danger')
                 cur.close()
-                return redirect(url_for('main.login'))
+                return redirect(url_for('main.register'))
             cur.execute("INSERT INTO users (userName, password, userType) VALUES (%s, %s, %s)",
                         (username, password, 'User'))
             db.mysql.connection.commit()
@@ -109,8 +109,6 @@ def edit_user(user_id):
         username = request.form['username']
         user_type = request.form['user_type']
         db.update_user(user_id, username, user_type)
-        if username == session['user']['username']:
-            session['user']['is_admin'] = False
         flash('User updated successfully.', 'success')
         return redirect(url_for('main.manage_users'))
     return render_template('manage_edit_user.html', user=user)
@@ -177,15 +175,11 @@ def edit_item(code):
     form.supplierID.choices = [(s['supplierID'], s['supplierName']) for s in suppliers]
     form.categoryCode.choices = [(c['categoryCode'], c['categoryName']) for c in categories]
 
-    print(form.categoryCode.choices)
-
     # reassign
-    #form.supplierID.data = item['supplierID']
-    #form.categoryCode.data = item['categoryCode']
+    form.supplierID.data = item['supplierID']
+    form.categoryCode.data = item['categoryCode']
 
-    print(form.categoryCode.data)
     if form.validate_on_submit():
-        print(form.categoryCode.data)
         db.update_item(
             code,
             form.itemName.data,
@@ -245,14 +239,9 @@ def edit_category(code):
 @bp.route('/delete_category/<code>')
 @admin_required
 def delete_category(code):
-    items = db.get_items_by_category(code)
-    if items:
-        flash("This category has items associated with it, please edit or delete the items before continuing.")
-        return redirect(url_for('main.manage_categories'))
-    else:
-        db.delete_category(code)
-        flash('Category deleted.', 'success')
-        return redirect(url_for('main.manage_categories'))
+    db.delete_category(code)
+    flash('Category deleted.', 'success')
+    return redirect(url_for('main.manage_categories'))
 
 # Admin-only order management page
 @bp.route('/manage/orders')
@@ -342,10 +331,6 @@ def index():
 
 @bp.route('/product_details/<int:item_id>')
 def product_details(item_id):
-    quantity = int(request.args.get('quantity',1))
-    if quantity < 1 or quantity > 10:
-        flash("Quantity must be between 1 and 10.", "error")
-        return redirect(url_for('main.product_details', item_id=item_id))
     return render_template('product_details.html', item=db.get_item(item_id))
 
 @bp.route('/order/', methods=['GET'])
@@ -434,9 +419,7 @@ def clear_basket():
 
 @bp.route("/checkout/", methods=["GET", "POST"] )
 def checkout():
-    data = request.form
-    print("Checkout request data: ", data)
-    form = CheckoutForm(obj=request.form)
+    form = CheckoutForm()
     basket = get_basket()
     selected_method = int(request.args.get('delivery', 5))
     basket_total = basket.total_cost()+selected_method
