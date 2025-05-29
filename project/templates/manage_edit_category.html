@@ -1,19 +1,29 @@
 {% extends 'base.html' %}
 {% import 'bootstrap5/form.html' as wtf %}
 {% block main %}
-<h2>Edit Category</h2>
-<div class="col-md-6">
-    <div class="card mb-4">
-        <div class="card-header">Edit Category</div>
-        <div class="card-body">
-            <form method="POST">
-                {{ wtf.render_form(edit_category_form) }}
-            </form>
-        </div>
-    </div>
-</div>
-</div>
 
-<p><a href="{{ url_for('main.manage_categories') }}">Back to manage categories page</a></p>
-<p><a href="{{ url_for('main.logout') }}">Logout</a></p>
+<div class="container mx-10 my-2">
+            <h2>Edit Category</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-header">Update Category</div>
+                                <div class="card-body">
+                                    <form method="POST">
+                                        {{ wtf.render_form(edit_category_form) }}
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+            <div class="row">
+                <div class="col-md-10 mb-2">
+                    <p><a href="{{ url_for('main.manage_categories') }}" <i class="bi bi-arrow-left"></i>&nbsp;&nbsp; Back to manage categories page</a></p>
+                    <p><a href="{{ url_for('main.logout') }}" class="underlined-link">Logout</a></p>
+                </div>
+            </div>
+</div>   
+
+
 {% endblock %}

@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 
 {% block main %}
+<div class="table-responsive">
 <div class="container py-5">
-    <h3 class="text-center fw-bold mb-4">Manage Orders</h3>
+    <h2 class="text-center fw-bold mb-4">Manage Orders</h2>
 
     <div class="text-end mb-3">
         <a href="{{ url_for('main.add_order') }}" class="btn btn-success">Add Order</a>
     </div>
 
-    <table class="table table-bordered">
+    <table class="table table-bordered table-hover">
         <thead>
-        <tr>
+        <tr class="table-secondary">
             <th>Order Number</th>
             <th>Status</th>
             <th>Customer ID</th>
@@ -30,15 +31,20 @@
             <td>{{ order.orderTotalAmount }}</td>
             <td>{{ order.orderDate }}</td>
             <td>
-                <a href="{{ url_for('main.edit_order', order_id=order.orderID) }}" class="btn btn-primary btn-sm">Edit</a>
-                <a href="{{ url_for('main.delete_order', order_id=order.orderID) }}" class="btn btn-danger btn-sm">Delete</a>
+                <a href="{{ url_for('main.edit_order', order_id=order.orderID) }}" class="btn btn-primary btn-sm mx-1">Edit</a>
+                <a href="{{ url_for('main.delete_order', order_id=order.orderID) }}" class="btn btn-danger btn-sm mx-1">Delete</a>
             </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <p><a href="{{ url_for('main.manage') }}">Back to manage page</a></p>
-    <p><a href="{{ url_for('main.logout') }}">Logout</a></p>
+<div class="row">
+    <div class="col-md-10 mb-2">
+        <p><a href="{{ url_for('main.manage') }}" <i class="bi bi-arrow-left"></i>&nbsp;&nbsp;Back to manage page</a></p>
+        <p><a href="{{ url_for('main.logout') }}" class="underlined-link">Logout</a></p>
+    </div>
+</div>
+</div>
 </div>
 {% endblock %}

@@ -1,15 +1,31 @@
 {% extends 'base.html' %}
 {% import 'bootstrap5/form.html' as wtf %}
 {% block main %}
-<div class="card mb-4">
-    <div class="card-header">Edit Item</div>
-    <div class="card-body">
-        <form method="POST">
-            {{ wtf.render_form(item_form) }}
-        </form>
-    </div>
-</div>
 
-<p><a href="{{ url_for('main.manage_items') }}">Back to manage items page</a></p>
-<p><a href="{{ url_for('main.logout') }}">Logout</a></p>
+<div class="container mx-10 my-2">
+            <h2>Edit Item</h2>
+            <div class="row">
+                <div class="col-md-12">
+                        <div class="card mb-4">
+                            <div class="card-header">Update Item</div>
+                            <div class="card-body">
+                                <form method="POST">
+                                    {{ wtf.render_form(item_form) }}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+                        <div class="row">
+                                        <div class="col-md-10 mb-2">
+                                            <p><a href="{{ url_for('main.manage_items') }}" <i class="bi bi-arrow-left"></i>&nbsp;&nbsp; Back to manage items page</a></p>
+                                            <p><a href="{{ url_for('main.logout') }}" class="underlined-link">Logout</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
 {% endblock %}
+
+
