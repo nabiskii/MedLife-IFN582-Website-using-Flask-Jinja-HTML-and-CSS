@@ -77,7 +77,11 @@
                             </div>
 
                             <div class="col-lg-2 col-6 mb-2">
-                                <strong>${{ basketItem.item.unitPrice }}</strong>
+                                {% if basketItem.item.discountPrice %}
+                                    <strong>${{ basketItem.item.discountPrice }}</strong>
+                                {% else %}
+                                    <strong>${{ basketItem.item.unitPrice }}</strong>
+                                {% endif %}
                             </div>
 
                             <div class="col-1 mb-2">

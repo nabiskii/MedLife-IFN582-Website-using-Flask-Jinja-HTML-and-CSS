@@ -105,7 +105,10 @@ class BasketItem:
 
     def total_price(self):
         """Calculate the total price for this basket item."""
-        return self.item.unitPrice * self.quantity
+        if self.item.discountPrice:
+            return self.item.discountPrice * self.quantity
+        else:
+            return self.item.unitPrice * self.quantity
 
     def increment_quantity(self):
         """Increment the quantity of this basket item."""
