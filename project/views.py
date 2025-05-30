@@ -335,8 +335,8 @@ def index():
 @bp.route('/product_details/<int:item_id>')
 def product_details(item_id):
     quantity = int(request.args.get('quantity',1))
-    if quantity < 1 or quantity > 10:
-        flash("Quantity must be between 1 and 10.", "error")
+    if quantity < 1:
+        flash("Quantity must be more than zero.", "error")
         return redirect(url_for('main.product_details', item_id=item_id))
     return render_template('product_details.html', item=db.get_item(item_id))
 
@@ -470,6 +470,15 @@ def checkout():
         else:
             flash('The provided information is missing or incorrect','error')
     return render_template('checkout.html', form=form, basket=basket, basket_total=basket_total, delivery_methods=DeliveryMethod, selected_method=selected_method, basket_num_items=basket_num_items, method_prices=method_prices)
+
+@bp.route('/checkout/update_delivery')
+def update_delivery():
+    print("inside update delivery")
+    form_data = request.form
+    form = CheckoutForm(form_data)
+    print("Form data received: ", form_data)
+    selected_method = int(request.form.get('delivery_method', 5))
+    return redirect(url_for('main.checkout', delivery=selected_method, form=form))
 
 @bp.route('/subscribe', methods=['POST'])
 def subscribe():

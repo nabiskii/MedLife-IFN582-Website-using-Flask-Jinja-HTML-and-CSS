@@ -3,23 +3,6 @@
 {% import 'bootstrap/form.html' as wtf %}
 
 {% block main %}
-<style>
-    .method-5,
-    .method-8,
-    .method-15,
-    .method-25 {
-        display: block;
-
-    }
-
-    select:has(option[value="5"]:checked) .method-5,
-    select:has(option[value="8"]:checked) .method-8,
-    select:has(option[value="15"]:checked) .method-15,
-    select:has(option[value="25"]:checked) .method-25 {
-        display: block;
-    }
-</style>
-
 <section class="py-5">
     <div class="container">
         <div class="container mx-10 my-2">
@@ -28,6 +11,7 @@
             <p>Please provide your details to place your order. Thank you!</p>
 
             <div class="row">
+
                 <div class="col-lg-4 order-lg-2 mb-4">
                     <div class="card shadow-sm">
                         <div class="card-header bg-white border-bottom">
@@ -46,12 +30,12 @@
                                 <span class="text-muted">${{ item.total_price() }}</span>
                             </li>
                             {% endfor %}
-
                             <li class="list-group-item">
                                 <form method="GET" action="{{ url_for('main.checkout') }}"
                                     class="d-flex justify-content-between align-items-center">
                                     <label for="delivery" class="me-2 mb-0 fw-medium">Delivery:</label>
-                                    <select name="delivery" id="delivery" class="form-select form-select-sm w-auto">
+                                    <select name="delivery" id="delivery" onchange="this.form.submit()"
+                                        class="form-select form-select-sm w-auto">
                                         {% for method in delivery_methods %}
                                         <option value="{{ method.value }}" {% if selected_method==method.value
                                             %}selected{% endif %}>
@@ -59,50 +43,16 @@
                                         </option>
                                         {% endfor %}
                                     </select>
-
                                 </form>
                             </li>
-
                             <li class="list-group-item d-flex justify-content-between">
-                                <span>Delivery Charges (Standard)</span>
-                                <span class="text-muted">$5</span>
+                                <span>Delivery Charges</span>
+                                <span class="text-muted">${{ selected_method }}</span>
                             </li>
-
                             <li class="list-group-item d-flex justify-content-between">
                                 <strong>Total (AUD)</strong>
-                                <strong>${{ basket_total + 5 }}</strong>
+                                <strong>${{ basket_total }}</strong>
                             </li>
-
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Delivery Charges (Express)</span>
-                                <span class="text-muted">$8</span>
-                            </li>
-
-                            <li class="list-group-item d-flex justify-content-between">
-                                <strong>Total (AUD)</strong>
-                                <strong>${{ basket_total + 8 }}</strong>
-                            </li>
-
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Delivery Charges (Eco)</span>
-                                <span class="text-muted">$15</span>
-                            </li>
-
-                            <li class="list-group-item d-flex justify-content-between">
-                                <strong>Total (AUD)</strong>
-                                <strong>${{ basket_total + 15 }}</strong>
-                            </li>
-
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Delivery Charges (Temp-Control)</span>
-                                <span class="text-muted">$25</span>
-                            </li>
-
-                            <li class="list-group-item d-flex justify-content-between">
-                                <strong>Total (AUD)</strong>
-                                <strong>${{ basket_total + 5 }}</strong>
-                            </li>
-
                         </ul>
                     </div>
                 </div>
@@ -111,26 +61,7 @@
                     <div class="card p-4 mb-3">
                         <h4 class="fw-bold">Your Details</h4>
                         <form method="post" name="checkout-form" class="needs-validation" novalidate>
-                            <!--{{ wtf.render_form(form) }}-->
-                            {{ wtf.render_field(form.firstname, class_='form-control mb-3', placeholder='John') }}
-                            {{ wtf.render_field(form.surname, class_='form-control mb-3', placeholder='Doe') }}
-                            {{ wtf.render_field(form.email, class_='form-control mb-3', placeholder='email@email.com')}}
-                            {{ wtf.render_field(form.phone, class_='form-control mb-3', placeholder='xxxxxxxxxx') }}
-                            {{ wtf.render_field(form.address1, class_='form-control mb-3', placeholder='ABC Street') }}
-                            {{ wtf.render_field(form.address2, class_='form-control mb-3',
-                            placeholder='Apartment,suite,etc.') }}
-                            {{ wtf.render_field(form.city, class_='form-control mb-3', placeholder='City') }}
-                            {{ wtf.render_field(form.state, class_='form-control mb-3', placeholder='State') }}
-                            {{ wtf.render_field(form.postcode, class_='form-control mb-3', placeholder='XXXX') }}
-                            {{ wtf.render_field(form.deliverymethod, class_='form-select mb-3') }}
-                            {{ wtf.render_field(form.paymenttype, class_='form-select mb-3') }}
-                            {{ wtf.render_field(form.nameoncard, class_='form-control me-3', placeholder='John Doe') }}
-                            {{ wtf.render_field(form.cardnumber, class_='form-control
-                            mb-3',placeholder='XXXXXXXXXXXXXXXXXXXX') }}
-                            {{ wtf.render_field(form.expirydate, class_='form-control mb-3', placeholder='MM/YY') }}
-                            {{ wtf.render_field(form.cvv, class_='form-control mb-3', placeholder='***') }}
-
-                            {{ wtf.render_field(form.submit, class_='btn btn-primary') }}
+                            {{ wtf.render_form(form) }}
                         </form>
                     </div>
                 </div>
