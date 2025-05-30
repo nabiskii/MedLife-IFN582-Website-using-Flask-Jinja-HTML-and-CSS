@@ -429,8 +429,15 @@ def checkout():
     form = CheckoutForm()
     basket = get_basket()
     selected_method = int(request.args.get('delivery', 5))
-    basket_total = basket.total_cost()+selected_method
+    basket_total = basket.total_cost()
     basket_num_items = basket.get_total_quantity()
+
+    method_prices ={}
+    for method in DeliveryMethod:
+        method_prices[method.name] = method.value + basket_total
+        print(method.value)
+    
+    print("method prices: ", method_prices)
 
     if request.method == 'POST':
         print("Checkout POST request received")
@@ -462,7 +469,7 @@ def checkout():
             return redirect(url_for('main.index'))
         else:
             flash('The provided information is missing or incorrect','error')
-    return render_template('checkout.html', form=form, basket=basket, basket_total=basket_total, delivery_methods=DeliveryMethod, selected_method=selected_method, basket_num_items=basket_num_items)
+    return render_template('checkout.html', form=form, basket=basket, basket_total=basket_total, delivery_methods=DeliveryMethod, selected_method=selected_method, basket_num_items=basket_num_items, method_prices=method_prices)
 
 @bp.route('/subscribe', methods=['POST'])
 def subscribe():
