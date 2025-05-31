@@ -6,10 +6,9 @@ from project.db import get_item
 DummyBasket = Basket()
 
 def get_basket():
+    # Retrieve the basket from the session or create a new one if it doesn't exist
     basket_data = session.get('basket', {})
-    print("session basket data:", basket_data)
     basket = Basket()
-    print("Basket Data from Session:", basket_data)
     if not basket_data:
         return basket
     else:
@@ -23,6 +22,7 @@ def get_basket():
     return basket
 
 def _save_basket_to_session(basket):
+    # Save the basket to the session
     session['basket'] = {
         'items': [
             {
@@ -35,6 +35,7 @@ def _save_basket_to_session(basket):
     session.modified = True
 
 def add_to_basket(item_id, quantity=1):
+    # Add an item to the basket, or update its quantity if it already exists
     basket = get_basket()
     existing_item = False
     for item in basket.items:
@@ -50,12 +51,14 @@ def add_to_basket(item_id, quantity=1):
     _save_basket_to_session(basket)
 
 def remove_from_basket(item_id):
+    # Remove an item from the basket
     basket = get_basket()
     basket.remove_item(item_id)
     # now store/update the basket in the session
     _save_basket_to_session(basket)
 
 def empty_basket():
+    # Empty the basket by clearing the session data
     session['basket'] = {"items": []}
 
 def convert_basket_to_order(cust_id, delivery_method, total_cost):

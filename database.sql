@@ -6,7 +6,6 @@ CREATE DATABASE IFN582_GROUP84;
 USE IFN582_GROUP84;
 
 -- CREATE-----------------------------------------------------------------------------------------------------------------------------------
--- updated on 23 May 2025
 CREATE TABLE users (
 userID INT AUTO_INCREMENT PRIMARY KEY,
 userName VARCHAR(20) UNIQUE NOT NULL,

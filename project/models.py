@@ -146,11 +146,6 @@ class Basket:
             if item.id == item_id:
                 return item
         return None
-    
-    #not used (remove)
-    def empty(self):
-        """Empty the basket."""
-        self.items = []
 
     def total_cost(self):
         """Calculate the total cost of the basket."""

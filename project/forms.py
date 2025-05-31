@@ -32,11 +32,6 @@ class CheckoutForm(FlaskForm):
         ('ACT', 'Australian Capital Territory'),
         ('NT', 'Northern Territory')], validators = [InputRequired()])
     postcode = StringField("Postcode", validators = [InputRequired()])
-    deliverymethod = SelectField('Delivery Method', choices=[
-        (5, 'Standard Delivery-$5'),
-        (8, 'Express Delivery-$8'),
-        (15, 'Eco Delivery-$15'),
-        (25, 'Temp-Controlled-$25')], validators=[InputRequired()])
     paymenttype = RadioField('Payment Type', choices=[
         ('Credit Card', 'Credit Card'),
         ('Debit Card', 'Debit Card'),
