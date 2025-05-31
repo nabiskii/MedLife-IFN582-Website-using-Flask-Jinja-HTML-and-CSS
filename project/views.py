@@ -27,7 +27,7 @@ def register():
                 return redirect(url_for('main.login'))
             
             # Add the user to the database
-            db.add_user(username, password, 'User')
+            db.add_user(username, password)
             flash('Registration successful! Please login.','success')
             return redirect(url_for('main.login'))
         
@@ -115,6 +115,8 @@ def edit_user(user_id):
         username = form.userName.data
         user_type = form.userType.data
         db.update_user(user_id, username, user_type)
+        if username == session['user']['username']:
+            session['user']['is_admin'] = False
         flash('User updated successfully.', 'success')
         return redirect(url_for('main.manage_users'))
     return render_template('manage_edit_user.html', edit_user_form=form)
