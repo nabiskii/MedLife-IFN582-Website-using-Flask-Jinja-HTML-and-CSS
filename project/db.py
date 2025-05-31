@@ -471,14 +471,15 @@ def get_distinct_all_categories():
 
 
 #  Orders CRUD
-def add_order(order):
+def add_order(order, orderStatus):
     """Add a new order."""
     cur = mysql.connection.cursor()
     cur.execute("""
-                INSERT INTO orders (customerID, deliveryMethodCode, orderTotalAmount, orderDate)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO orders (customerID, deliveryMethodCode, orderStatus, orderTotalAmount, orderDate)
+                VALUES (%s, %s, %s, %s, %s)
                 """, (order.customerID,
                       order.deliveryMethodCode,
+                      orderStatus,
                       order.orderTotalAmount,
                       datetime.now()
                       ))

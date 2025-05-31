@@ -7,7 +7,7 @@ from . import db, session
 from . import models
 from .session import get_basket, convert_basket_to_order, empty_basket, add_to_basket, remove_from_basket
 from .wrapper import admin_required
-from .models import DeliveryMethod
+from .models import DeliveryMethod, OrderStatus
 
 bp = Blueprint('main', __name__)
 
@@ -463,7 +463,7 @@ def checkout():
                 cust_id = db.get_customer_id(session['user']['user_id'])
             
             order = convert_basket_to_order(cust_id, delivery_method, final_price)
-            order_id = db.add_order(order)
+            order_id = db.add_order(order, "Confirmed")
 
             flash(f"Thank you, {session['user']['username']}! Your order #{order_id} has been placed successfully.",)
             empty_basket()
