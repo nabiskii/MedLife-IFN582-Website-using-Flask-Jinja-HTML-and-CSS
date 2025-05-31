@@ -125,6 +125,11 @@ def edit_user(user_id):
 def delete_user(user_id):
     user = db.get_user_by_id(user_id)
     username = user['userName']
+
+    if username == session['user']['username']:
+        flash('You cannot delete your own account.', 'error')
+        return redirect(url_for('main.manage_users'))
+    
     db.delete_from_user(user_id)
     flash(f'User {username} deleted.', 'success')
     return redirect(url_for('main.manage_users'))
