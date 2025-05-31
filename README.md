@@ -14,6 +14,14 @@ Run the database.sql file on your own MySQL Workbench.
 
 Change the contents of config.py file and use your own MySQL user and password.
 
+# To trigger the errors
+
+## 404
+Edit the URL to add a random route that doesn't exist.
+
+## 500
+Click on trigger 500 in the footer.
+
 # Usernames and Passwords
 
 ADMIN: sysadmin - test1234<br>

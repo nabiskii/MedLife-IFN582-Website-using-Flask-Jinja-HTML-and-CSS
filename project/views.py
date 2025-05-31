@@ -17,21 +17,20 @@ def register():
     form = RegisterForm()
     if request.method == 'POST':
         if form.validate_on_submit():
+            # Get the username and hashed password
             username = form.username.data
             password = sha256(form.password.data.encode()).hexdigest()
             # Check if the user already exists
-            cur = db.mysql.connection.cursor()
-            cur.execute("SELECT userID FROM users WHERE username = %s", [username])
-            if cur.fetchone():
+            user= db.check_user_exists(username)
+            if user:
                 flash('Username already exists.', 'danger')
-                cur.close()
                 return redirect(url_for('main.login'))
-            cur.execute("INSERT INTO users (userName, password, userType) VALUES (%s, %s, %s)",
-                        (username, password, 'User'))
-            db.mysql.connection.commit()
-            cur.close()
+            
+            # Add the user to the database
+            db.add_user(username, password, 'User')
             flash('Registration successful! Please login.','success')
             return redirect(url_for('main.login'))
+        
     return render_template('register.html', form=form)
 
 # User login route
@@ -40,6 +39,8 @@ def login():
     form = LoginForm()
     if request.method == 'POST':
         if form.validate_on_submit():
+
+            # Check if the user exists and password is correct
             user = db.check_for_user(form.username.data, sha256(form.password.data.encode()).hexdigest())
             if user is not None:
 
@@ -56,13 +57,14 @@ def login():
                 flash('Login successful!','success')
 
                 return redirect(url_for('main.index'))
+            
             flash('Invalid username or password','danger')
     return render_template('login.html', title='Log In', form=form)
 
 # User logout route
 @bp.route('/logout')
 def logout():
-    # logout_user()
+    # Logout user by clearing session data
     session.pop('user', None)
     session.pop('logged_in', None)
     flash('You have been logged out.','success')
@@ -83,6 +85,7 @@ def manage_users():
 
     return render_template('manage_users.html' ,accounts=accounts,)
 
+# Admin-only page to add users.
 @bp.route('/manage/add_user', methods=['GET', 'POST'])
 @admin_required
 def add_user():
@@ -98,6 +101,7 @@ def add_user():
         return redirect(url_for('main.manage_users'))
     return render_template('manage_add_user.html')
 
+# Admin-only page to edit users.
 @bp.route('/manage/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @admin_required
 def edit_user(user_id):
@@ -115,6 +119,7 @@ def edit_user(user_id):
         return redirect(url_for('main.manage_users'))
     return render_template('manage_edit_user.html', user=user)
 
+# Admin-only page to delete users.
 @bp.route('/manage/delete_user/<int:user_id>')
 @admin_required
 def delete_user(user_id):
@@ -124,13 +129,14 @@ def delete_user(user_id):
     flash(f'User {username} deleted.', 'success')
     return redirect(url_for('main.manage_users'))
 
-# Admin-only product management page
+# Admin-only item management page
 @bp.route('/manage/items')
 @admin_required
 def manage_items():
     items = db.get_admin_all_items()
     return render_template('manage_items.html', items=items)
 
+# Admin-only page to add items.
 @bp.route('/add_item', methods=['GET', 'POST'])
 @admin_required
 def add_item():
@@ -156,18 +162,15 @@ def add_item():
         return redirect(url_for('main.manage_items'))
     return render_template('manage_add_item.html', item_form=form)
 
+# Admin-only page to edit items.
 @bp.route('/edit_item/<code>', methods=['GET', 'POST'])
 @admin_required
 def edit_item(code):
-    print("editing item code value",code)
     item = db.get_item_by_code(code)
-    print(item, "item in edit_item")
     if item is None:
-        print(item, "item in edit_item not found")
         flash('Item not found.', 'danger')
         return redirect(url_for('main.manage_items'))
 
-    print("crossed the item not found check")
     form = EditItemForm(data=item)  # preload form with item values
 
     # Populate dropdown choices
@@ -192,6 +195,7 @@ def edit_item(code):
 
     return render_template('manage_edit_item.html', item_form=form, item=item)
 
+# Admin-only page to delete items.
 @bp.route('/delete_item/<code>')
 @admin_required
 def delete_item(code):
@@ -206,6 +210,7 @@ def manage_categories():
     categories = db.get_all_categories()
     return render_template('manage_categories.html', categories=categories)
 
+# Admin-only page to add categories.
 @bp.route('/add_category', methods=['GET', 'POST'])
 @admin_required
 def add_category():
@@ -222,6 +227,7 @@ def add_category():
             flash('Category submission failed.', 'danger')
     return render_template('manage_add_category.html', add_category_form=form)
 
+# Admin-only page to edit categories.
 @bp.route('/edit_category/<code>', methods=['GET', 'POST'])
 @admin_required
 def edit_category(code):
@@ -233,11 +239,13 @@ def edit_category(code):
         return redirect(url_for('main.manage_categories'))
     return render_template('manage_edit_category.html', edit_category_form=form, code=code)
 
-
+# Admin-only page to delete categories.
 @bp.route('/delete_category/<code>')
 @admin_required
 def delete_category(code):
     items = db.get_items_by_category(code)
+
+    #if there are items associated with the category, do not delete it.
     if items:
         flash("This category has items associated with it, please edit or delete the items before continuing.")
         return redirect(url_for('main.manage_categories'))
@@ -253,6 +261,7 @@ def manage_orders():
     orders = db.get_all_orders()
     return render_template('manage_orders.html', orders=orders)
 
+# Admin-only page to add orders.
 @bp.route('/add_order', methods=['GET', 'POST'])
 @admin_required
 def add_order():
@@ -277,6 +286,7 @@ def add_order():
 
     return render_template("manage_add_order.html", add_order_form=form)
 
+# Admin-only page to edit orders.
 @bp.route('/edit_order/<int:order_id>', methods=['GET', 'POST'])
 @admin_required
 def edit_order(order_id):
@@ -288,6 +298,7 @@ def edit_order(order_id):
         return redirect(url_for('main.manage_orders'))
     return render_template('manage_edit_order.html', edit_order_form=form, order=order, order_id=order_id)
 
+# Admin-only page to delete orders.
 @bp.route('/delete_order/<int:order_id>')
 @admin_required
 def delete_order(order_id):
@@ -296,9 +307,11 @@ def delete_order(order_id):
     return redirect(url_for('main.manage_orders'))
 
 
-# ***init page navigation***
+# index route for the main page
 @bp.route('/', methods=['GET'])
 def index():
+
+    # Service offerings
     services = [
         {
             "title": "Prescription Medicine Delivery",
@@ -318,10 +331,10 @@ def index():
         }
     ]
 
+    # Get all the categories and search if exists, and items based on the selected category or search term.
     all_categories = db.get_distinct_all_categories()
     selected_category = request.args.get('category', 'all')
     search = request.args.get('search','').strip()
-    print(search)
 
     if search:
         items = db.search_items(search)
@@ -332,21 +345,24 @@ def index():
 
     return render_template("index.html", services=services, items=items, all_categories=all_categories, search=search, selected_category=selected_category)
 
+# Product details route
 @bp.route('/product_details/<int:item_id>')
 def product_details(item_id):
     quantity = int(request.args.get('quantity',1))
+
+    # Check if the quantity is a positive integer
     if quantity < 1:
         flash("Quantity must be more than zero.", "error")
         return redirect(url_for('main.product_details', item_id=item_id))
     return render_template('product_details.html', item=db.get_item(item_id))
 
+# Basket page route
 @bp.route('/order/', methods=['GET'])
 def order():
-    print("inside order")
     basket = get_basket()
-
     return render_template('order.html', basket=basket, basket_total=basket.total_cost())
 
+# Basket add an item with quantity 1.
 @bp.route('/order/<int:item_id>')
 def order_add(item_id):
     item = db.get_item(item_id)
@@ -358,12 +374,12 @@ def order_add(item_id):
     # Add to basket or increment quantity
     add_to_basket(item_id)
     
-    print(get_basket(),"getting the basket")
     return redirect(url_for('main.order'))
 
+# Basket add an item with quantity.
 @bp.route('/order/<int:item_id>/<int:quantity>')
 def order_with_quantity(item_id, quantity):
-    print("inside order with quantity")
+
     basket = get_basket()
     item = db.get_item(item_id)
 
@@ -374,12 +390,13 @@ def order_with_quantity(item_id, quantity):
     add_to_basket(item_id, quantity)
     return redirect(url_for('main.order'))
 
+# Basket action with quantity increase or decrease.
 @bp.route('/order/<int:item_id>/<string:action>', methods =['POST'])
 def order_with_quantity_action(item_id, action):
     tmp_basket = get_basket()
     item = db.get_item(item_id)
-    print("item in order_with_quantity_action: ", item)
 
+    # Check if item exists in the database and if it does, check action and update quantity.
     if not item:
         flash('Item not found.')
         return redirect(url_for('main.index'))
@@ -401,9 +418,9 @@ def order_with_quantity_action(item_id, action):
     session['basket'] = tmp_basket
     return redirect(url_for('main.order'))
 
+# Basket remove an item.
 @bp.route('/removeitem/<int:item_id>')
 def remove_item(item_id):
-    print("inside remove item")
     item = db.get_item(item_id)
 
     if not item:
@@ -416,7 +433,7 @@ def remove_item(item_id):
 
     return redirect(url_for('main.order'))
 
-
+# Basket clear all items.
 @bp.route('/clearbasket/')
 def clear_basket():
     # Clear the basket in the session
@@ -424,6 +441,7 @@ def clear_basket():
     flash('Basket cleared successfully.')
     return redirect(url_for('main.order'))
 
+# Checkout route
 @bp.route("/checkout/", methods=["GET", "POST"] )
 def checkout():
     form = CheckoutForm()
@@ -432,13 +450,11 @@ def checkout():
     basket_num_items = basket.get_total_quantity()
 
     if request.method == 'POST':
-        print("Checkout POST request received")
         # check if user is logged in
         if not session.get('logged_in'):
             flash('Please log in to proceed with checkout.', 'error')
             return redirect(url_for('main.login'))
         
-        print("checkout basket data: ",basket)
         # check if basket is empty
         if not basket:
             flash('Your basket is empty. Please add items to your basket before checking out.', 'error')
@@ -447,21 +463,21 @@ def checkout():
         if form.validate_on_submit():
             delivery_price = request.form.get('delivery')
             if not delivery_price:
-                form_data = request.form
                 flash('Please select a delivery method.', 'error')
                 return redirect(url_for('main.checkout'))
-        
-            print("delivery method: ", int(delivery_price))
+
+            # Get the delivery method based on the price and calculate the final price
             delivery_method = db.get_delivery_method_by_price(delivery_price)
 
             final_price = basket_total + int(delivery_price)
 
-
+            # Check if the customer exists, if not create a new customer and get the customer ID
             if not db.check_customer_exists(session['user']['user_id']):
                 cust_id = db.add_customer(session['user']['user_id'], form)
             else:
                 cust_id = db.get_customer_id(session['user']['user_id'])
             
+            # Create the order object and add it to the database
             order = convert_basket_to_order(cust_id, delivery_method, final_price)
             order_id = db.add_order(order, "Confirmed")
 
@@ -472,13 +488,16 @@ def checkout():
             flash('The provided information is missing or incorrect','error')
     return render_template('checkout.html', form=form, basket=basket, basket_total=basket_total, delivery_methods=DeliveryMethod, basket_num_items=basket_num_items)
 
+# Subscription route
 @bp.route('/subscribe', methods=['POST'])
 def subscribe():
     email = request.form.get('email')
+    # Validate email
     if not email:
         flash('Email is required.', 'error')
         return redirect(url_for('main.index'))
 
+    # Check if email is already subscribed else insert it.
     try:
         db.insert_subscription(email)
         flash('Thank you for subscribing!', 'success')
@@ -486,6 +505,7 @@ def subscribe():
         flash('Subscription failed: ' + str(e), 'error')
     return redirect(url_for('main.index'))
 
+# Trigger Error handling route for 500 error.
 @bp.route('/trigger_500')
 def trigger_500():
     # Force a division by zero error
