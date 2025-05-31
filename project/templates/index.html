@@ -113,9 +113,11 @@
                         {% else %}
                         <p class="card-text fs-4 mb-0"><strong>${{ item.unitPrice }}</strong></p>
                         {% endif %}
-                        <a href="{{ url_for('main.product_details', item_id=item.itemCode) }}" class="btn btn-jumbotron"
+                        <div>
+                            <a href="{{ url_for('main.product_details', item_id=item.itemCode) }}" class="btn btn-jumbotron"
                             :custom-hover>View
                             Details</a>
+                        </div>
                     </div>
                 </div>
             </div>
