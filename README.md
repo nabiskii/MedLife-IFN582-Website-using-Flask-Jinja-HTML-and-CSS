@@ -14,13 +14,18 @@ Run the database.sql file on your own MySQL Workbench.
 
 Change the contents of config.py file and use your own MySQL user and password.
 
+# To run the application
+
+Go to run.py and run the program via the run option or run in the terminal
+```bash
+flask --app project run
+```
+
 # To trigger the errors
 
-## 404
-Edit the URL to add a random route that doesn't exist.
+404: Edit the URL to add a random route that doesn't exist.
 
-## 500
-Click on trigger 500 in the footer.
+500: Click on trigger 500 in the footer.
 
 # Usernames and Passwords
 
