@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, DecimalField, IntegerField, SelectField, RadioField
+from wtforms import StringField, PasswordField, SubmitField, DecimalField, IntegerField, SelectField, RadioField, ValidationError
 from wtforms.validators import DataRequired, Length, InputRequired, email, EqualTo, NumberRange
+from datetime import datetime
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=150)])
@@ -14,6 +15,26 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login', render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})
 
 # form used in basket
+
+def validate_expiry_date(form, field):
+    try:
+        # Parse the input value
+        expiry_date = datetime.strptime(field.data, '%m/%y').date()
+    except ValueError:
+        # If the format is incorrect, raise this specific error
+        raise ValidationError('The expiry date must be in the format MM/YY.')
+    
+    # Check if the expiry date is in the future
+    if expiry_date < datetime.now().date():
+        raise ValidationError('The expiry date must be in the future.')
+
+def length_check(min_length, max_length):
+    def _length_check(form, field):
+        data_str = str(field.data)
+        if len(data_str) < min_length or len(data_str) > max_length:
+            raise ValidationError(f'The length must be exactly 16 digits.')
+    return _length_check
+
 class CheckoutForm(FlaskForm):
     firstname = StringField("Your first name", validators = [InputRequired()])
     surname = StringField("Your surname", validators = [InputRequired()])
@@ -37,8 +58,8 @@ class CheckoutForm(FlaskForm):
         ('Debit Card', 'Debit Card'),
         ('PayPal', 'PayPal')], validators=[InputRequired()])
     nameoncard = StringField('Name on Card', validators=[InputRequired(), Length(max=50)])
-    cardnumber = StringField('Card Number', validators=[InputRequired(), Length(min=16, max=16)])
-    expirydate = StringField('Expiry Date (MM/YY)', validators=[InputRequired(), Length(min=5, max=5)])
+    cardnumber = IntegerField('Card Number', validators=[InputRequired(), length_check(16,16)])
+    expirydate = StringField('Expiry Date (MM/YY)', validators=[InputRequired(), Length(min=5, max=5), validate_expiry_date])
     cvv = PasswordField('CVV', validators=[InputRequired(), Length(min=3, max=3)], render_kw={'style':'margin-bottom: 15px;'})
     submit = SubmitField('Submit Payment', render_kw={"class": "btn btn-jumbotron mb-4 custom-hover"})
 
