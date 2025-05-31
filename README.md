@@ -12,4 +12,23 @@ python3 -m pip install -r requirements.txt
 
 Run the database.sql file on your own MySQL Workbench.
 
-Change the contents of config.py file to modify your own MySQL user and password.
+Change the contents of config.py file and use your own MySQL user and password.
+
+# Usernames and Passwords
+
+ADMIN: sysadmin - test1234<br>
+ADMIN: nabila - test1234<br>
+USER: hannah - test1234<br>
+USER: elsie - test1234<br>
+USER: luke - test1234<br>
+USER: monica - test1234<br>
+
+# Student ID and Names
+
+GROUP 84
+
+Eunse Shim – N12219151<br>
+Monica Nunes Serico – N12240672<br>
+Hannah Law – N12229628<br>
+Naratorn Benjapattranon – N12258164<br>
+Nabila Nausheen – N12229822<br>
