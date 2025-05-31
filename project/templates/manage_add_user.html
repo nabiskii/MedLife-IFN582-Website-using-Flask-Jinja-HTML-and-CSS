@@ -1,26 +1,31 @@
 {% extends 'base.html' %}
+{% import 'bootstrap5/form.html' as wtf %}
+
 {% block main %}
-<h2>Add New User</h2>
-<form method="post">
-  <div class="mb-3">
-    <label for="username" class="form-label">Username</label>
-    <input type="text" class="form-control" id="username" name="username" required>
-  </div>
 
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input type="password" class="form-control" id="password" name="password" required>
-  </div>
+        <div class="container mx-10 my-2">
+            <h2>Add New User</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-header">Add User</div>
+                        <div class="card-body"> 
+                            <form method="POST" action="{{ url_for('main.add_user') }}"> 
+                                {{ wtf.render_form(add_user_form) }}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+   
+   
+            <div class="row">
+                <div class="col-md-10 mb-2">
+                    <p><a href="{{ url_for('main.manage_users') }}" <i class="bi bi-arrow-left"></i>&nbsp;&nbsp; Back to manage user page</a></p>
+                    <p><a href="{{ url_for('main.logout') }}" class="underlined-link">Logout</a></p>
+                </div>
+            </div>
+        </div>
 
-  <div class="mb-3">
-    <label for="user_type" class="form-label">User Type</label>
-    <select class="form-select" id="user_type" name="user_type">
-      <option value="User">User</option>
-      <option value="Admin">Admin</option>
-    </select>
-  </div>
-
-  <button type="submit" class="btn btn-success">Add User</button>
-  <a href="{{ url_for('main.manage') }}" class="btn btn-secondary">Cancel</a>
-</form>
 {% endblock %}
