@@ -225,7 +225,7 @@ def get_delivery_method_by_price(price):
     cur.execute("SELECT deliveryMethodCode FROM delivery_methods WHERE surchargePrice = %s", (price,))
     method = cur.fetchone()
     cur.close()
-    return method
+    return method['deliveryMethodCode'] if method else None
 
 
 #  ----------- subscription query -------------

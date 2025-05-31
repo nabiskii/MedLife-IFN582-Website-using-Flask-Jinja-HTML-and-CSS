@@ -428,16 +428,8 @@ def clear_basket():
 def checkout():
     form = CheckoutForm()
     basket = get_basket()
-    selected_method = int(request.args.get('delivery', 5))
     basket_total = basket.total_cost()
     basket_num_items = basket.get_total_quantity()
-
-    method_prices ={}
-    for method in DeliveryMethod:
-        method_prices[method.name] = method.value + basket_total
-        print(method.value)
-    
-    print("method prices: ", method_prices)
 
     if request.method == 'POST':
         print("Checkout POST request received")
@@ -452,16 +444,25 @@ def checkout():
             flash('Your basket is empty. Please add items to your basket before checking out.', 'error')
             return redirect(url_for('main.index'))
 
-        # get delivery method name
-        delivery_method = models.DeliveryMethod.get_delivery_method_by_amount(selected_method)
-
         if form.validate_on_submit():
+            delivery_price = request.form.get('delivery')
+            if not delivery_price:
+                form_data = request.form
+                flash('Please select a delivery method.', 'error')
+                return redirect(url_for('main.checkout'))
+        
+            print("delivery method: ", int(delivery_price))
+            delivery_method = db.get_delivery_method_by_price(delivery_price)
+
+            final_price = basket_total + int(delivery_price)
+
+
             if not db.check_customer_exists(session['user']['user_id']):
                 cust_id = db.add_customer(session['user']['user_id'], form)
             else:
                 cust_id = db.get_customer_id(session['user']['user_id'])
             
-            order = convert_basket_to_order(cust_id, delivery_method, basket_total)
+            order = convert_basket_to_order(cust_id, delivery_method, final_price)
             order_id = db.add_order(order)
 
             flash(f"Thank you, {session['user']['username']}! Your order #{order_id} has been placed successfully.",)
@@ -469,16 +470,7 @@ def checkout():
             return redirect(url_for('main.index'))
         else:
             flash('The provided information is missing or incorrect','error')
-    return render_template('checkout.html', form=form, basket=basket, basket_total=basket_total, delivery_methods=DeliveryMethod, selected_method=selected_method, basket_num_items=basket_num_items, method_prices=method_prices)
-
-@bp.route('/checkout/update_delivery')
-def update_delivery():
-    print("inside update delivery")
-    form_data = request.form
-    form = CheckoutForm(form_data)
-    print("Form data received: ", form_data)
-    selected_method = int(request.form.get('delivery_method', 5))
-    return redirect(url_for('main.checkout', delivery=selected_method, form=form))
+    return render_template('checkout.html', form=form, basket=basket, basket_total=basket_total, delivery_methods=DeliveryMethod, basket_num_items=basket_num_items)
 
 @bp.route('/subscribe', methods=['POST'])
 def subscribe():
