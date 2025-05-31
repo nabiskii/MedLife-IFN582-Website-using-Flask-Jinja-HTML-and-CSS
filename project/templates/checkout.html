@@ -3,6 +3,22 @@
 {% import 'bootstrap/form.html' as wtf %}
 
 {% block main %}
+<style>
+    #delivery-5,
+    #delivery-8,
+    #delivery-15,
+    #delivery-25 {
+        display: none;
+    }
+
+    #standard:checked~#delivery-5,
+    #express:checked~#delivery-8,
+    #eco:checked~#delivery-15,
+    #temp:checked~#delivery-25 {
+        display: block;
+    }
+</style>
+
 <section class="py-5">
     <div class="container">
         <div class="container mx-10 my-2">
@@ -11,51 +27,33 @@
             <p>Please provide your details to place your order. Thank you!</p>
 
             <div class="row">
+
                 <div class="col-lg-4 order-lg-2 mb-4">
                     <div class="card shadow-sm">
-                        <div class="card-header bg-white border-bottom">
+                        <div class="card-header bg-white border-bottom mb-2">
                             <h4 class="d-flex justify-content-between align-items-center mb-2">
                                 <span>Your Cart</span>
                                 <span class="badge bg-secondary rounded-pill">{{ basket_num_items }}</span>
                             </h4>
                         </div>
-                        <ul class="list-group list-group-flush">
+                        <div>
                             {% for item in basket.items %}
-                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <h6 class="my-0 fw-semibold">{{ item.item.itemName }}</h6>
-                                    <small class="text-muted">${{ item.item.unitPrice }} x {{ item.quantity }}</small>
+                                    {% if item.item.discountPrice %}
+                                        <small class="text-muted">${{ item.item.discountPrice }} x {{ item.quantity }}</small>
+                                    {% else %}
+                                        <small class="text-muted">${{ item.item.unitPrice }} x {{ item.quantity }}</small>
+                                    {% endif %}
                                 </div>
                                 <span class="text-muted">${{ item.total_price() }}</span>
-                            </li>
+                            </div>
+
+                            <hr class="my-1">
+
                             {% endfor %}
-
-                            <li class="list-group-item">
-                                <form method="GET" action="{{ url_for('main.checkout') }}"
-                                    class="d-flex justify-content-between align-items-center">
-                                    <label for="delivery" class="me-2 mb-0 fw-medium">Delivery:</label>
-                                    <select name="delivery" id="delivery" onchange="this.form.submit()"
-                                        class="form-select form-select-sm w-auto">
-                                        {% for method in delivery_methods %}
-                                        <option value="{{ method.value }}" {% if selected_method==method.value
-                                            %}selected{% endif %}>
-                                            {{ method.name }} - ${{ method.value }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
-                                </form>
-                            </li>
-
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Delivery Charges</span>
-                                <span class="text-muted">${{ selected_method }}</span>
-                            </li>
-
-                            <li class="list-group-item d-flex justify-content-between">
-                                <strong>Total (AUD)</strong>
-                                <strong>${{ basket_total }}</strong>
-                            </li>
-                        </ul>
+                        </div>
                     </div>
                 </div>
 
@@ -63,7 +61,73 @@
                     <div class="card p-4 mb-3">
                         <h4 class="fw-bold">Your Details</h4>
                         <form method="post" name="checkout-form" class="needs-validation" novalidate>
+                            <p for="delivery" class="me-2 mb-0 fw-normal fs-5">Delivery:</p>
+                            <input type="radio" id="standard" name="delivery" value="5" required checked>
+                            <label for="standard">Standard Delivery</label><br>
+                            <input type="radio" id="express" name="delivery" value="8">
+                            <label for="express">Express Delivery</label><br>
+                            <input type="radio" id="eco" name="delivery" value="15">
+                            <label for="eco">Eco-Friendly</label><br>
+                            <input type="radio" id="temp" name="delivery" value="25">
+                            <label for="temp">Temperature Controlled</label><br>
+
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <span>Subtotal</span>
+                                <span class="text-muted">${{ basket_total }}</span>
+                            </div>
+
+                            <div id="delivery-5">
+
+                                <div class="d-flex justify-content-between">
+                                    <span>Delivery Charges</span>
+                                    <span class="text-muted">$5</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <strong>Total (AUD)</strong>
+                                    <strong>${{ basket_total+5 }}</strong>
+                                </div>
+                                <hr>
+                            </div>
+
+                            <div id="delivery-8">
+                                <div class="d-flex justify-content-between">
+                                    <span>Delivery Charges</span>
+                                    <span class="text-muted">$8</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <strong>Total (AUD)</strong>
+                                    <strong>${{ basket_total+8 }}</strong>
+                                </div>
+                                <hr>
+                            </div>
+
+                            <div id="delivery-15">
+                                <div class="d-flex justify-content-between">
+                                    <span>Delivery Charges</span>
+                                    <span class="text-muted">$15</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <strong>Total (AUD)</strong>
+                                    <strong>${{ basket_total+15 }}</strong>
+                                </div>
+                                <hr>
+                            </div>
+
+                            <div id="delivery-25">
+                                <div class="d-flex justify-content-between">
+                                    <span>Delivery Charges</span>
+                                    <span class="text-muted">$25</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <strong>Total (AUD)</strong>
+                                    <strong>${{ basket_total+25 }}</strong>
+                                </div>
+                                <hr>
+                            </div>
+
                             {{ wtf.render_form(form) }}
+
                         </form>
                     </div>
                 </div>

@@ -64,6 +64,7 @@ deliveryMethodName VARCHAR (50) NOT NULL,
 surchargePrice DECIMAL(10,2) NOT NULL
 );
 
+-- orderStatus = Pending is for admin added order waiting for customer to payment, Confirmed is order has been paid, Cancelled is for cancelled order
 CREATE TABLE orders (
 orderID INT AUTO_INCREMENT PRIMARY KEY,
 customerID INT NOT NULL,
